@@ -11,12 +11,13 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
     val projectJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(project)
     val json = httpClient.executePost(url, projectJson)
+    if(project.description.isDefined) setProjectDescription(project.id,project.description.get)
     mapper.readValue(json, classOf[BaseProject])
   }
 
-  def setProjectSettings(project: BaseProject) = {
-    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${project.id}/description"
-    httpClient.executePutPlainText(url,project.description.get)
+  def setProjectDescription(projectId : String,desc: String) = {
+    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:$projectId/description"
+    httpClient.executePutPlainText(url,desc)
   }
 
   def getProjects: Projects = {

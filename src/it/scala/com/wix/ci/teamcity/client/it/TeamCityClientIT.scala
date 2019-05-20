@@ -16,10 +16,11 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     "create a new project get it and delete it" in new Context{
       val createdProj = teamcityClient.createProject(baseProject)
-      createdProj must beEqualTo(baseProject)
-      //teamcityClient.setProjectSettings(baseProject.copy(description = Some("descsc")))
+      createdProj must beEqualTo(baseProject.copy(description = None)) //project settings are not returned here
       teamcityClient.getProjects.project.contains(baseProject) must beTrue
       teamcityClient.getProjectById(baseProject.id) must beEqualTo(project)
+      teamcityClient.setProjectName(baseProject.id,newProjectName)
+      teamcityClient.getProjectById(baseProject.id) must beEqualTo(project.copy(name = newProjectName))
       teamcityClient.deleteProject(baseProject.id)
       teamcityClient.getProjects.project.contains(baseProject) must beFalse
     }
@@ -43,6 +44,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
 
   trait Context extends Scope{
+    val newProjectName = "proj2"
     val teamcityBaseUrl = "http://localhost:8111"
     val username = "admin"
     val password = "admin"
@@ -50,7 +52,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val teamcityClient = new TeamCityClient(httpClient,teamcityBaseUrl)
     val rootBaseProject = BaseProject("_Root","<Root project>","/httpAuth/app/rest/projects/id:_Root","http://localhost:8111/project.html?projectId=_Root",Some("Contains all other projects"),false,None)
 
-    val baseProject = BaseProject("projid", "projName","/httpAuth/app/rest/projects/id:projid","http://localhost:8111/project.html?projectId=projid",None,false,Some("_Root"))
+    val baseProject = BaseProject("projid", "projName","/httpAuth/app/rest/projects/id:projid","http://localhost:8111/project.html?projectId=projid",Some("projDesc"),false,Some("_Root"))
     val project = Project(baseProject.id, baseProject.name,baseProject.parentProjectId.get,baseProject.href,baseProject.webUrl,Projects(0,null),rootBaseProject,BuildTypes(0,List()))
 
   }

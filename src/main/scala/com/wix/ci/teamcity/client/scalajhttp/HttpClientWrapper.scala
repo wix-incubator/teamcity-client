@@ -39,7 +39,8 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
       .header("Accept", accept)
       .header("Content-Type", contentType)
       .timeout(connTimeoutMs = timeout, readTimeoutMs = timeout)
-    if (body.isDefined) httpReq = httpReq.postData(body.get)
+    if(body.isDefined && method=="POST") httpReq = httpReq.postData(body.get)
+    if(body.isDefined && method=="PUT")httpReq = httpReq.put(body.get)
     val httpResp = httpReq.asString
     checkHttpStatusCode(httpResp.code)
     httpResp.body
