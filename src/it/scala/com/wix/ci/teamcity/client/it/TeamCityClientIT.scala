@@ -17,6 +17,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     "create a new project get it and delete it" in new Context{
       val createdProj = teamcityClient.createProject(baseProject)
       createdProj must beEqualTo(baseProject)
+      //teamcityClient.setProjectSettings(baseProject.copy(description = Some("descsc")))
       teamcityClient.getProjects.project.contains(baseProject) must beTrue
       teamcityClient.getProjectById(baseProject.id) must beEqualTo(project)
       teamcityClient.deleteProject(baseProject.id)

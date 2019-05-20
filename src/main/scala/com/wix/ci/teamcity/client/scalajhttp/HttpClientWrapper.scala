@@ -23,7 +23,7 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
   }
 
   override def executePutPlainText(url: String, body: String): String = {
-    execute(url, "PUT", Some(body), "text/plain")
+    execute(url, "PUT", Some(body), "text/plain", "text/plain")
   }
 
   override def executeDelete(url: String): String = {
@@ -33,10 +33,10 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
 
 
 
-  private def execute(url: String, method: String, body: Option[String], contentType: String = "application/json"): String = {
+  private def execute(url: String, method: String, body: Option[String], contentType: String = "application/json",accept : String = "application/json"): String = {
     var httpReq = Http(url).method(method)
       .header(authHeaderKey, basicAuth)
-      .header("Accept", "application/json")
+      .header("Accept", accept)
       .header("Content-Type", contentType)
       .timeout(connTimeoutMs = timeout, readTimeoutMs = timeout)
     if (body.isDefined) httpReq = httpReq.postData(body.get)

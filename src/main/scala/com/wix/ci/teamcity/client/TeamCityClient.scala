@@ -14,6 +14,10 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BaseProject])
   }
 
+  def setProjectSettings(project: BaseProject) = {
+    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${project.id}/description"
+    httpClient.executePutPlainText(url,project.description.get)
+  }
 
   def getProjects: Projects = {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
