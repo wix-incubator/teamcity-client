@@ -42,7 +42,8 @@ trait ITEnv {
   def copyInitialConfigToDataDir() : Unit = {
     val in =  Source.fromResource("tc_initial_data.zip").reader()
     val byteArr = IOUtils.toByteArray(in)
-   // FileUtils.writeByteArrayToFile()
+    val confZip = new File(dataDir,"tc_initial_data.zip")
+    FileUtils.writeByteArrayToFile(confZip,byteArr)
 
   }
 }
