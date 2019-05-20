@@ -18,7 +18,7 @@ trait ITEnv {
   val imageName = s"jetbrains/teamcity-server:$teamcityVersion"
   val logsDir = new File("./teamcity-logs")
   val dataDir = new File("./teamcity-data")
-
+  val confZip = new File(dataDir,"tc_initial_data.zip")
 
 
   def loadTeamcityDockerImage() = {
@@ -26,12 +26,16 @@ trait ITEnv {
   }
 
   def startTeamcityDocker() = {
+    killTeamcityDocker
     if(logsDir.exists()) FileUtils.deleteQuietly(logsDir)
     if(dataDir.exists()) FileUtils.deleteQuietly(dataDir)
     logsDir.mkdirs()
     dataDir.mkdirs()
+    copyInitialConfigToDataDir
+    unzipConfiguration
     val dirsOpt = s"-v ${dataDir.getAbsolutePath}:/data/teamcity_server/datadir -v ${logsDir.getAbsolutePath}:/opt/teamcity/logs "
    s"""docker run  -d --name $containerName  $dirsOpt -p $externalPort:$internalPort  $imageName""".stripMargin.!
+    Thread.sleep(60000)
   }
 
   def killTeamcityDocker() = {
@@ -40,10 +44,14 @@ trait ITEnv {
   }
 
   def copyInitialConfigToDataDir() : Unit = {
-    val in =  Source.fromResource("tc_initial_data.zip").reader()
+    val in =  getClass.getResourceAsStream("/tc_initial_data.zip")
     val byteArr = IOUtils.toByteArray(in)
-    val confZip = new File(dataDir,"tc_initial_data.zip")
-    FileUtils.writeByteArrayToFile(confZip,byteArr)
 
+    FileUtils.writeByteArrayToFile(confZip,byteArr)
+  }
+
+  def unzipConfiguration(): Unit = {
+    val unzipCmd =  "unzip tc_initial_data.zip -d ."
+    Process(unzipCmd, dataDir).!!
   }
 }

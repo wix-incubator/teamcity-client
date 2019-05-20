@@ -3,7 +3,7 @@ package com.wix.ci.teamcity.client
 case class Property(name : String, value : String, inherited : Boolean)
 case class BaseTemplate(id : String, name : String, href : String, projectName : String, projectId : String)
 case class BaseProject(id : String, name : String, href : String, webUrl : String, description : String,archived : Boolean,parentProjectId : Option[String])
-case class Projects(count : Int, projects : List[BaseProject])
+case class Projects(count : Int, project : List[BaseProject])
 case class BaseBuildType(id : String,
                          name : String,
                          description : String,

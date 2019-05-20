@@ -1,6 +1,6 @@
 package com.wix.ci.teamcity.client.it
 
-import com.wix.ci.teamcity.client.{BaseProject, TeamCityClient}
+import com.wix.ci.teamcity.client.{BaseProject, Projects, TeamCityClient}
 import com.wix.ci.teamcity.client.scalajhttp.HttpClientWrapper
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.BeforeAfterAll
@@ -10,8 +10,8 @@ import scala.util.Try
 
 class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with ITEnv {
   "teamcity client" should{
-    "create project " in new Context{
-      teamcityClient.getProjects must beEqualTo(baseProject)
+    "get projects containing only top level project" in new Context{
+      teamcityClient.getProjects must beEqualTo(Projects(1,List(rootBaseProject)))
     }
   }
 
@@ -38,6 +38,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val password = "admin"
     val httpClient = new HttpClientWrapper(username, password)
     val teamcityClient = new TeamCityClient(httpClient,teamcityBaseUrl)
+    val rootBaseProject = BaseProject("_Root","<Root project>","/httpAuth/app/rest/projects/id:_Root","http://localhost:8111/project.html?projectId=_Root","Contains all other projects",false,None)
 
     val baseProject = BaseProject("projid", "projName","some-href","some-web-url","desc",false,Some("some-parent-proj"))
 
