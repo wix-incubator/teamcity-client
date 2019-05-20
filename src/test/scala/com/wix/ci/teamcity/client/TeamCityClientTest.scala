@@ -59,7 +59,7 @@ class TeamCityClientTest  extends SpecificationWithJUnit with Mockito{
     val teamcityClient = new TeamCityClient(httpClient,baseUrl)
     val projectId = "projid"
     val projectName = "projName"
-    val baseProject = BaseProject(projectId, "projName","some-href","some-web-url","desc",false,Some("some-parent-proj"))
+    val baseProject = BaseProject(projectId, "projName","some-href","some-web-url",Some("desc"),false,Some("some-parent-proj"))
     val mapper = MapperFactory.createMapper()
     val projects = Projects(1,List(baseProject))
     val project = Project(projectId,projectName,"parentProjId1","some-href","some-weburl",Projects(0,List()),baseProject,BuildTypes(0,List()),None)

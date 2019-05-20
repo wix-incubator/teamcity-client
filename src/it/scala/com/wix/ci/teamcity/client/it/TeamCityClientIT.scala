@@ -13,6 +13,11 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     "get projects containing only top level project" in new Context{
       teamcityClient.getProjects must beEqualTo(Projects(1,List(rootBaseProject)))
     }
+
+    "create a new project " in new Context{
+      val createdProj = teamcityClient.createProject(baseProject)
+      createdProj must beEqualTo(baseProject)
+    }
   }
 
 
@@ -38,9 +43,9 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val password = "admin"
     val httpClient = new HttpClientWrapper(username, password)
     val teamcityClient = new TeamCityClient(httpClient,teamcityBaseUrl)
-    val rootBaseProject = BaseProject("_Root","<Root project>","/httpAuth/app/rest/projects/id:_Root","http://localhost:8111/project.html?projectId=_Root","Contains all other projects",false,None)
+    val rootBaseProject = BaseProject("_Root","<Root project>","/httpAuth/app/rest/projects/id:_Root","http://localhost:8111/project.html?projectId=_Root",Some("Contains all other projects"),false,None)
 
-    val baseProject = BaseProject("projid", "projName","some-href","some-web-url","desc",false,Some("some-parent-proj"))
+    val baseProject = BaseProject("projid", "projName","/httpAuth/app/rest/projects/id:projid","http://localhost:8111/project.html?projectId=projid",None,false,Some("_Root"))
 
 
   }

@@ -31,6 +31,7 @@ class HttpClientWrapper(username: String, password: String, timeout : Int = 5000
     var httpReq = Http(url).method(method)
         .header(authHeaderKey,basicAuth)
         .header("Accept","application/json")
+        .header("Content-Type","application/json")
         .timeout(connTimeoutMs = timeout, readTimeoutMs = timeout)
     if(body.isDefined) httpReq = httpReq.postData(body.get)
     val httpResp = httpReq.asString
