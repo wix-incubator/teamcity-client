@@ -1,6 +1,6 @@
 package com.wix.ci.teamcity.client.it
 
-import com.wix.ci.teamcity.client.{BaseProject, Projects, TeamCityClient}
+import com.wix.ci.teamcity.client._
 import com.wix.ci.teamcity.client.scalajhttp.HttpClientWrapper
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.BeforeAfterAll
@@ -14,9 +14,13 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getProjects must beEqualTo(Projects(1,List(rootBaseProject)))
     }
 
-    "create a new project " in new Context{
+    "create a new project get it and delete it" in new Context{
       val createdProj = teamcityClient.createProject(baseProject)
       createdProj must beEqualTo(baseProject)
+      teamcityClient.getProjects.project.contains(baseProject) must beTrue
+      teamcityClient.getProjectById(baseProject.id) must beEqualTo(project)
+      teamcityClient.deleteProject(baseProject.id)
+      teamcityClient.getProjects.project.contains(baseProject) must beFalse
     }
   }
 
@@ -46,7 +50,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val rootBaseProject = BaseProject("_Root","<Root project>","/httpAuth/app/rest/projects/id:_Root","http://localhost:8111/project.html?projectId=_Root",Some("Contains all other projects"),false,None)
 
     val baseProject = BaseProject("projid", "projName","/httpAuth/app/rest/projects/id:projid","http://localhost:8111/project.html?projectId=projid",None,false,Some("_Root"))
-
+    val project = Project(baseProject.id, baseProject.name,baseProject.parentProjectId.get,baseProject.href,baseProject.webUrl,Projects(0,null),rootBaseProject,BuildTypes(0,List()))
 
   }
 }

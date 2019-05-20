@@ -109,7 +109,7 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val baseTemplate = BaseTemplate("tempId", "tempName", "href", projectName, projectId)
   val baseBuildTypes = BaseBuildType("buildId", "buildName", "desc", baseTemplate, projectName, projectId)
   val projects = Projects(1, List(baseProject))
-  val project = Project(projectId, projectName, "parentProjId1", "some-href", "some-weburl", Projects(0, List()), baseProject, buildTypes, None)
+  val project = Project(projectId, projectName, "parentProjId1", "some-href", "some-weburl", Projects(0,List()), baseProject, BuildTypes(0,List()), None)
   val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, "href")
   val vcsRoot = VcsRoot(vcsRootName, "status", "lastChecked", baseProject, properties)
   val vcsRoots = VcsRoots(1, Seq(baseVcsRoot))

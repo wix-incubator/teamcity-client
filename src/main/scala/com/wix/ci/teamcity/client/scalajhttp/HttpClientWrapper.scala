@@ -31,6 +31,8 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
   }
 
 
+
+
   private def execute(url: String, method: String, body: Option[String], contentType: String = "application/json"): String = {
     var httpReq = Http(url).method(method)
       .header(authHeaderKey, basicAuth)
@@ -44,6 +46,6 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
   }
 
   private def checkHttpStatusCode(code: Int) = {
-    if (code != 200 && code != 201) throw new RuntimeException(s"Error from server status code ${code}")
+    if (code != 200 && code != 201 && code != 204) throw new RuntimeException(s"Error from server status code ${code}")
   }
 }
