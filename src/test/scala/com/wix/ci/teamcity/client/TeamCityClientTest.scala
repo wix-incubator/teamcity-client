@@ -96,17 +96,19 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
 //      teamcityClient.getVcsRoots() must beEqualTo(Seq(baseVcsRoot))
 //    }
 //  }
-}
-
 
 //  "xxx" should{
 //    "xxxx" in{
 //      val wrapper = new HttpClientWrapper("admin","admin")
-//      val x = wrapper.executeGet("http://localhost:8111/httpAuth/app/rest/projects")
+//      val x = wrapper.executeGet("http://jvm-tc.dev.wixpress.com/httpAuth/app/rest/vcs-roots/id:adi_AdiAdiVcsRoot")
 //      println(x)
 //      ok
 //    }
 //  }
+}
+
+
+
 
 trait Context extends Scope with Mockito with MustThrownExpectations {
 
@@ -127,7 +129,7 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val projects = Projects(1, List(baseProject))
   val project = Project(projectId, projectName, "parentProjId1", "some-href", "some-weburl", Projects(0,List()), baseProject, BuildTypes(0,List()), None)
   val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, "href")
-  val vcsRoot = VcsRoot(vcsRootName, "status", "lastChecked", baseProject, properties)
+  val vcsRoot = VcsRoot("vcsRootId", vcsRootName,  "vcsName", "Href", Some("status"), Some("lastChecked"), baseProject, properties)
   val vcsRoots = VcsRoots(1, Seq(baseVcsRoot))
 
   val createProjectUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"

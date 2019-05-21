@@ -36,6 +36,13 @@ case class Project(id: String,
 
 case class BaseVcsRoot(id: String, name: String, href: String)
 
-case class VcsRoot(vcsName: String, status: String, lastChecked: String, project: BaseProject, properties: Properties)
+case class VcsRoot(id: String,
+                   name: String,
+                   vcsName: String,
+                   href: String,
+                   status: Option[String],
+                   lastChecked: Option[String],
+                   project: BaseProject,
+                   properties: Properties)
 
 case class VcsRoots(count: Int, vcsRoots: Seq[BaseVcsRoot])

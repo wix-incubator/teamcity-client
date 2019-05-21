@@ -68,6 +68,12 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BaseBuildType])
   }
 
+  def createVcsRoot(vcsRoot : VcsRoot) : VcsRoot = {
+    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots"
+    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRoot))
+    mapper.readValue(json, classOf[VcsRoot])
+  }
+
   def getVcsRoots(): Seq[BaseVcsRoot] = {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots"
     val json = httpClient.executeGet(url)

@@ -42,11 +42,11 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
     if(body.isDefined && method=="POST") httpReq = httpReq.postData(body.get)
     if(body.isDefined && method=="PUT")httpReq = httpReq.put(body.get)
     val httpResp = httpReq.asString
-    checkHttpStatusCode(httpResp.code)
+    checkHttpStatusCode(httpResp.code,httpResp.body)
     httpResp.body
   }
 
-  private def checkHttpStatusCode(code: Int) = {
-    if (code != 200 && code != 201 && code != 204) throw new RuntimeException(s"Error from server status code ${code}")
+  private def checkHttpStatusCode(code: Int, msg : String) = {
+    if (code != 200 && code != 201 && code != 204) throw new RuntimeException(s"Error from server status code $code $msg")
   }
 }

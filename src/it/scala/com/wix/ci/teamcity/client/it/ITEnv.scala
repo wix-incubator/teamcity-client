@@ -35,7 +35,7 @@ trait ITEnv {
     unzipConfiguration
     val dirsOpt = s"-v ${dataDir.getAbsolutePath}:/data/teamcity_server/datadir -v ${logsDir.getAbsolutePath}:/opt/teamcity/logs "
    s"""docker run  -d --name $containerName  $dirsOpt -p $externalPort:$internalPort  $imageName""".stripMargin.!
-    Thread.sleep(60000)
+    Thread.sleep(60000)//give teamcity time to load
   }
 
   def killTeamcityDocker() = {
