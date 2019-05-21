@@ -30,7 +30,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def setProjectName(projectId: String, newProjectName: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${projectId}/name"
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/name"
     httpClient.executePutPlainText(url, newProjectName)
   }
 
@@ -41,12 +41,18 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def deleteProject(projectId: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${projectId}"
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId"
     httpClient.executeDelete(url)
   }
 
+  def getProjectByName(projectName: String): Project = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/name:$projectName"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[Project])
+  }
+
   def getProjectById(projectId: String): Project = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${projectId}"
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Project])
   }
@@ -59,13 +65,13 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def getBuildTypesByVcsRootId(vcsRootId: String): BuildTypes = {
-    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes?locator=vcsRoot:(id:${vcsRootId})"
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes?locator=vcsRoot:(id:$vcsRootId)"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[BuildTypes])
   }
 
   def createBuildType(baseBuildType: BaseBuildType): BaseBuildType = {
-    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseBuildType.projectId}/buildTypes"
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${baseBuildType.projectId}/buildTypes"
     val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(baseBuildType))
     mapper.readValue(json, classOf[BaseBuildType])
   }

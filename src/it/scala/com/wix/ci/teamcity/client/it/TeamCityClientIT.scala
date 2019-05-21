@@ -20,6 +20,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       val createdProj = teamcityClient.createProject(baseProject)
       createdProj must beEqualTo(baseProject.copy(description = None)) //project settings are not returned here
       teamcityClient.getProjects.project.contains(baseProject) must beTrue
+      teamcityClient.getProjectByName(baseProject.name) must beEqualTo(project)
       teamcityClient.getProjectById(baseProject.id) must beEqualTo(project)
       teamcityClient.setProjectName(baseProject.id, newProjectName)
       teamcityClient.getProjectById(baseProject.id) must beEqualTo(project.copy(name = newProjectName))
