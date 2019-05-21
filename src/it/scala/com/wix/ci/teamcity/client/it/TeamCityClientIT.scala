@@ -53,9 +53,10 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val teamcityClient = new TeamCityClient(httpClient, teamcityBaseUrl)
     val rootBaseProject = BaseProject("_Root", "<Root project>", "/httpAuth/app/rest/projects/id:_Root", "http://localhost:8111/project.html?projectId=_Root", Some("Contains all other projects"), false, None)
 
+    val property = Property("ignoreKnownHosts", "true")
     val baseProject = BaseProject("projid", "projName", "/httpAuth/app/rest/projects/id:projid", "http://localhost:8111/project.html?projectId=projid", Some("projDesc"), false, Some("_Root"))
     val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href, baseProject.webUrl, Projects(0, null), rootBaseProject, BuildTypes(0, List()))
-    val vcsRoot = VcsRoot("somevcsroot", "some vcs root", "jetbrains.git", "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, new Properties(Seq()))
+    val vcsRoot = VcsRoot("somevcsroot", "some vcs root", "jetbrains.git", "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(Seq(property)))
     val baseVcsRoot = BaseVcsRoot("somevcsroot", "some vcs root", "/httpAuth/app/rest/vcs-roots/id:somevcsroot")
     val vcsRoots = VcsRoots(1, "/httpAuth/app/rest/vcs-roots", List(baseVcsRoot))
   }
