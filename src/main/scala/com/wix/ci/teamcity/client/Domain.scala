@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 case class Property(name: String, value: String)
 
-case class Properties(properties: Seq[Property])
+case class Properties(property: List[Property])
 
 case class BaseTemplate(id: String, name: String, href: String, projectName: String, projectId: String)
 

@@ -120,7 +120,7 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val vcsRootId = "vcsRootId"
   val vcsRootName = "vcsRootName"
   val property = Property("propName", "value")
-  val properties = Properties(Seq(property))
+  val properties = Properties(List(property))
   val baseProject = BaseProject(projectId, "projName","some-href","some-web-url",Some("desc"),false,Some("some-parent-proj"))
   val mapper = MapperFactory.createMapper()
   val buildTypes = BuildTypes(0, List())

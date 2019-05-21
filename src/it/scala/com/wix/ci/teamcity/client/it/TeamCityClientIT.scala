@@ -31,9 +31,9 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       val baseVcsRes = teamcityClient.createVcsRoot(vcsRoot)
       baseVcsRes must beEqualTo(baseVcsRoot)
       teamcityClient.getVcsRoots() must beEqualTo(vcsRoots)
-      //teamcityClient.getVcsRootById(vcsRoot.id) must beEqualTo(vcsRoot)
+      teamcityClient.getVcsRootById(vcsRoot.id) must beEqualTo(vcsRoot)
       teamcityClient.deleteVcsRoot(vcsRoot.id)
-      teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(0,"/httpAuth/app/rest/vcs-roots",None))
+      teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(0, "/httpAuth/app/rest/vcs-roots", None))
     }
 
 
@@ -69,15 +69,15 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     val property = Property("ignoreKnownHosts", "true")
     val baseProject = BaseProject(projectId, projectName, "/httpAuth/app/rest/projects/id:projid", "http://localhost:8111/project.html?projectId=projid", Some("projDesc"), false, Some("_Root"))
-    val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href, baseProject.webUrl, Projects(0, null), rootBaseProject, BuildTypes(0, List()),templates=Some(Templates(0,None)))
-    val vcsRoot = VcsRoot("somevcsroot", "some vcs root", "jetbrains.git", "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(Seq(property)))
+    val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href, baseProject.webUrl, Projects(0, null), rootBaseProject, BuildTypes(0, List()), templates = Some(Templates(0, None)))
+    val vcsRoot = VcsRoot("somevcsroot", "some vcs root", "jetbrains.git", "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(List(property)))
     val baseVcsRoot = BaseVcsRoot("somevcsroot", "some vcs root", "/httpAuth/app/rest/vcs-roots/id:somevcsroot")
     val vcsRoots = VcsRoots(1, "/httpAuth/app/rest/vcs-roots", Some(List(baseVcsRoot)))
 
 
-    val baseBuildType = BaseBuildType("myBuildTypeId","my build type",Some("some desc"),None,projectName, projectId,false)
-    val baseBuildType2 = BaseBuildType("myBuildTypeId2","my build type2",Some("some desc"),None,projectName, projectId,false)
-    val buildTypes = BuildTypes(2,  List(baseBuildType.copy(description = None),baseBuildType2.copy(description = None)))
+    val baseBuildType = BaseBuildType("myBuildTypeId", "my build type", Some("some desc"), None, projectName, projectId, false)
+    val baseBuildType2 = BaseBuildType("myBuildTypeId2", "my build type2", Some("some desc"), None, projectName, projectId, false)
+    val buildTypes = BuildTypes(2, List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
   }
 
 }
