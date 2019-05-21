@@ -53,3 +53,5 @@ case class VcsRoots(count: Int, href : String, @JsonProperty("vcs-root")vcsRoot:
 
 case class Templates(count : Int,  template : Option[List[BaseTemplate]])
 
+case class VcsRootEntry(id : String, checkoutRules : String, baseVcsRoot : BaseVcsRoot)
+

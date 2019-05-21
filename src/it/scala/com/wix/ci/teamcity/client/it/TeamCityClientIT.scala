@@ -42,6 +42,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.createBuildType(baseBuildType) must beEqualTo(baseBuildType.copy(description = None))
       teamcityClient.createBuildType(baseBuildType2) must beEqualTo(baseBuildType2.copy(description = None))
       teamcityClient.getBuildTypes() must beEqualTo(buildTypes)
+
     }
   }
 
