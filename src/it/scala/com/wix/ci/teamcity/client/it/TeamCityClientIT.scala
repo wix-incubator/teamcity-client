@@ -44,7 +44,19 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.createBuildType(baseBuildType) must beEqualTo(baseBuildType.copy(description = None))
       teamcityClient.createBuildType(baseBuildType2) must beEqualTo(baseBuildType2.copy(description = None))
       teamcityClient.getBuildTypes() must beEqualTo(buildTypes)
+      teamcityClient.deleteBuildType(baseBuildType.id)
+      teamcityClient.deleteBuildType(baseBuildType2.id)
+      teamcityClient.getBuildTypes() must beEqualTo(BuildTypes(0,List()))
+      teamcityClient.deleteProject(baseProject.id)
 
+    }
+
+    "set build type root entries" in new Context{
+      teamcityClient.createProject(baseProject)
+      teamcityClient.createBuildType(baseBuildType)
+      teamcityClient.createVcsRoot(vcsRoot)
+      teamcityClient.createBuildTypeVcsRootEntries(baseBuildType.id,vcsRootEntries)
+      teamcityClient.setBuildTypeVcsRootEntry(baseBuildType.id,vcsRootEntries.vcsRootEntry.get.head) must beEqualTo(vcsRootEntries.vcsRootEntry.get.head)
     }
   }
 
@@ -80,6 +92,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val baseBuildType = BaseBuildType("myBuildTypeId", "my build type", Some("some desc"), None, projectName, projectId, false)
     val baseBuildType2 = BaseBuildType("myBuildTypeId2", "my build type2", Some("some desc"), None, projectName, projectId, false)
     val buildTypes = BuildTypes(2, List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
+    val vcsRootEntries = VcsRootEntries(1,Some(List(VcsRootEntry(baseVcsRoot.id,"some checkout rules",baseVcsRoot))))
   }
 
 }

@@ -30,6 +30,10 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
     execute(url, "DELETE", None)
   }
 
+  override def executePut(url : String, body : String) : String = {
+    execute(url, "PUT", Some(body))
+  }
+
 
 
 

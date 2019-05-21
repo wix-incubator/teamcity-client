@@ -8,4 +8,6 @@ trait HttpClient {
   def executePutPlainText(url: String, body: String): String
 
   def executeDelete(url: String): String
+
+  def executePut(url : String, body : String) : String
 }

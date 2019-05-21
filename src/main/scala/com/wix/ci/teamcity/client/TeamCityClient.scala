@@ -76,6 +76,11 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BaseBuildType])
   }
 
+  def deleteBuildType(buildTypeId : String) : Unit = {
+    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId"
+    httpClient.executeDelete(url)
+  }
+
   def createVcsRoot(vcsRoot: VcsRoot): BaseVcsRoot = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots"
     val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRoot))
@@ -119,8 +124,21 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
+  def createBuildTypeVcsRootEntries(buildTypeId : String,vcsRootEntries : VcsRootEntries) : Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/vcs-root-entries"
+    httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntries.vcsRootEntry.get.head))
+  }
+
+  def setBuildTypeVcsRootEntry(buildTypeId : String,vcsRootEntry : VcsRootEntry) : VcsRootEntry = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/vcs-root-entries"
+    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntry))
+    mapper.readValue(json, classOf[VcsRootEntry])
+  }
+
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
+
+
 
 
   def getBaseUrl(): String = baseUrl
