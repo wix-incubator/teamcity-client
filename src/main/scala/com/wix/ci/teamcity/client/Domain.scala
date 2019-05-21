@@ -2,7 +2,7 @@ package com.wix.ci.teamcity.client
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-case class Property(name: String, value: String, inherited: Boolean)
+case class Property(name: String, value: String)
 
 case class Properties(properties: Seq[Property])
 
