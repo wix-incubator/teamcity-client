@@ -74,10 +74,10 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[VcsRoot])
   }
 
-  def getVcsRoots(): Seq[BaseVcsRoot] = {
+  def getVcsRoots(): VcsRoots = {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots"
     val json = httpClient.executeGet(url)
-    mapper.readValue(json, classOf[VcsRoots]).vcsRoots
+    mapper.readValue(json, classOf[VcsRoots])
   }
 
   def getVcsRootById(vcsRootId: String): VcsRoot = {

@@ -1,5 +1,7 @@
 package com.wix.ci.teamcity.client
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 case class Property(name: String, value: String, inherited: Boolean)
 
 case class Properties(properties: Seq[Property])
@@ -45,4 +47,4 @@ case class VcsRoot(id: String,
                    project: BaseProject,
                    properties: Properties)
 
-case class VcsRoots(count: Int, vcsRoots: Seq[BaseVcsRoot])
+case class VcsRoots(count: Int, href : String, @JsonProperty("vcs-root")vcsRoot: List[BaseVcsRoot])

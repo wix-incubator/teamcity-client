@@ -75,7 +75,7 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
 
   "get vcs roots" should {
     "return a list of vcs roots" in new Context {
-      teamcityClient.getVcsRoots() must beEqualTo(Seq(baseVcsRoot))
+      teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(1,"hrf",List(baseVcsRoot)))
     }
   }
 
@@ -130,7 +130,7 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val project = Project(projectId, projectName, "parentProjId1", "some-href", "some-weburl", Projects(0,List()), baseProject, BuildTypes(0,List()), None)
   val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, "href")
   val vcsRoot = VcsRoot("vcsRootId", vcsRootName,  "vcsName", "Href", Some("status"), Some("lastChecked"), baseProject, properties)
-  val vcsRoots = VcsRoots(1, Seq(baseVcsRoot))
+  val vcsRoots = VcsRoots(1,"hrf", List(baseVcsRoot))
 
   val createProjectUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
   val getProjectsUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
