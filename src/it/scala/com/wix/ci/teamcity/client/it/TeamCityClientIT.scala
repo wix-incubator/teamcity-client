@@ -27,7 +27,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getProjects.project.contains(baseProject) must beFalse
     }
 
-    "create vcs root retrieve it " in new Context {
+    "create vcs root retrieve it and delete it" in new Context {
       val baseVcsRes = teamcityClient.createVcsRoot(vcsRoot)
       baseVcsRes must beEqualTo(baseVcsRoot)
       teamcityClient.getVcsRoots() must beEqualTo(vcsRoots)
@@ -37,7 +37,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     }
 
 
-    "create build type2 retrieve them and delete" in new Context {
+    "create build types retrieve them and delete" in new Context {
       val createdProj = teamcityClient.createProject(baseProject)
       teamcityClient.createBuildType(baseBuildType) must beEqualTo(baseBuildType.copy(description = None))
       teamcityClient.createBuildType(baseBuildType2) must beEqualTo(baseBuildType2.copy(description = None))
