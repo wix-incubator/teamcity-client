@@ -14,10 +14,11 @@ case class Projects(count: Int, project: List[BaseProject])
 
 case class BaseBuildType(id: String,
                          name: String,
-                         description: String,
-                         template: BaseTemplate,
+                         description: Option[String],
+                         template: Option[BaseTemplate],
                          projectName: String,
-                         projectId: String)
+                         projectId: String,
+                         paused : Boolean)
 
 case class BuildTypes(count: Int, buildType: List[BaseBuildType])
 
@@ -33,7 +34,8 @@ case class Project(id: String,
                    projects: Projects,
                    parentProject: BaseProject,
                    buildTypes: BuildTypes,
-                   defaultTemplate: Option[Template] = None)
+                   defaultTemplate: Option[Template] = None,
+                   templates : Option[Templates] = None)
 
 
 case class BaseVcsRoot(id: String, name: String, href: String)
@@ -48,3 +50,6 @@ case class VcsRoot(id: String,
                    properties: Properties)
 
 case class VcsRoots(count: Int, href : String, @JsonProperty("vcs-root")vcsRoot:Option[ List[BaseVcsRoot]])
+
+case class Templates(count : Int,  template : Option[List[BaseTemplate]])
+

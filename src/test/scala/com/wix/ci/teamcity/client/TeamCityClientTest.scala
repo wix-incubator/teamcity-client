@@ -69,7 +69,7 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
 
   "create build type" should {
     "return base build type" in new Context {
-      teamcityClient.createBuildType(baseBuildTypes, projectId) must beEqualTo(baseBuildTypes)
+      teamcityClient.createBuildType(baseBuildTypes) must beEqualTo(baseBuildTypes)
     }
   }
 
@@ -125,7 +125,7 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val mapper = MapperFactory.createMapper()
   val buildTypes = BuildTypes(0, List())
   val baseTemplate = BaseTemplate("tempId", "tempName", "href", projectName, projectId)
-  val baseBuildTypes = BaseBuildType("buildId", "buildName", "desc", baseTemplate, projectName, projectId)
+  val baseBuildTypes = BaseBuildType("buildId", "buildName", Some("desc"), Some(baseTemplate), projectName, projectId,false)
   val projects = Projects(1, List(baseProject))
   val project = Project(projectId, projectName, "parentProjId1", "some-href", "some-weburl", Projects(0,List()), baseProject, BuildTypes(0,List()), None)
   val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, "href")

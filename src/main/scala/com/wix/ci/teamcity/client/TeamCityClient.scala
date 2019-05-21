@@ -5,7 +5,8 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   val mapper = MapperFactory.createMapper()
-
+  val rootProjectId = "_Root"
+  val rootProjectName = "<Root project>"
 
   def createProject(project: BaseProject): BaseProject = {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
@@ -62,8 +63,8 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BuildTypes])
   }
 
-  def createBuildType(baseBuildType: BaseBuildType, projectId: String): BaseBuildType = {
-    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${projectId}/buildTypes"
+  def createBuildType(baseBuildType: BaseBuildType): BaseBuildType = {
+    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseBuildType.projectId}/buildTypes"
     val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(baseBuildType))
     mapper.readValue(json, classOf[BaseBuildType])
   }
@@ -91,6 +92,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId"
     httpClient.executeDelete(url)
   }
+
 
 
   def getBaseUrl(): String = baseUrl
