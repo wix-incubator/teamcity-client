@@ -47,4 +47,4 @@ case class VcsRoot(id: String,
                    project: BaseProject,
                    properties: Properties)
 
-case class VcsRoots(count: Int, href : String, @JsonProperty("vcs-root")vcsRoot: List[BaseVcsRoot])
+case class VcsRoots(count: Int, href : String, @JsonProperty("vcs-root")vcsRoot:Option[ List[BaseVcsRoot]])

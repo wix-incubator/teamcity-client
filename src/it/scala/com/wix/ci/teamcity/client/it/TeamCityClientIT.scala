@@ -16,7 +16,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getProjects must beEqualTo(Projects(1, List(rootBaseProject)))
     }
 
-    "create a new project get it and delete it" in new Context {
+    "create a new project retrieve it and delete it" in new Context {
       val createdProj = teamcityClient.createProject(baseProject)
       createdProj must beEqualTo(baseProject.copy(description = None)) //project settings are not returned here
       teamcityClient.getProjects.project.contains(baseProject) must beTrue
@@ -27,10 +27,13 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getProjects.project.contains(baseProject) must beFalse
     }
 
-    "create vcs root " in new Context {
-      val res = teamcityClient.createVcsRoot(vcsRoot)
-      res must beEqualTo(baseVcsRoot)
+    "create vcs root retrieve it " in new Context {
+      val baseVcsRes = teamcityClient.createVcsRoot(vcsRoot)
+      baseVcsRes must beEqualTo(baseVcsRoot)
       teamcityClient.getVcsRoots() must beEqualTo(vcsRoots)
+      //teamcityClient.getVcsRootById(vcsRoot.id) must beEqualTo(vcsRoot)
+      teamcityClient.deleteVcsRoot(vcsRoot.id)
+      teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(0,"/httpAuth/app/rest/vcs-roots",None))
     }
   }
 
@@ -58,7 +61,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href, baseProject.webUrl, Projects(0, null), rootBaseProject, BuildTypes(0, List()))
     val vcsRoot = VcsRoot("somevcsroot", "some vcs root", "jetbrains.git", "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(Seq(property)))
     val baseVcsRoot = BaseVcsRoot("somevcsroot", "some vcs root", "/httpAuth/app/rest/vcs-roots/id:somevcsroot")
-    val vcsRoots = VcsRoots(1, "/httpAuth/app/rest/vcs-roots", List(baseVcsRoot))
+    val vcsRoots = VcsRoots(1, "/httpAuth/app/rest/vcs-roots", Some(List(baseVcsRoot)))
   }
 
 }

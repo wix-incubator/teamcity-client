@@ -87,6 +87,12 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
 
+  def deleteVcsRoot(vcsRootId : String) : Unit = {
+    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId"
+    httpClient.executeDelete(url)
+  }
+
+
   def getBaseUrl(): String = baseUrl
 
 }
