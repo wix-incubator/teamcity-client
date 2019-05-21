@@ -85,17 +85,11 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
     }
   }
 
-//  "get vcs root by name" should {
-//    "return vcs root" in new Context {
-//      teamcityClient.getVcsRoots() must beEqualTo(Seq(baseVcsRoot))
-//    }
-//  }
-//
-//  "get vcs root by vcs url" should {
-//    "return vcs root" in new Context {
-//      teamcityClient.getVcsRoots() must beEqualTo(Seq(baseVcsRoot))
-//    }
-//  }
+  "get vcs root by name" should {
+    "return vcs root" in new Context {
+      teamcityClient.getVcsRootByName(vcsRootName) must beEqualTo(vcsRoot)
+    }
+  }
 
 //  "xxx" should{
 //    "xxxx" in{
@@ -119,6 +113,7 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val projectName = "projName"
   val vcsRootId = "vcsRootId"
   val vcsRootName = "vcsRootName"
+  val vcsRootUrl = "href"
   val property = Property("propName", "value")
   val properties = Properties(List(property))
   val baseProject = BaseProject(projectId, "projName","some-href","some-web-url",Some("desc"),false,Some("some-parent-proj"))
@@ -128,7 +123,7 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val baseBuildTypes = BaseBuildType("buildId", "buildName", Some("desc"), Some(baseTemplate), projectName, projectId,false)
   val projects = Projects(1, List(baseProject))
   val project = Project(projectId, projectName, "parentProjId1", "some-href", "some-weburl", Projects(0,List()), baseProject, BuildTypes(0,List()), None)
-  val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, "href")
+  val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, vcsRootUrl)
   val vcsRoot = VcsRoot("vcsRootId", vcsRootName,  "vcsName", "Href", Some("status"), Some("lastChecked"), baseProject, properties)
   val vcsRoots = VcsRoots(1,"hrf", Some(List(baseVcsRoot)))
 
@@ -144,6 +139,8 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val getBuildTypesByRootId = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes?locator=vcsRoot:(id:${vcsRootId})"
   val getVcsRootsUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots"
   val getVcsRootsByIdUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId"
+  val getVcsRootsByNameUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots/name:$vcsRootName"
+  val getVcsRootsByUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots/?locator=property:(name:url,value:$vcsRootUrl"
 
 
   httpClient.executePost(createProjectUrl, writeObjectAsJson(baseProject)) returns writeObjectAsJson(baseProject)
@@ -154,6 +151,8 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   httpClient.executePost(createBuildTypeUrl, writeObjectAsJson(baseBuildTypes)) returns writeObjectAsJson(baseBuildTypes)
   httpClient.executeGet(getVcsRootsUrl) returns writeObjectAsJson(vcsRoots)
   httpClient.executeGet(getVcsRootsByIdUrl) returns writeObjectAsJson(vcsRoot)
+  httpClient.executeGet(getVcsRootsByNameUrl) returns writeObjectAsJson(vcsRoot)
+  httpClient.executeGet(getVcsRootsByUrl) returns writeObjectAsJson(vcsRoot)
 
   def writeObjectAsJson(obj: AnyRef): String = {
     mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj)

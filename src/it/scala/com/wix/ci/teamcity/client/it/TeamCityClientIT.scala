@@ -32,6 +32,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       baseVcsRes must beEqualTo(baseVcsRoot)
       teamcityClient.getVcsRoots() must beEqualTo(vcsRoots)
       teamcityClient.getVcsRootById(vcsRoot.id) must beEqualTo(vcsRoot)
+      teamcityClient.getVcsRootByName(vcsRoot.name) must beEqualTo(vcsRoot)
       teamcityClient.deleteVcsRoot(vcsRoot.id)
       teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(0, "/httpAuth/app/rest/vcs-roots", None))
     }

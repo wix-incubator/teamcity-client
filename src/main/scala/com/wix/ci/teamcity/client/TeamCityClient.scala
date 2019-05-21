@@ -1,5 +1,7 @@
 package com.wix.ci.teamcity.client
 
+import java.net.URLEncoder
+
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
@@ -94,10 +96,25 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[VcsRoot])
   }
 
+  def getVcsRootByName(vcsRootName: String): VcsRoot = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/name:${escape(vcsRootName)}"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[VcsRoot])
+  }
+
+  def getVcsRootByUrl(vcsUrl: String): VcsRoot = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/?locator=property:(name:url,value:$vcsUrl)"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[VcsRoot])
+  }
+
   def deleteVcsRoot(vcsRootId: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId"
     httpClient.executeDelete(url)
   }
+
+  private def escape(param: String): String =
+    URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
 
 
   def getBaseUrl(): String = baseUrl
