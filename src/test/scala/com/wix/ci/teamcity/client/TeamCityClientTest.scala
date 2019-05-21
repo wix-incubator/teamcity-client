@@ -10,6 +10,8 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
     "call execute post and pass base project in body" in new Context {
       teamcityClient.createProject(baseProject)
       there was one(httpClient).executePost(createProjectUrl, writeObjectAsJson(baseProject))
+      there was one(httpClient).executePutPlainText(setProjectArchivedUrl, baseProject.archived.toString)
+      there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get)
     }
   }
 
@@ -35,7 +37,21 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
   "set project name" should {
     "call set project name endpoint" in new Context {
       teamcityClient.setProjectName(projectId, projectName)
-      there was one(httpClient).executePutPlainText(setProjectName, projectName)
+      there was one(httpClient).executePutPlainText(setProjectNameUrl, projectName)
+    }
+  }
+
+  "set project description" should {
+    "call set project description endpoint" in new Context {
+      teamcityClient.setProjectDescription(projectId, baseProject.description.get)
+      there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get)
+    }
+  }
+
+  "set project archived" should{
+    "call the set project archived endpint" in new Context{
+      teamcityClient.setProjectArchived(projectId,true)
+      there was one(httpClient).executePutPlainText(setProjectArchivedUrl,true.toString)
     }
   }
 
@@ -59,7 +75,7 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
 
   "get vcs roots" should {
     "return a list of vcs roots" in new Context {
-      teamcityClient.getVcsRoot() must beEqualTo(Seq(baseVcsRoot))
+      teamcityClient.getVcsRoots() must beEqualTo(Seq(baseVcsRoot))
     }
   }
 
@@ -71,13 +87,13 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
 
 //  "get vcs root by name" should {
 //    "return vcs root" in new Context {
-//      teamcityClient.getVcsRoot() must beEqualTo(Seq(baseVcsRoot))
+//      teamcityClient.getVcsRoots() must beEqualTo(Seq(baseVcsRoot))
 //    }
 //  }
 //
 //  "get vcs root by vcs url" should {
 //    "return vcs root" in new Context {
-//      teamcityClient.getVcsRoot() must beEqualTo(Seq(baseVcsRoot))
+//      teamcityClient.getVcsRoots() must beEqualTo(Seq(baseVcsRoot))
 //    }
 //  }
 }
@@ -116,7 +132,9 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
 
   val createProjectUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
   val getProjectsUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
-  val setProjectName = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}/name"
+  val setProjectNameUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}/name"
+  val setProjectDescriptionUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}/description"
+  val setProjectArchivedUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}/archived"
   val getProjectByIdUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}"
   val deleteProjectUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}"
   val createBuildTypeUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}/buildTypes"

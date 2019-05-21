@@ -12,12 +12,23 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     val projectJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(project)
     val json = httpClient.executePost(url, projectJson)
     if(project.description.isDefined) setProjectDescription(project.id,project.description.get)
+    setProjectArchived(project.id,project.archived)
     mapper.readValue(json, classOf[BaseProject])
   }
 
-  def setProjectDescription(projectId : String,desc: String) = {
+  def setProjectDescription(projectId : String,desc: String) : Unit = {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:$projectId/description"
     httpClient.executePutPlainText(url,desc)
+  }
+
+  def setProjectArchived(projectId : String, archived : Boolean) : Unit = {
+    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:$projectId/archived"
+    httpClient.executePutPlainText(url,archived.toString)
+  }
+
+  def setProjectName(projectId: String, newProjectName: String): Unit = {
+    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${projectId}/name"
+    httpClient.executePutPlainText(url, newProjectName)
   }
 
   def getProjects: Projects = {
@@ -37,10 +48,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Project])
   }
 
-  def setProjectName(projectId: String, newProjectName: String): Unit = {
-    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${projectId}/name"
-    httpClient.executePutPlainText(url, newProjectName)
-  }
+
 
   def getBuildTypes(): BuildTypes = {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes"
@@ -60,7 +68,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BaseBuildType])
   }
 
-  def getVcsRoot(): Seq[BaseVcsRoot] = {
+  def getVcsRoots(): Seq[BaseVcsRoot] = {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[VcsRoots]).vcsRoots
