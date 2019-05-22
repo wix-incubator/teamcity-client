@@ -176,6 +176,23 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
+  def createBuildStep(buildTypeId : String, step : Step) : Step = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps"
+    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(step))
+    mapper.readValue(json, classOf[Step])
+  }
+
+  def getBuildSteps(buildTypeId : String) : Steps = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[Steps])
+  }
+
+  def deleteBuildStep(buildTypeId : String,stepId : String) : Unit ={
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps/$stepId"
+    httpClient.executeDelete(url)
+  }
+
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
 

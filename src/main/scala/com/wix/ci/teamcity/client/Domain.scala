@@ -69,3 +69,7 @@ case class TeamCityServerDetails(buildNumber : String,
 case class SnapshotDependency(id : String ,`type` : String, properties : Properties, @JsonProperty("source-buildType")sourceBuildType : BaseBuildType)
 
 case class SnapshotDependencies(count : Int, @JsonProperty ("snapshot-dependency") snapshotDependency : Option[List[SnapshotDependency]])
+
+case class Step(id : String, name : String, `type` : String, properties : Properties)
+
+case class Steps(count : Int , step : Option[List[Step]])
