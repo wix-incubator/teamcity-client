@@ -159,6 +159,23 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
+  def createSnapshotDependency(buildTypeId : String, dependency : SnapshotDependency) : SnapshotDependency = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies"
+    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(dependency))
+    mapper.readValue(json, classOf[SnapshotDependency])
+  }
+
+  def getSnapShotDependencies(buildTypeId : String) : SnapshotDependencies = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[SnapshotDependencies])
+  }
+
+  def deleteSnapshotDependency(buildTypeId : String, snapshotDependencyId : String) : Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies/$snapshotDependencyId"
+    httpClient.executeDelete(url)
+  }
+
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
 

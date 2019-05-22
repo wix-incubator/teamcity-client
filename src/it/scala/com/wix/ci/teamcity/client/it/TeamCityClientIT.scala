@@ -57,6 +57,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.createVcsRoot(vcsRoot)
       teamcityClient.createBuildTypeVcsRootEntries(baseBuildType.id,vcsRootEntries)
       teamcityClient.setBuildTypeVcsRootEntry(baseBuildType.id,vcsRootEntries.vcsRootEntry.get.head) must beEqualTo(vcsRootEntries.vcsRootEntry.get.head)
+      teamcityClient.deleteBuildType(baseBuildType.id)
+      teamcityClient.deleteProject(baseProject.id)
     }
 
     "creates template retrieve it" in new Context{
@@ -69,6 +71,17 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     "get team city server details" in new Context{
       teamcityClient.getTeamCityServerDetails.copy(currentTime = "",startTime = "") must beEqualTo(teamCityServerDetails)
+    }
+
+    "create snapshot dependency" in new Context{
+      teamcityClient.createProject(baseProject)
+      teamcityClient.createBuildType(baseBuildType)
+      teamcityClient.createBuildType(baseBuildType2)
+
+      teamcityClient.createSnapshotDependency(baseBuildType.id,dependency) must beEqualTo(dependencyWithDefaultProps)
+      teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(snapshotDependencies)
+      teamcityClient.deleteSnapshotDependency(baseBuildType.id,dependencyWithDefaultProps.id)
+      teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(SnapshotDependencies(0,None))
     }
   }
 
@@ -112,7 +125,16 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val template = Template("template1","some template","/httpAuth/app/rest/buildTypes/id:template1",rootProjectId,rootProjectName,rootBaseProject,false,true)
     val templates = Templates(1,Some(List(baseTemplate)))
     val teamCityServerDetails = new TeamCityServerDetails("58744","20181218T000000+0000","2018.1.5 (build 58744)",2018,1,"","")
+    val dependency = SnapshotDependency("not-important","snapshot_dependency",Properties(List()),baseBuildType2)
 
+    val defaultCreatedDependencyProps = Properties(List(Property("run-build-if-dependency-failed","MAKE_FAILED_TO_START"),
+      Property("run-build-if-dependency-failed-to-start","MAKE_FAILED_TO_START"),
+      Property("run-build-on-the-same-agent","false"),
+      Property("take-started-build-with-same-revisions","false"),
+      Property("take-successful-builds-only","false")))
+    val dependencyWithDefaultProps = dependency.copy(properties = defaultCreatedDependencyProps,id=baseBuildType2.id,sourceBuildType = baseBuildType2.copy(description = None))
+
+    val snapshotDependencies = SnapshotDependencies(1, Some(List(dependencyWithDefaultProps)))
   }
 
 }
