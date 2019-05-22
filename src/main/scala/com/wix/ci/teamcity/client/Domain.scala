@@ -57,5 +57,15 @@ case class VcsRootEntry(id : String, @JsonProperty("checkout-rules")checkoutRule
 
 case class VcsRootEntries(count : Int, vcsRootEntry : Option[List[VcsRootEntry]])
 
+case class TeamCityServerDetails(buildNumber : String,
+                                 buildDate : String,
+                                 version : String,
+                                 versionMajor : Int,
+                                 versionMinor : Int,
+                                 currentTime : String,
+                                 startTime : String)
+
+
+
 
 

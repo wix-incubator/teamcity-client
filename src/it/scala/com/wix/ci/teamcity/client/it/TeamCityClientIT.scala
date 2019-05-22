@@ -66,6 +66,10 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.deleteTemplate(baseTemplate.id)
       teamcityClient.getTemplates must beEqualTo(Templates(0,Some(List())))
     }
+
+    "get team city server details" in new Context{
+      teamcityClient.getTeamCityServerDetails.copy(currentTime = "",startTime = "") must beEqualTo(teamCityServerDetails)
+    }
   }
 
 
@@ -107,6 +111,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val baseTemplate = BaseTemplate("template1", "some template","/httpAuth/app/rest/buildTypes/id:template1",rootProjectId,rootProjectName)
     val template = Template("template1","some template","/httpAuth/app/rest/buildTypes/id:template1",rootProjectId,rootProjectName,rootBaseProject,false,true)
     val templates = Templates(1,Some(List(baseTemplate)))
+    val teamCityServerDetails = new TeamCityServerDetails("58744","20181218T000000+0000","2018.1.5 (build 58744)",2018,1,"","")
 
   }
 

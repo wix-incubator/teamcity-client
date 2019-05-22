@@ -135,6 +135,12 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[VcsRootEntry])
   }
 
+  def getTeamCityServerDetails() : TeamCityServerDetails = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/server"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[TeamCityServerDetails])
+  }
+
 
   def createTemplate(template : BaseTemplate) : Template = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${template.projectId}/templates"
