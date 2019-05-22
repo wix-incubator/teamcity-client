@@ -6,9 +6,9 @@ case class Property(name: String, value: String)
 
 case class Properties(property: List[Property])
 
-case class BaseTemplate(id: String, name: String, href: String, projectId: String, projectName: String)
+case class BaseTemplate(id: String, name: String, href: Option[String], projectId: String, projectName: String)
 
-case class BaseProject(id: String, name: String, href: String, webUrl: String, description: Option[String], archived: Boolean, parentProjectId: Option[String])
+case class BaseProject(id: String, name: String, href: Option[String], webUrl : Option[String], description: Option[String], archived: Boolean, parentProjectId: Option[String])
 
 case class Projects(count: Int, project: List[BaseProject])
 
@@ -24,7 +24,7 @@ case class BuildTypes(count: Int, buildType: List[BaseBuildType])
 
 case class Parameters(count: Int, href: String, property: List[Property])
 
-case class Template(id: String, name: String, href: String, projectId: String, projectName: String, project : BaseProject, inherited: Boolean, templateFlag: Boolean = true)
+case class Template(id: String, name: String, href: Option[String], projectId: String, projectName: String, project : BaseProject, inherited: Boolean, templateFlag: Boolean = true)
 
 case class Project(id: String,
                    name: String,
@@ -38,7 +38,7 @@ case class Project(id: String,
                    templates : Option[Templates] = None)
 
 
-case class BaseVcsRoot(id: String, name: String, href: String)
+case class BaseVcsRoot(id: String, name: String, href: Option[String])
 
 case class VcsRoot(id: String,
                    name: String,
@@ -49,7 +49,7 @@ case class VcsRoot(id: String,
                    project: BaseProject,
                    properties: Properties)
 
-case class VcsRoots(count: Int, href : String, @JsonProperty("vcs-root")vcsRoot:Option[ List[BaseVcsRoot]])
+case class VcsRoots(count: Int, href : Option[String], @JsonProperty("vcs-root")vcsRoot:Option[ List[BaseVcsRoot]])
 
 case class Templates(count : Int,  buildType : Option[List[BaseTemplate]])
 

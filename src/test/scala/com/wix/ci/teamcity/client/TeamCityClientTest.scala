@@ -96,7 +96,7 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
 
   "get vcs roots" should {
     "return a list of vcs roots" in new Context {
-      teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(1, "hrf", Some(List(baseVcsRoot))))
+      teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(1, Some("hrf"), Some(List(baseVcsRoot))))
     }
   }
 
@@ -227,18 +227,18 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val vcsRootUrl = "href"
   val property = Property("propName", "value")
   val properties = Properties(List(property))
-  val baseProject = BaseProject(projectId, "projName", "some-href", "some-web-url", Some("desc"), false, Some("some-parent-proj"))
+  val baseProject = BaseProject(projectId, "projName", Some("some-href"), Some("some-web-url"), Some("desc"), false, Some("some-parent-proj"))
   val mapper = MapperFactory.createMapper()
   val buildTypes = BuildTypes(0, List())
-  val baseTemplate = BaseTemplate("tempId", "tempName", "href", projectName, projectId)
-  val template = Template("tempId", "tempName", "href", projectId, projectName, baseProject, inherited = true)
+  val baseTemplate = BaseTemplate("tempId", "tempName", Some("href"), projectName, projectId)
+  val template = Template("tempId", "tempName", Some("href"), projectId, projectName, baseProject, inherited = true)
   val templates = Templates(1, Some(List(baseTemplate)))
   val baseBuildTypes = BaseBuildType("buildId", "buildName", Some("desc"), Some(baseTemplate), projectName, projectId, false)
   val projects = Projects(1, List(baseProject))
   val project = Project(projectId, projectName, "parentProjId1", "some-href", "some-weburl", Projects(0, List()), baseProject, BuildTypes(0, List()), None)
-  val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, vcsRootUrl)
+  val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, Some(vcsRootUrl))
   val vcsRoot = VcsRoot("vcsRootId", vcsRootName, "vcsName", "Href", Some("status"), Some("lastChecked"), baseProject, properties)
-  val vcsRoots = VcsRoots(1, "hrf", Some(List(baseVcsRoot)))
+  val vcsRoots = VcsRoots(1, Some("hrf"), Some(List(baseVcsRoot)))
   val vcsRootEntry = VcsRootEntry("id", "checkourRules", baseVcsRoot)
   val vcsRootEntries = VcsRootEntries(1, Some(List(vcsRootEntry)))
   val teamCityServerDetails = TeamCityServerDetails("buildNumber", "date", "version", 1, 2, "currentTime", "startTime")

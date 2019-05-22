@@ -35,7 +35,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getVcsRootById(vcsRoot.id) must beEqualTo(vcsRoot)
       teamcityClient.getVcsRootByName(vcsRoot.name) must beEqualTo(vcsRoot)
       teamcityClient.deleteVcsRoot(vcsRoot.id)
-      teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(0, "/httpAuth/app/rest/vcs-roots", None))
+      teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(0, Some("/httpAuth/app/rest/vcs-roots"), None))
     }
 
 
@@ -141,14 +141,14 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     val httpClient = new HttpClientWrapper(username, password)
     val teamcityClient = new TeamCityClient(httpClient, teamcityBaseUrl)
-    val rootBaseProject = BaseProject(rootProjectId,rootProjectName, "/httpAuth/app/rest/projects/id:_Root", "http://localhost:8111/project.html?projectId=_Root", Some("Contains all other projects"), false, None)
+    val rootBaseProject = BaseProject(rootProjectId,rootProjectName, Some("/httpAuth/app/rest/projects/id:_Root"), Some("http://localhost:8111/project.html?projectId=_Root"), Some("Contains all other projects"), false, None)
 
     val property = Property("ignoreKnownHosts", "true")
-    val baseProject = BaseProject(projectId, projectName, "/httpAuth/app/rest/projects/id:projid", "http://localhost:8111/project.html?projectId=projid", Some("projDesc"), false, Some(rootProjectId))
-    val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href, baseProject.webUrl, Projects(0, null), rootBaseProject, BuildTypes(0, List()), templates = Some(Templates(0, Option(List()))))
+    val baseProject = BaseProject(projectId, projectName, Some("/httpAuth/app/rest/projects/id:projid"), Some("http://localhost:8111/project.html?projectId=projid"), Some("projDesc"), false, Some(rootProjectId))
+    val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href.get, baseProject.webUrl.get, Projects(0, null), rootBaseProject, BuildTypes(0, List()), templates = Some(Templates(0, Option(List()))))
     val vcsRoot = VcsRoot(vcsRootId, vcsRootName, vcsName, "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(List(property)))
-    val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, "/httpAuth/app/rest/vcs-roots/id:somevcsroot")
-    val vcsRoots = VcsRoots(1, "/httpAuth/app/rest/vcs-roots", Some(List(baseVcsRoot)))
+    val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, Some("/httpAuth/app/rest/vcs-roots/id:somevcsroot"))
+    val vcsRoots = VcsRoots(1, Some("/httpAuth/app/rest/vcs-roots"), Some(List(baseVcsRoot)))
 
 
     val baseBuildType = BaseBuildType(buildTypeId1, buildTypeName1, buildTypeDesc, None, projectName, projectId, false)
@@ -156,8 +156,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val buildTypes = BuildTypes(2, List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
     val vcsRootEntries = VcsRootEntries(1,Some(List(VcsRootEntry(baseVcsRoot.id,"some checkout rules",baseVcsRoot))))
 
-    val baseTemplate = BaseTemplate(templateId, templateName,"/httpAuth/app/rest/buildTypes/id:template1",rootProjectId,rootProjectName)
-    val template = Template(templateId,templateName,"/httpAuth/app/rest/buildTypes/id:template1",rootProjectId,rootProjectName,rootBaseProject,false,true)
+    val baseTemplate = BaseTemplate(templateId, templateName,Some("/httpAuth/app/rest/buildTypes/id:template1"),rootProjectId,rootProjectName)
+    val template = Template(templateId,templateName,Some("/httpAuth/app/rest/buildTypes/id:template1"),rootProjectId,rootProjectName,rootBaseProject,false,true)
     val templates = Templates(1,Some(List(baseTemplate)))
     val teamCityServerDetails = new TeamCityServerDetails("58744","20181218T000000+0000","2018.1.5 (build 58744)",2018,1,"","")
     val dependency = SnapshotDependency("not-important","snapshot_dependency",Properties(List()),baseBuildType2)
