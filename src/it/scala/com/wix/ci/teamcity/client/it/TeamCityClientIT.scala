@@ -58,6 +58,14 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.createBuildTypeVcsRootEntries(baseBuildType.id,vcsRootEntries)
       teamcityClient.setBuildTypeVcsRootEntry(baseBuildType.id,vcsRootEntries.vcsRootEntry.get.head) must beEqualTo(vcsRootEntries.vcsRootEntry.get.head)
     }
+
+    "creates template retrieve it" in new Context{
+      val res = teamcityClient.createTemplate(baseTemplate)
+      res must beEqualTo(template)
+      teamcityClient.getTemplates must beEqualTo(templates)
+      teamcityClient.deleteTemplate(baseTemplate.id)
+      teamcityClient.getTemplates must beEqualTo(Templates(0,Some(List())))
+    }
   }
 
 
@@ -77,13 +85,15 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val password = "admin"
     val projectId = "projid"
     val projectName = "projName"
+    val rootProjectId = "_Root"
+    val rootProjectName = "<Root project>"
     val httpClient = new HttpClientWrapper(username, password)
     val teamcityClient = new TeamCityClient(httpClient, teamcityBaseUrl)
-    val rootBaseProject = BaseProject("_Root", "<Root project>", "/httpAuth/app/rest/projects/id:_Root", "http://localhost:8111/project.html?projectId=_Root", Some("Contains all other projects"), false, None)
+    val rootBaseProject = BaseProject(rootProjectId,rootProjectName, "/httpAuth/app/rest/projects/id:_Root", "http://localhost:8111/project.html?projectId=_Root", Some("Contains all other projects"), false, None)
 
     val property = Property("ignoreKnownHosts", "true")
     val baseProject = BaseProject(projectId, projectName, "/httpAuth/app/rest/projects/id:projid", "http://localhost:8111/project.html?projectId=projid", Some("projDesc"), false, Some("_Root"))
-    val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href, baseProject.webUrl, Projects(0, null), rootBaseProject, BuildTypes(0, List()), templates = Some(Templates(0, None)))
+    val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href, baseProject.webUrl, Projects(0, null), rootBaseProject, BuildTypes(0, List()), templates = Some(Templates(0, Option(List()))))
     val vcsRoot = VcsRoot("somevcsroot", "some vcs root", "jetbrains.git", "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(List(property)))
     val baseVcsRoot = BaseVcsRoot("somevcsroot", "some vcs root", "/httpAuth/app/rest/vcs-roots/id:somevcsroot")
     val vcsRoots = VcsRoots(1, "/httpAuth/app/rest/vcs-roots", Some(List(baseVcsRoot)))
@@ -93,6 +103,11 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val baseBuildType2 = BaseBuildType("myBuildTypeId2", "my build type2", Some("some desc"), None, projectName, projectId, false)
     val buildTypes = BuildTypes(2, List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
     val vcsRootEntries = VcsRootEntries(1,Some(List(VcsRootEntry(baseVcsRoot.id,"some checkout rules",baseVcsRoot))))
+
+    val baseTemplate = BaseTemplate("template1", "some template","/httpAuth/app/rest/buildTypes/id:template1",rootProjectId,rootProjectName)
+    val template = Template("template1","some template","/httpAuth/app/rest/buildTypes/id:template1",rootProjectId,rootProjectName,rootBaseProject,false,true)
+    val templates = Templates(1,Some(List(baseTemplate)))
+
   }
 
 }

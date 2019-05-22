@@ -135,6 +135,24 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[VcsRootEntry])
   }
 
+
+  def createTemplate(template : BaseTemplate) : Template = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${template.projectId}/templates"
+    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(template))
+    mapper.readValue(json, classOf[Template])
+  }
+
+  def getTemplates() : Templates = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes?locator=templateFlag:true"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[Templates])
+  }
+
+  def deleteTemplate(templateId : String) : Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$templateId"
+    httpClient.executeDelete(url)
+  }
+
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
 
