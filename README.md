@@ -35,5 +35,20 @@ Java:
 TeamCityServerDetails serverDetails =  teamcityClient.getTeamCityServerDetails();
 ```
 
+### Creating a project (under the default root project)
+Scala:
+```scala
+val projectToCreate = BaseProject("myProjId", "My Proj Name", None, None, Some("projDesc"), false, Some(rootProjectId))
+val createdProject = teamcityClient.createProject(projectToCreate)
+```
+Java:
+```java
+scala.Option<String> description = scala.Option.apply("this describes my project");
+scala.Option<String> parentProjId = scala.Option.apply("_Root");
+scala.Option<String> noHref = scala.Option.apply(null);
+scala.Option<String> noWebUrl = scala.Option.apply(null);
+BaseProject projectToCreate = new BaseProject("myProjId","My Proj Name",noHref,noWebUrl,description,false,parentProjId);
 
+BaseProject createdProject = teamcityClient.createProject(projectToCreate);
+```
 
