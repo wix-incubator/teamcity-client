@@ -1,7 +1,7 @@
 # teamcity-client
 
 ## Introduction
-Teamcity client is a simple scala library which wraps REST calls to the Teamcity REST API. Use this library to perform different operations and get data from the Teamcity server. This version is tested with Teamcity version **2018.1.5 (build 58744)**. This library can be used also with Java but will require to use the **scala.collection.JavaConverters** when using the collections.
+Teamcity client is a simple scala library which wraps REST calls to the Teamcity REST API. Use this library to perform different operations and get data from the Teamcity server. This version is tested with Teamcity version **2018.1.5 (build 58744)**. This library can be used also with Java but will require to use the **scala.collection.JavaConverters** when using the collections (see in the examples below).
 
 ## Getting Started
 Create an instance of **HttpClient** (teamcity-client uses a HttpClientWrapper to wrap scalaj Http as an http client, you can use any http client by implementing the HttpClient trait/interface). Pass username, password and optinally timemout (default is 5 sec).
@@ -67,3 +67,23 @@ scala.collection.JavaConverters.seqAsJavaList(teamcityClient.getProjects().proje
    //do some more suff here
 });
 ```
+
+### Add snapshot dependency to a buildType
+Scala:
+```scala
+val dependencyProps = Properties(List(Property("run-build-if-dependency-failed","MAKE_FAILED_TO_START")))
+val dependency = SnapshotDependency(baseBuildType.id,"snapshot_dependency",dependencyProps ,baseBuildType2)
+teamcityClient.createSnapshotDependency(baseBuildType.id, dependency)
+     
+```
+Java:
+```java
+BaseBuildType baseBuildType = new BaseBuildType("myBuildTypeId", "my build id",
+                scala.Option.apply(null),scala.Option.apply(null),"My Proj Name","myProjId",false);
+List<Property> props = new ArrayList<>();
+props.add(new Property("run-build-on-the-same-agent","false"));
+Properties properties = new Properties(scala.collection.JavaConverters.asScalaBuffer(props).toList() );
+SnapshotDependency dependency = new SnapshotDependency("myBuildTypeId2","snapshot_dependency",properties,baseBuildType);
+
+teamcityClient.createSnapshotDependency(baseBuildType.id(),dependency);
+```        
