@@ -45,8 +45,8 @@ Java:
 ```java
 scala.Option<String> description = scala.Option.apply("this describes my project");
 scala.Option<String> parentProjId = scala.Option.apply("_Root");
-scala.Option<String> noHref = scala.Option.apply(null);
-scala.Option<String> noWebUrl = scala.Option.apply(null);
+scala.Option<String> noHref = scala.Option.apply(null);   //this property will be filled by the server once project is created
+scala.Option<String> noWebUrl = scala.Option.apply(null); //this property will be filled by the server once project is created
 BaseProject projectToCreate = new BaseProject("myProjId","My Proj Name",noHref,noWebUrl,description,false,parentProjId);
 
 BaseProject createdProject = teamcityClient.createProject(projectToCreate);
