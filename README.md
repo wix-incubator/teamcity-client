@@ -25,3 +25,15 @@ TeamCityClient teamcityClient = new TeamCityClient(httpClient,baseUrl);
 TeamCityClient will throw a RuntimeException containing the HTTP status code and the error message from the teamcity server if the status code is not 2XX.
 
 ## Examples
+### Getting Teamcity server details
+Scala:
+```scala
+val serverDetails = teamcityClient.getTeamCityServerDetails  //returns version, start time and additional info
+```
+Java:
+```java
+TeamCityServerDetails serverDetails =  teamcityClient.getTeamCityServerDetails();
+```
+
+
+
