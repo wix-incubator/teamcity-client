@@ -76,7 +76,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BaseBuildType])
   }
 
-  def deleteBuildType(buildTypeId : String) : Unit = {
+  def deleteBuildType(buildTypeId: String): Unit = {
     val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId"
     httpClient.executeDelete(url)
   }
@@ -124,45 +124,43 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
-  def createBuildTypeVcsRootEntries(buildTypeId : String,vcsRootEntries : VcsRootEntries) : Unit = {
+  def createBuildTypeVcsRootEntries(buildTypeId: String, vcsRootEntries: VcsRootEntries): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/vcs-root-entries"
-    httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntries.vcsRootEntry.get.head))
+    httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntries.vcsRootEntry.get.head))
   }
 
-  def setBuildTypeVcsRootEntry(buildTypeId : String,vcsRootEntry : VcsRootEntry) : VcsRootEntry = {
+  def setBuildTypeVcsRootEntry(buildTypeId: String, vcsRootEntry: VcsRootEntry): VcsRootEntry = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/vcs-root-entries"
-    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntry))
+    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntry))
     mapper.readValue(json, classOf[VcsRootEntry])
   }
 
-  def getTeamCityServerDetails() : TeamCityServerDetails = {
+  def getTeamCityServerDetails(): TeamCityServerDetails = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/server"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[TeamCityServerDetails])
   }
 
 
-  def createTemplate(template : BaseTemplate) : Template = {
+  def createTemplate(template: BaseTemplate): Template = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${template.projectId}/templates"
-    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(template))
+    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(template))
     mapper.readValue(json, classOf[Template])
   }
 
-  def getTemplates() : Templates = {
+  def getTemplates(): Templates = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes?locator=templateFlag:true"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Templates])
   }
 
-  def deleteTemplate(templateId : String) : Unit = {
+  def deleteTemplate(templateId: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$templateId"
     httpClient.executeDelete(url)
   }
 
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
-
-
 
 
   def getBaseUrl(): String = baseUrl
