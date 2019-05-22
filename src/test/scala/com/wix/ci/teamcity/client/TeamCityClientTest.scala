@@ -164,6 +164,26 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
     }
   }
 
+  "create snapshot dependency" should {
+    "create snapshot dependency" in new Context {
+      teamcityClient.createSnapshotDependency(baseBuildTypes.id, snapshotDependency) must beEqualTo(snapshotDependency)
+    }
+  }
+
+  "get snapshot dependency" should {
+    "get snapshot dependency" in new Context {
+      teamcityClient.getSnapShotDependencies(baseBuildTypes.id) must beEqualTo(snapshotDependencies)
+    }
+  }
+
+  "delete snapshot dependency" should {
+    "delete snapshot dependency" in new Context {
+      teamcityClient.deleteSnapshotDependency(baseBuildTypes.id, snapshotDependency.id)
+      val url = s"$createSnapshotDependencies/${snapshotDependency.id}"
+      there was one(httpClient).executeDelete(url)
+    }
+  }
+
   //  "xxx" should{
   //    "xxxx" in{
   //      val wrapper = new HttpClientWrapper("admin","admin")
@@ -202,6 +222,8 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val vcsRootEntry = VcsRootEntry("id", "checkourRules", baseVcsRoot)
   val vcsRootEntries = VcsRootEntries(1, Some(List(vcsRootEntry)))
   val teamCityServerDetails = TeamCityServerDetails("buildNumber", "date", "version", 1, 2, "currentTime", "startTime")
+  val snapshotDependency = SnapshotDependency("depId", "type", properties, baseBuildTypes)
+  val snapshotDependencies = SnapshotDependencies(1, Some(List(snapshotDependency)))
 
   val createProjectUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
   val getProjectsUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
@@ -225,6 +247,7 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val getTeamCityServerDetails = s"${baseUrl}/${TeamCityClient.contextPrefix}/server"
   val postTemplateUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseTemplate.projectId}/templates"
   val getTemplatesUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes?locator=templateFlag:true"
+  val createSnapshotDependencies = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}/snapshot-dependencies"
 
 
   httpClient.executePost(createProjectUrl, writeObjectAsJson(baseProject)) returns writeObjectAsJson(baseProject)
@@ -243,6 +266,8 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   httpClient.executeGet(getTeamCityServerDetails) returns writeObjectAsJson(teamCityServerDetails)
   httpClient.executePost(postTemplateUrl, writeObjectAsJson(baseTemplate)) returns writeObjectAsJson(template)
   httpClient.executeGet(getTemplatesUrl) returns writeObjectAsJson(templates)
+  httpClient.executePost(createSnapshotDependencies, writeObjectAsJson(snapshotDependency)) returns writeObjectAsJson(snapshotDependency)
+  httpClient.executeGet(createSnapshotDependencies) returns writeObjectAsJson(snapshotDependencies)
 
   def writeObjectAsJson(obj: AnyRef): String = {
     mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj)
