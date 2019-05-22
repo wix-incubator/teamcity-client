@@ -182,6 +182,26 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
       val url = s"$createSnapshotDependencies/${snapshotDependency.id}"
       there was one(httpClient).executeDelete(url)
     }
+
+    "create build step" should {
+      "create build step" in new Context {
+        teamcityClient.createBuildStep(baseBuildTypes.id, step) must beEqualTo(step)
+      }
+    }
+
+    "get build step" should {
+      "get build step" in new Context {
+        teamcityClient.getBuildSteps(baseBuildTypes.id) must beEqualTo(steps)
+      }
+    }
+
+    "delete build step" should {
+      "delete build step" in new Context {
+        teamcityClient.deleteBuildStep(baseBuildTypes.id, step.id)
+        val url = s"$buildStepUrl/${step.id}"
+        there was one(httpClient).executeDelete(url)
+      }
+    }
   }
 
   //  "xxx" should{
@@ -224,6 +244,8 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val teamCityServerDetails = TeamCityServerDetails("buildNumber", "date", "version", 1, 2, "currentTime", "startTime")
   val snapshotDependency = SnapshotDependency("depId", "type", properties, baseBuildTypes)
   val snapshotDependencies = SnapshotDependencies(1, Some(List(snapshotDependency)))
+  val step = Step("stepId", "stepName", "type", properties)
+  val steps = Steps(1, Some(List(step)))
 
   val createProjectUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
   val getProjectsUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
@@ -248,6 +270,7 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   val postTemplateUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseTemplate.projectId}/templates"
   val getTemplatesUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes?locator=templateFlag:true"
   val createSnapshotDependencies = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}/snapshot-dependencies"
+  val buildStepUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}/steps"
 
 
   httpClient.executePost(createProjectUrl, writeObjectAsJson(baseProject)) returns writeObjectAsJson(baseProject)
@@ -268,6 +291,8 @@ trait Context extends Scope with Mockito with MustThrownExpectations {
   httpClient.executeGet(getTemplatesUrl) returns writeObjectAsJson(templates)
   httpClient.executePost(createSnapshotDependencies, writeObjectAsJson(snapshotDependency)) returns writeObjectAsJson(snapshotDependency)
   httpClient.executeGet(createSnapshotDependencies) returns writeObjectAsJson(snapshotDependencies)
+  httpClient.executePost(buildStepUrl, writeObjectAsJson(step)) returns writeObjectAsJson(step)
+  httpClient.executeGet(buildStepUrl) returns writeObjectAsJson(steps)
 
   def writeObjectAsJson(obj: AnyRef): String = {
     mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj)
