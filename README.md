@@ -21,3 +21,7 @@ int timeout = 10000;
 HttpClientWrapper httpClient = new HttpClientWrapper("MyUserName", "MyPassword", timeout);
 TeamCityClient teamcityClient = new TeamCityClient(httpClient,baseUrl);
 ```
+
+TeamCityClient will throw a RuntimeException containing the HTTP status code and the error message from the teamcity server if the status code is not 2XX.
+
+## Examples
