@@ -1,125 +1,124 @@
 package com.wix.ci.teamcity.client
 
-import com.wix.ci.teamcity.client.scalajhttp.HttpClientWrapper
-import org.specs2.matcher.{MustThrownExpectations, Scope}
-import org.specs2.mock.Mockito
+import com.wix.ci.teamcity.client.support._
 import org.specs2.mutable.SpecificationWithJUnit
 
-class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
+class TeamCityClientTest extends SpecificationWithJUnit {
+
   "create project" should {
-    "call execute post and pass base project in body" in new Context {
+    "call execute post and pass base project in body" in new ProjectContext {
       teamcityClient.createProject(baseProject)
-      there was one(httpClient).executePost(createProjectUrl, writeObjectAsJson(baseProject))
+      there was one(httpClient).executePost(projectUrl, writeObjectAsJson(baseProject))
       there was one(httpClient).executePutPlainText(setProjectArchivedUrl, baseProject.archived.toString)
       there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get)
     }
   }
 
   "set project description" should {
-    "call set project description endpoint" in new Context {
-      teamcityClient.setProjectDescription(projectId, baseProject.description.get)
+    "call set project description endpoint" in new ProjectContext {
+      teamcityClient.setProjectDescription(baseProject.id, baseProject.description.get)
       there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get)
     }
   }
 
   "set project archived" should {
-    "call the set project archived endpint" in new Context {
-      teamcityClient.setProjectArchived(projectId, true)
+    "call the set project archived endpint" in new ProjectContext {
+      teamcityClient.setProjectArchived(baseProject.id, archived = true)
       there was one(httpClient).executePutPlainText(setProjectArchivedUrl, true.toString)
     }
   }
 
   "set project name" should {
-    "call set project name endpoint" in new Context {
-      teamcityClient.setProjectName(projectId, projectName)
-      there was one(httpClient).executePutPlainText(setProjectNameUrl, projectName)
+    "call set project name endpoint" in new ProjectContext {
+      teamcityClient.setProjectName(baseProject.id, baseProject.name)
+      there was one(httpClient).executePutPlainText(setProjectNameUrl, baseProject.name)
     }
   }
 
   "get projects" should {
-    "return a list of all base projects" in new Context {
+    "return a list of all base projects" in new ProjectContext {
       teamcityClient.getProjects must beEqualTo(projects)
     }
   }
 
   "delete project" should {
-    "call delete endpoint with project id" in new Context {
+    "call delete endpoint with project id" in new ProjectContext {
       teamcityClient.deleteProject(baseProject.id)
-      there was one(httpClient).executeDelete(deleteProjectUrl)
+      there was one(httpClient).executeDelete(projectWithIdUrl)
     }
   }
 
   "get project by name" should {
-    "return the project" in new Context {
-      teamcityClient.getProjectByName(projectName) must beEqualTo(project)
+    "return the project" in new ProjectContext {
+      teamcityClient.getProjectByName(baseProject.name) must beEqualTo(project)
     }
   }
 
   "get project by id" should {
-    "return the project" in new Context {
-      teamcityClient.getProjectById(projectId) must beEqualTo(project)
+    "return the project" in new ProjectContext {
+      teamcityClient.getProjectById(baseProject.id) must beEqualTo(project)
     }
   }
 
 
   "get build types" should {
-    "return a list of build types " in new Context {
+    "return a list of build types " in new BuildTypesContext {
       teamcityClient.getBuildTypes must beEqualTo(buildTypes)
     }
   }
 
   "get build types by vcs root id" should {
-    "return a list of build types" in new Context {
+    "return a list of build types" in new BuildTypesContext {
       teamcityClient.getBuildTypesByVcsRootId(vcsRootId) must beEqualTo(buildTypes)
     }
   }
 
   "create build type" should {
-    "return base build type" in new Context {
+    "return base build type" in new BuildTypesContext {
       teamcityClient.createBuildType(baseBuildTypes) must beEqualTo(baseBuildTypes)
     }
   }
 
   "delete build type" should {
-    "delete build type" in new Context {
+    "delete build type" in new BuildTypesContext {
       teamcityClient.deleteBuildType(baseBuildTypes.id)
       there was one(httpClient).executeDelete(deleteBuildTypeUrl)
     }
   }
 
   "create vcs roots" should {
-    "return a list of vcs roots" in new Context {
+    "return a list of vcs roots" in new VcsRootContext {
       teamcityClient.createVcsRoot(vcsRoot) must beEqualTo(baseVcsRoot)
       there was one(httpClient).executePutPlainText(setVcsRootPropertiesUrl, vcsRoot.properties.property.head.value)
     }
   }
 
   "get vcs roots" should {
-    "return a list of vcs roots" in new Context {
+    "return a list of vcs roots" in new VcsRootContext {
       teamcityClient.getVcsRoots() must beEqualTo(VcsRoots(1, Some("hrf"), Some(List(baseVcsRoot))))
     }
   }
 
   "get vcs root by id" should {
-    "return vcs root" in new Context {
+    "return vcs root" in new VcsRootContext {
       teamcityClient.getVcsRootById(vcsRootId) must beEqualTo(vcsRoot)
     }
   }
 
   "get vcs root by name" should {
-    "return vcs root" in new Context {
+    "return vcs root" in new VcsRootContext {
       teamcityClient.getVcsRootByName(vcsRootName) must beEqualTo(vcsRoot)
     }
   }
 
   "get vcs root by url" should {
-    "return vcs root" in new Context {
+    "return vcs root" in new VcsRootContext {
       teamcityClient.getVcsRootByUrl(vcsRootUrl) must beEqualTo(vcsRoot)
     }
   }
 
   "delete vcs root" should {
-    "delete vcs root" in new Context {
+    "delete vcs root" in new VcsRootContext {
       teamcityClient.deleteVcsRoot(vcsRootId)
       there was one(httpClient).executeDelete(getVcsRootsByIdUrl)
     }
@@ -127,76 +126,76 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
 
 
   "create build type vcs root entries" should {
-    "return vcs root" in new Context {
+    "return vcs root" in new BuildTypesContext {
       teamcityClient.createBuildTypeVcsRootEntries(baseBuildTypes.id, vcsRootEntries)
       there was one(httpClient).executePost(createBuildTypeVcsRootEntries, writeObjectAsJson(vcsRootEntry))
     }
   }
 
   "set build type vcs root entry" should {
-    "return vcs root" in new Context {
+    "return vcs root" in new BuildTypesContext {
       teamcityClient.setBuildTypeVcsRootEntry(baseBuildTypes.id, vcsRootEntry) must beEqualTo(vcsRootEntry)
     }
   }
 
   "get teamCity server details" should {
-    "return teamCity server details" in new Context {
+    "return teamCity server details" in new ServerDetailsContext {
       teamcityClient.getTeamCityServerDetails() must beEqualTo(teamCityServerDetails)
     }
   }
 
   "create template" should {
-    "return template" in new Context {
+    "return template" in new TemplateContext {
       teamcityClient.createTemplate(baseTemplate) must beEqualTo(template)
     }
   }
 
   "get templates" should {
-    "return a list of templates" in new Context {
+    "return a list of templates" in new TemplateContext {
       teamcityClient.getTemplates() must beEqualTo(templates)
     }
   }
 
   "delete template" should {
-    "delete template" in new Context {
+    "delete template" in new TemplateContext {
       teamcityClient.deleteTemplate(baseTemplate.id)
-      there was one(httpClient).executeDelete(deleteTemplateUrl)
+      there was one(httpClient).executeDelete(templateUrl)
     }
   }
 
   "create snapshot dependency" should {
-    "create snapshot dependency" in new Context {
+    "create snapshot dependency" in new SnapshotDependenciesContext {
       teamcityClient.createSnapshotDependency(baseBuildTypes.id, snapshotDependency) must beEqualTo(snapshotDependency)
     }
   }
 
   "get snapshot dependency" should {
-    "get snapshot dependency" in new Context {
+    "get snapshot dependency" in new SnapshotDependenciesContext {
       teamcityClient.getSnapShotDependencies(baseBuildTypes.id) must beEqualTo(snapshotDependencies)
     }
   }
 
   "delete snapshot dependency" should {
-    "delete snapshot dependency" in new Context {
+    "delete snapshot dependency" in new SnapshotDependenciesContext {
       teamcityClient.deleteSnapshotDependency(baseBuildTypes.id, snapshotDependency.id)
-      val url = s"$createSnapshotDependencies/${snapshotDependency.id}"
+      val url = s"$snapshotDependenciesUrl/${snapshotDependency.id}"
       there was one(httpClient).executeDelete(url)
     }
 
     "create build step" should {
-      "create build step" in new Context {
+      "create build step" in new StepContext {
         teamcityClient.createBuildStep(baseBuildTypes.id, step) must beEqualTo(step)
       }
     }
 
     "get build step" should {
-      "get build step" in new Context {
+      "get build step" in new StepContext {
         teamcityClient.getBuildSteps(baseBuildTypes.id) must beEqualTo(steps)
       }
     }
 
     "delete build step" should {
-      "delete build step" in new Context {
+      "delete build step" in new StepContext {
         teamcityClient.deleteBuildStep(baseBuildTypes.id, step.id)
         val url = s"$buildStepUrl/${step.id}"
         there was one(httpClient).executeDelete(url)
@@ -212,89 +211,4 @@ class TeamCityClientTest extends SpecificationWithJUnit with Mockito {
   //      ok
   //    }
   //  }
-}
-
-
-trait Context extends Scope with Mockito with MustThrownExpectations {
-
-  val httpClient = mock[HttpClientWrapper]
-  val baseUrl = "http://localhost:8888/my-teamcity"
-  val teamcityClient = new TeamCityClient(httpClient, baseUrl)
-  val projectId = "projid"
-  val projectName = "projName"
-  val vcsRootId = "vcsRootId"
-  val vcsRootName = "vcsRootName"
-  val vcsRootUrl = "href"
-  val property = Property("propName", "value")
-  val properties = Properties(List(property))
-  val baseProject = BaseProject(projectId, "projName", Some("some-href"), Some("some-web-url"), Some("desc"), false, Some("some-parent-proj"))
-  val mapper = MapperFactory.createMapper()
-  val buildTypes = BuildTypes(0, List())
-  val baseTemplate = BaseTemplate("tempId", "tempName", Some("href"), projectName, projectId)
-  val template = Template("tempId", "tempName", Some("href"), projectId, projectName, baseProject, inherited = true)
-  val templates = Templates(1, Some(List(baseTemplate)))
-  val baseBuildTypes = BaseBuildType("buildId", "buildName", Some("desc"), Some(baseTemplate), projectName, projectId, false)
-  val projects = Projects(1, List(baseProject))
-  val project = Project(projectId, projectName, "parentProjId1", "some-href", "some-weburl", Projects(0, List()), baseProject, BuildTypes(0, List()), None)
-  val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, Some(vcsRootUrl))
-  val vcsRoot = VcsRoot("vcsRootId", vcsRootName, "vcsName", "Href", Some("status"), Some("lastChecked"), baseProject, properties)
-  val vcsRoots = VcsRoots(1, Some("hrf"), Some(List(baseVcsRoot)))
-  val vcsRootEntry = VcsRootEntry("id", "checkourRules", baseVcsRoot)
-  val vcsRootEntries = VcsRootEntries(1, Some(List(vcsRootEntry)))
-  val teamCityServerDetails = TeamCityServerDetails("buildNumber", "date", "version", 1, 2, "currentTime", "startTime")
-  val snapshotDependency = SnapshotDependency("depId", "type", properties, baseBuildTypes)
-  val snapshotDependencies = SnapshotDependencies(1, Some(List(snapshotDependency)))
-  val step = Step("stepId", "stepName", "type", properties)
-  val steps = Steps(1, Some(List(step)))
-
-  val createProjectUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
-  val getProjectsUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects"
-  val setProjectNameUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}/name"
-  val setProjectDescriptionUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}/description"
-  val setProjectArchivedUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}/archived"
-  val getProjectByIdUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}"
-  val getProjectByNameUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/name:${baseProject.name}"
-  val deleteProjectUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}"
-  val createBuildTypeUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseProject.id}/buildTypes"
-  val getBuildTypesUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes"
-  val deleteBuildTypeUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}"
-  val deleteTemplateUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:${baseTemplate.id}"
-  val createBuildTypeVcsRootEntries = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}/vcs-root-entries"
-  val getBuildTypesByRootId = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes?locator=vcsRoot:(id:${vcsRootId})"
-  val getVcsRootsUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots"
-  val setVcsRootPropertiesUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId/properties/${vcsRoot.properties.property.head.name}"
-  val getVcsRootsByIdUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId"
-  val getVcsRootsByNameUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots/name:$vcsRootName"
-  val getVcsRootsByUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/vcs-roots/?locator=property:(name:url,value:$vcsRootUrl)"
-  val getTeamCityServerDetails = s"${baseUrl}/${TeamCityClient.contextPrefix}/server"
-  val postTemplateUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/projects/id:${baseTemplate.projectId}/templates"
-  val getTemplatesUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes?locator=templateFlag:true"
-  val createSnapshotDependencies = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}/snapshot-dependencies"
-  val buildStepUrl = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}/steps"
-
-
-  httpClient.executePost(createProjectUrl, writeObjectAsJson(baseProject)) returns writeObjectAsJson(baseProject)
-  httpClient.executeGet(getProjectsUrl) returns writeObjectAsJson(projects)
-  httpClient.executeGet(getProjectByIdUrl) returns writeObjectAsJson(project)
-  httpClient.executeGet(getProjectByNameUrl) returns writeObjectAsJson(project)
-  httpClient.executeGet(getBuildTypesUrl) returns writeObjectAsJson(buildTypes)
-  httpClient.executeGet(getBuildTypesByRootId) returns writeObjectAsJson(buildTypes)
-  httpClient.executePost(createBuildTypeUrl, writeObjectAsJson(baseBuildTypes)) returns writeObjectAsJson(baseBuildTypes)
-  httpClient.executeGet(getVcsRootsUrl) returns writeObjectAsJson(vcsRoots)
-  httpClient.executePost(getVcsRootsUrl, writeObjectAsJson(vcsRoot)) returns writeObjectAsJson(baseVcsRoot)
-  httpClient.executeGet(getVcsRootsByIdUrl) returns writeObjectAsJson(vcsRoot)
-  httpClient.executeGet(getVcsRootsByNameUrl) returns writeObjectAsJson(vcsRoot)
-  httpClient.executeGet(getVcsRootsByUrl) returns writeObjectAsJson(vcsRoot)
-  httpClient.executePost(createBuildTypeVcsRootEntries, writeObjectAsJson(vcsRootEntry)) returns writeObjectAsJson(vcsRootEntry)
-  httpClient.executeGet(getTeamCityServerDetails) returns writeObjectAsJson(teamCityServerDetails)
-  httpClient.executePost(postTemplateUrl, writeObjectAsJson(baseTemplate)) returns writeObjectAsJson(template)
-  httpClient.executeGet(getTemplatesUrl) returns writeObjectAsJson(templates)
-  httpClient.executePost(createSnapshotDependencies, writeObjectAsJson(snapshotDependency)) returns writeObjectAsJson(snapshotDependency)
-  httpClient.executeGet(createSnapshotDependencies) returns writeObjectAsJson(snapshotDependencies)
-  httpClient.executePost(buildStepUrl, writeObjectAsJson(step)) returns writeObjectAsJson(step)
-  httpClient.executeGet(buildStepUrl) returns writeObjectAsJson(steps)
-
-  def writeObjectAsJson(obj: AnyRef): String = {
-    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj)
-  }
 }
