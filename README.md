@@ -3,6 +3,8 @@
 ## Introduction
 Teamcity client is a simple scala library which wraps REST calls to the Teamcity REST API. Use this library to perform different operations and get data from the Teamcity server. This version is tested with Teamcity version **2018.1.5 (build 58744)**. This library can be used also with Java but will require to use the **scala.collection.JavaConverters** when using the collections (see in the examples below).
 
+Teamcity API returns only a small set of properties of the entity when getting a collection of entities, we mapped these to Base<Entity> you can use the the id returned in thes Base<Entity> to retrive the full properties of the entity (by calling get<Entity>ById methods).
+
 ## Getting Started
 Create an instance of **HttpClient** (teamcity-client uses a HttpClientWrapper to wrap scalaj Http as an http client, you can use any http client by implementing the HttpClient trait/interface). Pass username, password and optinally timemout (default is 5 sec).
 Pass an instance of **HttpClient** to the TeamCityClient,  the base url of the Teamcity server and you are ready to go.
