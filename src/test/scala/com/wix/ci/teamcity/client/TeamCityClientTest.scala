@@ -201,6 +201,32 @@ class TeamCityClientTest extends SpecificationWithJUnit {
         there was one(httpClient).executeDelete(url)
       }
     }
+
+    "create user" should {
+      "create user" in new UserContext {
+        teamcityClient.createUser(baseUser) must beEqualTo(baseUser)
+      }
+    }
+
+    "get users" should {
+      "get a list of users" in new UserContext {
+        teamcityClient.getUsers() must beEqualTo(users)
+      }
+    }
+
+    "get user by id" should {
+      "get the user" in new UserContext {
+        teamcityClient.getUserById(user.id) must beEqualTo(user)
+      }
+    }
+
+    "get user" should {
+      "get a list of users" in new UserContext {
+        teamcityClient.deleteUser(user.id)
+        there was one(httpClient).executeDelete(userWithIdUrl)
+
+      }
+    }
   }
 
   //  "xxx" should{

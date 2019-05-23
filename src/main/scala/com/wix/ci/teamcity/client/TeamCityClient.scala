@@ -220,7 +220,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
 
 
-  def getBaseUrl(): String = baseUrl
+  def getBaseUrl: String = baseUrl
 }
 
 
