@@ -193,6 +193,29 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
+  def createUser(user : BaseUser) : BaseUser = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users"
+    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(user))
+    mapper.readValue(json, classOf[BaseUser])
+  }
+
+  def getUsers() : Users = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[Users])
+  }
+
+  def getUserById(userId : Int) : User = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users/id:$userId"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[User])
+  }
+
+  def deleteUser(userId : Int) : Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users/id:$userId"
+    httpClient.executeDelete(url)
+  }
+
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
 

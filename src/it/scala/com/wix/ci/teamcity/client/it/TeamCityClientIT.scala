@@ -105,6 +105,14 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.deleteBuildType(baseBuildType.id)
       teamcityClient.deleteProject(baseProject.id)
     }
+
+    "create user retrieve him and then delete him" in new Context{
+      teamcityClient.createUser(baseUser) must beEqualTo(baseUser)
+      teamcityClient.getUsers() must beEqualTo(users)
+      teamcityClient.getUserById(baseUser.id) must beEqualTo(user)
+      teamcityClient.deleteUser(baseUser.id)
+      teamcityClient.getUsers() must beEqualTo(Users(1,Option(List(baseUserAdmin))))
+    }
   }
 
 
@@ -174,6 +182,13 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val stepProperties = Properties(List(Property("teamcity.step.mode","default")))
     val step = Step("not-important","maven step",stepType,stepProperties)
     val steps = Steps(1,Option(List(step.copy(id=stepId))))
+
+    val defaultGroup = Group("ALL_USERS_GROUP","All Users",Some("/httpAuth/app/rest/userGroups/key:ALL_USERS_GROUP"),Some("Contains all TeamCity users"))
+    val groups = Groups(1,Some(List(defaultGroup)))
+    val baseUser = BaseUser(2,"username1",Some("name1"),Some("/httpAuth/app/rest/users/id:2"))
+    val baseUserAdmin = BaseUser(1,"admin",None,Some("/httpAuth/app/rest/users/id:1"))
+    val users = Users(2,Some(List(baseUserAdmin,baseUser)))
+    val user = User(2,"username1",Some("name1"),None,None,Some("/httpAuth/app/rest/users/id:2"),Roles(0,Option(List())),groups)
   }
 
 }

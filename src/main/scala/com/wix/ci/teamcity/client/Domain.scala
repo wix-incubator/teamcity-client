@@ -73,3 +73,25 @@ case class SnapshotDependencies(count : Int, @JsonProperty ("snapshot-dependency
 case class Step(id : String, name : String, `type` : String, properties : Properties)
 
 case class Steps(count : Int , step : Option[List[Step]])
+
+case class Role(roleId : String, scope : String, href : Option[String])
+
+case class Roles(count : Int, role : Option[List[Role]])
+
+case class Group(key : String, name : String, href : Option[String], description : Option[String])
+
+case class Groups(count : Int, group : Option[List[Group]])
+
+case class BaseUser(id : Int, username : String, name : Option[String], href : Option[String])
+
+case class User(id : Int,
+                username : String,
+                name : Option[String],
+                email : Option[String],
+                lastLogin : Option[String],
+                href : Option[String],
+                roles : Roles,
+                groups : Groups)
+
+case class Users(count : Int, user : Option[List[BaseUser]])
+
