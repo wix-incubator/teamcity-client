@@ -54,15 +54,13 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     }
 
     "set build type root entries" in new Context{
-      teamcityClient.createProject(baseProject)
-      teamcityClient.createBuildType(baseBuildType)
+      initializeProjAndBuildTypes(1)
       teamcityClient.createVcsRoot(vcsRoot)
 
       teamcityClient.createBuildTypeVcsRootEntries(baseBuildType.id,vcsRootEntries)
       teamcityClient.setBuildTypeVcsRootEntry(baseBuildType.id,vcsRootEntries.vcsRootEntry.get.head) must beEqualTo(vcsRootEntries.vcsRootEntry.get.head)
 
-      teamcityClient.deleteBuildType(baseBuildType.id)
-      teamcityClient.deleteProject(baseProject.id)
+      cleanupProjAndBuildTypes(1)
     }
 
     "creates template retrieve it" in new Context{
@@ -78,32 +76,25 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     }
 
     "create snapshot dependency" in new Context{
-      teamcityClient.createProject(baseProject)
-      teamcityClient.createBuildType(baseBuildType)
-      teamcityClient.createBuildType(baseBuildType2)
+      initializeProjAndBuildTypes(2)
 
       teamcityClient.createSnapshotDependency(baseBuildType.id,dependency) must beEqualTo(dependencyWithDefaultProps)
       teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(snapshotDependencies)
       teamcityClient.deleteSnapshotDependency(baseBuildType.id,dependencyWithDefaultProps.id)
       teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(SnapshotDependencies(0,None))
 
-      teamcityClient.deleteBuildType(baseBuildType.id)
-      teamcityClient.deleteBuildType(baseBuildType2.id)
-      teamcityClient.deleteProject(baseProject.id)
-
+      cleanupProjAndBuildTypes(2)
     }
 
     "create step" in new Context{
-      teamcityClient.createProject(baseProject)
-      teamcityClient.createBuildType(baseBuildType)
+      initializeProjAndBuildTypes(1)
 
       teamcityClient.createBuildStep(baseBuildType.id,step) must beEqualTo(step.copy(id=stepId))
       teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(steps)
       teamcityClient.deleteBuildStep(baseBuildType.id,stepId)
       teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(Steps(0,None))
 
-      teamcityClient.deleteBuildType(baseBuildType.id)
-      teamcityClient.deleteProject(baseProject.id)
+      cleanupProjAndBuildTypes(1)
     }
 
     "create user retrieve him and then delete him" in new Context{
@@ -189,6 +180,24 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val baseUserAdmin = BaseUser(1,"admin",None,Some("/httpAuth/app/rest/users/id:1"))
     val users = Users(2,Some(List(baseUserAdmin,baseUser)))
     val user = User(2,"username1",Some("name1"),None,None,Some("/httpAuth/app/rest/users/id:2"),Roles(0,Option(List())),groups)
+
+    def initializeProjAndBuildTypes(numberOfBuildTypes : Int): Unit ={
+      teamcityClient.createProject(baseProject)
+      numberOfBuildTypes match{
+        case 1 => teamcityClient.createBuildType(baseBuildType)
+        case 2 => teamcityClient.createBuildType(baseBuildType)
+                  teamcityClient.createBuildType(baseBuildType2)
+      }
+    }
+
+    def cleanupProjAndBuildTypes(numberOfBuildTypes : Int): Unit ={
+      numberOfBuildTypes match{
+        case 1 => teamcityClient.deleteBuildType(baseBuildType.id)
+        case 2 => teamcityClient.deleteBuildType(baseBuildType.id)
+                  teamcityClient.deleteBuildType(baseBuildType2.id)
+      }
+      teamcityClient.deleteProject(baseProject.id)
+    }
   }
 
 }
