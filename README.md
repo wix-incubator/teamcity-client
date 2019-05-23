@@ -69,6 +69,18 @@ scala.collection.JavaConverters.seqAsJavaList(teamcityClient.getProjects().proje
    //do some more suff here
 });
 ```
+### Get all projects with all project properties
+Scala:
+```scala
+ val projectsWithAllProperties = teamcityClient.getProjects.project.map(p => teamcityClient.getProjectById(p.id))
+```
+Java:
+```java
+ List<Project> projectsWithAllProps = scala.collection.JavaConverters.
+     seqAsJavaList(teamcityClient.getProjects().project()).stream().map(p -> {
+        return teamcityClient.getProjectById(p.id());
+ }).collect(Collectors.toList());
+```
 
 ### Add snapshot dependency to a buildType
 Scala:
