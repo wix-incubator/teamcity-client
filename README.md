@@ -87,3 +87,6 @@ SnapshotDependency dependency = new SnapshotDependency("myBuildTypeId2","snapsho
 
 teamcityClient.createSnapshotDependency(baseBuildType.id(),dependency);
 ```        
+
+### Contributing
+IT tests require docker up and running on the machine as the tests load a dockerized teamcity to run the IT tests against.
