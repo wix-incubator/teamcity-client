@@ -229,12 +229,4 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
-  //  "xxx" should{
-  //    "xxxx" in{
-  //      val wrapper = new HttpClientWrapper("admin","admin")
-  //      val x = wrapper.executeGet("http://jvm-tc.dev.wixpress.com/httpAuth/app/rest/vcs-roots/id:adi_AdiAdiVcsRoot")
-  //      println(x)
-  //      ok
-  //    }
-  //  }
 }
