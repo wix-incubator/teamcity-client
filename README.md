@@ -7,6 +7,7 @@ Teamcity API returns only a small set of properties of the entity when getting a
 
 ## Getting Started
 Create an instance of Teamcity client (using the default scalaj http client)
+
 Scala:
 ```scala
 val timeout = 10000 //10 sec
