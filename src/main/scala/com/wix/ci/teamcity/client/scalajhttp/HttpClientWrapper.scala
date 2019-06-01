@@ -51,6 +51,8 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
   }
 
   private def checkHttpStatusCode(code: Int, msg : String) = {
-    if (code != 200 && code != 201 && code != 204) throw new RuntimeException(s"Error from server status code $code $msg")
+    if (code != 200 && code != 201 && code != 204) throw new TeamcityServerException(code,s"Error from server status code $code $msg")
   }
 }
+
+class TeamcityServerException(code : Int, msg : String) extends RuntimeException(msg)
