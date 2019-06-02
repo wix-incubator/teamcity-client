@@ -55,4 +55,4 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
   }
 }
 
-class TeamcityServerException(code : Int, msg : String) extends RuntimeException(msg)
+class TeamcityServerException(val code : Int, val msg : String) extends RuntimeException(msg)
