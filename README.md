@@ -39,6 +39,33 @@ TeamCityClient teamcityClient = new TeamCityClient(httpClient,baseUrl);
 ```
 
 TeamCityClient will throw a RuntimeException containing the HTTP status code and the error message from the teamcity server if the status code is not 2XX.
+You can then handle different http status codes for eample:
+Scala:
+```scala
+ Try(teamcityClient.createBuildType(baseBuildType)).recover({
+    case e : TeamcityServerException => {
+       e.code match{
+          case 404 => //do something here
+          case 500 => //do something here
+       }
+    }
+ })
+```
+java:
+```java
+  try{
+      teamcityClient.createBuildType(baseBuildType);
+  }catch(TeamcityServerException e){
+       switch(e.code()){
+           case 404: {
+               //do something here
+               break;
+           }case 500: {
+                //do something here
+           }
+        }
+   }
+```
 
 ## Examples
 ### Getting Teamcity server details
