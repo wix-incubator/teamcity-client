@@ -95,3 +95,30 @@ case class User(id : Int,
 
 case class Users(count : Int, user : Option[List[BaseUser]])
 
+case class Feature(id : String, `type` : String, properties : Properties)
+
+case class Features(count : Int, feature : Option[List[Feature]])
+
+case class Trigger(id : String, `type` : String, properties : Properties)
+
+case class Triggers(count : Int, trigger : Option[List[Trigger]])
+
+
+case class BuildType(@JsonProperty ("id") id: String,
+                     @JsonProperty ("name") name: String,
+                     @JsonProperty ("templateFlag") templateFlag: Boolean,
+                     @JsonProperty ("description") description: String,
+                     @JsonProperty ("projectName") projectName: String,
+                     @JsonProperty ("projectId") projectId: String,
+                     @JsonProperty ("href") href: String,
+                     @JsonProperty ("webUrl") webUrl: String,
+                     @JsonProperty ("project") project: BaseProject,
+                     @JsonProperty ("template") template: BaseTemplate,
+                     @JsonProperty ("templates") templates: Templates,
+                     @JsonProperty ("triggers") triggers: Triggers,
+                     @JsonProperty ("steps") steps: Steps,
+                     @JsonProperty ("vcs-root-entries") vcsRootEntries: VcsRootEntries,
+                     @JsonProperty ("settings") settings: Properties,
+                     @JsonProperty ("parameters") parameters: Properties,
+                     @JsonProperty ("features") features: Features,
+                     @JsonProperty ("paused") paused: Boolean)
