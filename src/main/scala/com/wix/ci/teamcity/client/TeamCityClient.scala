@@ -57,6 +57,12 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Project])
   }
+//TODO: add this to it test
+  def getBuildType(buildTypeId : String) : BuildType = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:${buildTypeId}"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[BuildType])
+  }
 
 
   def getBuildTypes(): BuildTypes = {

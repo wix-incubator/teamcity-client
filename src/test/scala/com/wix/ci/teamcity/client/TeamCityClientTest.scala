@@ -67,6 +67,12 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
+  "get build type" should {
+    "return a the build type matching the  build type id " in new BuildTypesContext {
+      teamcityClient.getBuildType(buildType.id) must beEqualTo(buildType)
+    }
+  }
+
   "get build types by vcs root id" should {
     "return a list of build types" in new BuildTypesContext {
       teamcityClient.getBuildTypesByVcsRootId(vcsRootId) must beEqualTo(buildTypes)
