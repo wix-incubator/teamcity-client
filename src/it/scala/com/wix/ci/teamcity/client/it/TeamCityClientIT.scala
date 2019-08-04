@@ -71,6 +71,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getTemplates must beEqualTo(Templates(0,Some(List())))
     }
 
+
+
     "get team city server details" in new Context{
       teamcityClient.getTeamCityServerDetails.copy(currentTime = "",startTime = "") must beEqualTo(teamCityServerDetails)
     }
@@ -103,6 +105,25 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getUserById(baseUser.id) must beEqualTo(user)
       teamcityClient.deleteUser(baseUser.id)
       teamcityClient.getUsers() must beEqualTo(Users(1,Option(List(baseUserAdmin))))
+    }
+
+    "attach template to build type" in new Context{
+      teamcityClient.createProject(baseProject)
+      teamcityClient.createBuildType(baseBuildType)
+      teamcityClient.createTemplate(baseTemplate)
+      teamcityClient.attachTemplateToBuildType(baseTemplate.id,baseBuildType.id)
+      teamcityClient.getBuildType(baseBuildType.id).templates.head.buildType.head.head.id must beEqualTo(baseTemplate.id)
+
+      cleanupProjAndBuildTypes(1)
+    }
+
+    "get build type returns build type" in new Context{
+//      deleteBuildData
+//      val createdBuildType = teamcityClient.createBuildType(baseBuildType)
+//      val createdTemplate = teamcityClient.createTemplate(baseTemplate)
+      //TODO: finish here
+      ok
+
     }
   }
 
@@ -197,6 +218,17 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
                   teamcityClient.deleteBuildType(baseBuildType2.id)
       }
       teamcityClient.deleteProject(baseProject.id)
+    }
+
+
+
+    def createExpectedBuildType(): BuildType= {
+      val templateFlag = false
+      val href : Option[String] = None
+      val webUrl : Option[String] = None
+//      BuildType(baseBuildType.id,baseBuildType.name,templateFlag,baseBuildType.description,
+//        baseBuildType.projectName,baseBuildType.projectId,href,webUrl,baseProject,template)
+      null
     }
   }
 

@@ -166,6 +166,11 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
+  def attachTemplateToBuildType(templateId: String, buildTypeId : String) : Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/template"
+    httpClient.executePutPlainText(url, s"id:$templateId", "application/json")
+  }
+
   def createSnapshotDependency(buildTypeId : String, dependency : SnapshotDependency) : SnapshotDependency = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies"
     val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(dependency))

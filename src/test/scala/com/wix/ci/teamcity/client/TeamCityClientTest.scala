@@ -167,6 +167,11 @@ class TeamCityClientTest extends SpecificationWithJUnit {
       teamcityClient.deleteTemplate(baseTemplate.id)
       there was one(httpClient).executeDelete(templateUrl)
     }
+
+    "attach template" in new TemplateContext {
+      teamcityClient.attachTemplateToBuildType(baseTemplate.id, buildTypeId)
+      there was one(httpClient).executePutPlainText(attachTemplateUrl, s"id:${baseTemplate.id}")
+    }
   }
 
   "create snapshot dependency" should {
