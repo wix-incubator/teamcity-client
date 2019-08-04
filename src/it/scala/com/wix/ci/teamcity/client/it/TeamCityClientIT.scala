@@ -107,12 +107,16 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getUsers() must beEqualTo(Users(1,Option(List(baseUserAdmin))))
     }
 
-    "attach template to build type" in new Context{
+    "attach and detach template to build type" in new Context{
       teamcityClient.createProject(baseProject)
       teamcityClient.createBuildType(baseBuildType)
       teamcityClient.createTemplate(baseTemplate)
+
       teamcityClient.attachTemplateToBuildType(baseTemplate.id,baseBuildType.id)
       teamcityClient.getBuildType(baseBuildType.id).templates.head.buildType.head.head.id must beEqualTo(baseTemplate.id)
+
+      teamcityClient.detachTemplateToBuildType(baseBuildType.id)
+      teamcityClient.getBuildType(baseBuildType.id).templates.head.buildType.head must beEmpty
 
       cleanupProjAndBuildTypes(1)
     }

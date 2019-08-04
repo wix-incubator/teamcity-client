@@ -9,29 +9,29 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     "call execute post and pass base project in body" in new ProjectContext {
       teamcityClient.createProject(baseProject)
       there was one(httpClient).executePost(projectUrl, writeObjectAsJson(baseProject))
-      there was one(httpClient).executePutPlainText(setProjectArchivedUrl, baseProject.archived.toString)
-      there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get)
+      there was one(httpClient).executePutPlainText(setProjectArchivedUrl, baseProject.archived.toString, "text/plain")
+      there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get, "text/plain")
     }
   }
 
   "set project description" should {
     "call set project description endpoint" in new ProjectContext {
       teamcityClient.setProjectDescription(baseProject.id, baseProject.description.get)
-      there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get)
+      there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get, "text/plain")
     }
   }
 
   "set project archived" should {
     "call the set project archived endpint" in new ProjectContext {
       teamcityClient.setProjectArchived(baseProject.id, archived = true)
-      there was one(httpClient).executePutPlainText(setProjectArchivedUrl, true.toString)
+      there was one(httpClient).executePutPlainText(setProjectArchivedUrl, true.toString, "text/plain")
     }
   }
 
   "set project name" should {
     "call set project name endpoint" in new ProjectContext {
       teamcityClient.setProjectName(baseProject.id, baseProject.name)
-      there was one(httpClient).executePutPlainText(setProjectNameUrl, baseProject.name)
+      there was one(httpClient).executePutPlainText(setProjectNameUrl, baseProject.name, "text/plain")
     }
   }
 
@@ -95,7 +95,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
   "create vcs roots" should {
     "return a list of vcs roots" in new VcsRootContext {
       teamcityClient.createVcsRoot(vcsRoot) must beEqualTo(baseVcsRoot)
-      there was one(httpClient).executePutPlainText(setVcsRootPropertiesUrl, vcsRoot.properties.property.head.value)
+      there was one(httpClient).executePutPlainText(setVcsRootPropertiesUrl, vcsRoot.properties.property.head.value, "text/plain")
     }
   }
 
@@ -170,8 +170,14 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
     "attach template" in new TemplateContext {
       teamcityClient.attachTemplateToBuildType(baseTemplate.id, buildTypeId)
-      there was one(httpClient).executePutPlainText(attachTemplateUrl, s"id:${baseTemplate.id}")
+      there was one(httpClient).executePutPlainText(attachTemplateUrl, s"id:${baseTemplate.id}", "application/json")
     }
+
+    "detach template" in new TemplateContext {
+      teamcityClient.detachTemplateToBuildType(buildTypeId)
+      there was one(httpClient).executeDelete(attachTemplateUrl)
+    }
+
   }
 
   "create snapshot dependency" should {

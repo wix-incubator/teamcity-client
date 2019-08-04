@@ -22,17 +22,17 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
 
   def setProjectDescription(projectId: String, desc: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/description"
-    httpClient.executePutPlainText(url, desc)
+    httpClient.executePutPlainText(url, desc, "text/plain")
   }
 
   def setProjectArchived(projectId: String, archived: Boolean): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/archived"
-    httpClient.executePutPlainText(url, archived.toString)
+    httpClient.executePutPlainText(url, archived.toString, "text/plain")
   }
 
   def setProjectName(projectId: String, newProjectName: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/name"
-    httpClient.executePutPlainText(url, newProjectName)
+    httpClient.executePutPlainText(url, newProjectName, "text/plain")
   }
 
   def getProjects: Projects = {
@@ -57,9 +57,10 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Project])
   }
-//TODO: add this to it test
+
+  //TODO: add this to it test
   def getBuildType(buildTypeId : String) : BuildType = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:${buildTypeId}"
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[BuildType])
   }
@@ -84,7 +85,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def deleteBuildType(buildTypeId: String): Unit = {
-    val url = s"${baseUrl}/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId"
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId"
     httpClient.executeDelete(url)
   }
 
@@ -98,7 +99,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   def setVcsRootProperties(vcsRootId: String, properties: List[Property]) = {
     properties foreach (p => {
       val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId/properties/${p.name}"
-      httpClient.executePutPlainText(url, p.value)
+      httpClient.executePutPlainText(url, p.value, "text/plain")
     })
   }
 
@@ -156,7 +157,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def getTemplates(): Templates = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes?locator=templateFlag:true"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes?locator=templateFlag:true"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Templates])
   }
@@ -166,24 +167,29 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
-  def attachTemplateToBuildType(templateId: String, buildTypeId : String) : Unit = {
+  def attachTemplateToBuildType(templateId: String, buildTypeId: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/template"
     httpClient.executePutPlainText(url, s"id:$templateId", "application/json")
   }
 
-  def createSnapshotDependency(buildTypeId : String, dependency : SnapshotDependency) : SnapshotDependency = {
+  def detachTemplateToBuildType(buildTypeId: String): Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/template"
+    httpClient.executeDelete(url)
+  }
+
+  def createSnapshotDependency(buildTypeId: String, dependency: SnapshotDependency): SnapshotDependency = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies"
     val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(dependency))
     mapper.readValue(json, classOf[SnapshotDependency])
   }
 
-  def getSnapShotDependencies(buildTypeId : String) : SnapshotDependencies = {
+  def getSnapShotDependencies(buildTypeId: String): SnapshotDependencies = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[SnapshotDependencies])
   }
 
-  def deleteSnapshotDependency(buildTypeId : String, snapshotDependencyId : String) : Unit = {
+  def deleteSnapshotDependency(buildTypeId: String, snapshotDependencyId: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies/$snapshotDependencyId"
     httpClient.executeDelete(url)
   }

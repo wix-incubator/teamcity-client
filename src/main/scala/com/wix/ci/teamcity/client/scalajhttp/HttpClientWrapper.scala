@@ -22,7 +22,7 @@ class HttpClientWrapper(username: String, password: String, timeout: Int = 5000)
     execute(url, "POST", Some(json))
   }
 
-  override def executePutPlainText(url: String, body: String, accept : String = "text/plain"): String = {
+  override def executePutPlainText(url: String, body: String, accept: String): String = {
     execute(url, "PUT", Some(body), "text/plain", accept)
   }
 
