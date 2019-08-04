@@ -5,6 +5,7 @@ import java.net.URLEncoder
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.wix.ci.teamcity.client.scalajhttp.HttpClientWrapper
+import TeamCityClient._
 
 class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   val mapper = MapperFactory.createMapper()
@@ -22,17 +23,17 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
 
   def setProjectDescription(projectId: String, desc: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/description"
-    httpClient.executePutPlainText(url, desc, "text/plain")
+    httpClient.executePutPlainText(url, desc, acceptTextPlain)
   }
 
   def setProjectArchived(projectId: String, archived: Boolean): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/archived"
-    httpClient.executePutPlainText(url, archived.toString, "text/plain")
+    httpClient.executePutPlainText(url, archived.toString, acceptTextPlain)
   }
 
   def setProjectName(projectId: String, newProjectName: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/name"
-    httpClient.executePutPlainText(url, newProjectName, "text/plain")
+    httpClient.executePutPlainText(url, newProjectName, acceptTextPlain)
   }
 
   def getProjects: Projects = {
@@ -99,7 +100,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   def setVcsRootProperties(vcsRootId: String, properties: List[Property]) = {
     properties foreach (p => {
       val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId/properties/${p.name}"
-      httpClient.executePutPlainText(url, p.value, "text/plain")
+      httpClient.executePutPlainText(url, p.value, acceptTextPlain)
     })
   }
 
@@ -148,7 +149,6 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[TeamCityServerDetails])
   }
-
 
   def createTemplate(template: BaseTemplate): Template = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${template.projectId}/templates"
@@ -200,6 +200,17 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Step])
   }
 
+  def setBuildParameter(buildTypeId: String, paramName: String, value: String): Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/parameters/$paramName"
+    httpClient.executePutPlainText(url, value, acceptTextPlain)
+  }
+
+  def deleteBuildParameter(buildTypeId: String, paramName: String): Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/parameters/$paramName"
+    httpClient.executeDelete(url)
+  }
+
+
   def getBuildSteps(buildTypeId : String) : Steps = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps"
     val json = httpClient.executeGet(url)
@@ -244,6 +255,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
 
 object TeamCityClient {
   val contextPrefix = "httpAuth/app/rest"
+  val acceptTextPlain = "text/plain"
 
   def aTeamCityClient(baseUrl : String, timeout : Int, username: String, password: String) : TeamCityClient = {
     val httpClient = new HttpClientWrapper(username,password,timeout)

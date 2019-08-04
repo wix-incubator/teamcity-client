@@ -27,6 +27,4 @@ trait VcsRootContext extends PropertiesContext with ContextBase {
   httpClient.executeGet(getVcsRootsByIdUrl) returns writeObjectAsJson(vcsRoot)
   httpClient.executeGet(getVcsRootsByNameUrl) returns writeObjectAsJson(vcsRoot)
   httpClient.executeGet(getVcsRootsByUrl) returns writeObjectAsJson(vcsRoot)
-
-
 }

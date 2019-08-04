@@ -9,5 +9,5 @@ trait HttpClient {
 
   def executeDelete(url: String): String
 
-  def executePut(url : String, body : String) : String
+  def executePut(url: String, body: String): String
 }

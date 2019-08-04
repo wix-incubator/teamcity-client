@@ -53,7 +53,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     }
 
-    "set build type root entries" in new Context{
+    "set build type root entries" in new Context {
       initializeProjAndBuildTypes(1)
       teamcityClient.createVcsRoot(vcsRoot)
 
@@ -63,6 +63,21 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       cleanupProjAndBuildTypes(1)
     }
 
+    "set and delete build parameter" in new Context {
+      initializeProjAndBuildTypes(1)
+
+      teamcityClient.setBuildParameter(baseBuildType.id, paramName, paramValue)
+      teamcityClient.getBuildType(baseBuildType.id).parameters.get.property
+        .contains(Property(paramName, paramValue)) must beTrue
+
+      teamcityClient.deleteBuildParameter(baseBuildType.id, paramName)
+      teamcityClient.getBuildType(baseBuildType.id).parameters.get.property
+        .contains(Property(paramName, paramValue)) must beFalse
+
+      cleanupProjAndBuildTypes(1)
+    }
+
+
     "creates template retrieve it" in new Context{
       val res = teamcityClient.createTemplate(baseTemplate)
       res must beEqualTo(template)
@@ -71,10 +86,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getTemplates must beEqualTo(Templates(0,Some(List())))
     }
 
-
-
     "get team city server details" in new Context{
-      teamcityClient.getTeamCityServerDetails.copy(currentTime = "",startTime = "") must beEqualTo(teamCityServerDetails)
+      teamcityClient.getTeamCityServerDetails().copy(currentTime = "",startTime = "") must beEqualTo(teamCityServerDetails)
     }
 
     "create snapshot dependency" in new Context{
@@ -162,6 +175,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val vcsRootId = "somevcsroot"
     val vcsRootName = "some vcs root"
     val vcsName = "jetbrains.git"
+    val paramName = "param"
+    val paramValue = "value"
 
     val httpClient = new HttpClientWrapper(username, password)
     val teamcityClient = new TeamCityClient(httpClient, teamcityBaseUrl)
