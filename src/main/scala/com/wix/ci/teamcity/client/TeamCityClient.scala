@@ -21,6 +21,11 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BaseProject])
   }
 
+  def moveProject(projectId: String, newParentProject: BaseProject): Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/$projectId/parentProject"
+    httpClient.executePut(url, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(newParentProject))
+  }
+
   def setProjectDescription(projectId: String, desc: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/description"
     httpClient.executePutPlainText(url, desc, acceptTextPlain)
@@ -209,7 +214,6 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/parameters/$paramName"
     httpClient.executeDelete(url)
   }
-
 
   def getBuildSteps(buildTypeId : String) : Steps = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps"

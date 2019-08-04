@@ -134,6 +134,17 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       cleanupProjAndBuildTypes(1)
     }
 
+    "move project" in new Context {
+      teamcityClient.createProject(baseProject)
+      teamcityClient.createProject(newParentBaseProject)
+
+      teamcityClient.getProjectById(baseProject.id).parentProject.id must beEqualTo(rootBaseProject.id)
+      teamcityClient.moveProject(baseProject.id, newParentBaseProject)
+      teamcityClient.getProjectById(baseProject.id).parentProject.id must beEqualTo(newParentBaseProject.id)
+      teamcityClient.getProjectById(newParentBaseProject.id).projects.project.size must beEqualTo(1)
+      cleanupMoveProjectTest()
+    }
+
     "get build type returns build type" in new Context{
 //      deleteBuildData
 //      val createdBuildType = teamcityClient.createBuildType(baseBuildType)
@@ -184,6 +195,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     val property = Property("ignoreKnownHosts", "true")
     val baseProject = BaseProject(projectId, projectName, Some("/httpAuth/app/rest/projects/id:projid"), Some("http://localhost:8111/project.html?projectId=projid"), Some("projDesc"), false, Some(rootProjectId))
+    val newParentBaseProject = BaseProject("parentProjectId", "parentProjectName", Some("/httpAuth/app/rest/projects/id:projid"), Some("http://localhost:8111/project.html?projectId=projid"), Some("projDesc"), false, Some(rootProjectId))
     val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href.get, baseProject.webUrl.get, Projects(0, null), rootBaseProject, BuildTypes(0, List()), templates = Some(Templates(0, Option(List()))))
     val vcsRoot = VcsRoot(vcsRootId, vcsRootName, vcsName, "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(List(property)))
     val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, Some("/httpAuth/app/rest/vcs-roots/id:somevcsroot"))
@@ -198,7 +210,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val baseTemplate = BaseTemplate(templateId, templateName,Some("/httpAuth/app/rest/buildTypes/id:template1"),rootProjectId,rootProjectName)
     val template = Template(templateId,templateName,Some("/httpAuth/app/rest/buildTypes/id:template1"),rootProjectId,rootProjectName,rootBaseProject,false,true)
     val templates = Templates(1,Some(List(baseTemplate)))
-    val teamCityServerDetails = new TeamCityServerDetails("58744","20181218T000000+0000","2018.1.5 (build 58744)",2018,1,"","")
+    val teamCityServerDetails = TeamCityServerDetails("58744","20181218T000000+0000","2018.1.5 (build 58744)",2018,1,"","")
     val dependency = SnapshotDependency("not-important","snapshot_dependency",Properties(List()),baseBuildType2)
 
     val defaultCreatedDependencyProps = Properties(List(Property("run-build-if-dependency-failed","MAKE_FAILED_TO_START"),
@@ -228,6 +240,11 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
         case 2 => teamcityClient.createBuildType(baseBuildType)
                   teamcityClient.createBuildType(baseBuildType2)
       }
+    }
+
+    def cleanupMoveProjectTest(): Unit = {
+      teamcityClient.deleteProject(baseProject.id)
+      teamcityClient.deleteProject(newParentBaseProject.id)
     }
 
     def cleanupProjAndBuildTypes(numberOfBuildTypes : Int): Unit ={

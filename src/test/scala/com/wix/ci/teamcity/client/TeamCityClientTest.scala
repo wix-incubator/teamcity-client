@@ -14,6 +14,11 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
+  "move project" in new ProjectContext {
+    teamcityClient.moveProject(baseProject.id, parentBaseProject)
+    there was one(httpClient).executePut(moveProjectUrl, writeObjectAsJson(parentBaseProject))
+  }
+
   "set project description" should {
     "call set project description endpoint" in new ProjectContext {
       teamcityClient.setProjectDescription(baseProject.id, baseProject.description.get)
@@ -105,7 +110,6 @@ class TeamCityClientTest extends SpecificationWithJUnit {
       there was one(httpClient).executeDelete(buildParameterUrl)
     }
   }
-
 
   "create vcs roots" should {
     "return a list of vcs roots" in new VcsRootContext {

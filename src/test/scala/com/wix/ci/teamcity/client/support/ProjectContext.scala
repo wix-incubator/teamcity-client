@@ -6,6 +6,7 @@ trait ProjectContext extends ContextBase {
 
   val projects = Projects(1, List(baseProject))
   val project = Project(baseProject.id, baseProject.name, "parentProjId1", "some-href", "some-weburl", Projects(0, List()), baseProject, BuildTypes(0, List()), None)
+  val parentBaseProject = BaseProject("parentProjectId", "parentName", None, None, None, false, None)
 
   val projectUrl = s"$baseUrl/${TeamCityClient.contextPrefix}/projects"
   val projectWithIdUrl = s"$projectUrl/id:${baseProject.id}"
@@ -13,6 +14,7 @@ trait ProjectContext extends ContextBase {
   val setProjectNameUrl = s"$projectWithIdUrl/name"
   val setProjectDescriptionUrl = s"$projectWithIdUrl/description"
   val setProjectArchivedUrl = s"$projectWithIdUrl/archived"
+  val moveProjectUrl = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/${ baseProject.id }/parentProject"
 
   httpClient.executePost(projectUrl, writeObjectAsJson(baseProject)) returns writeObjectAsJson(baseProject)
   httpClient.executeGet(projectUrl) returns writeObjectAsJson(projects)
