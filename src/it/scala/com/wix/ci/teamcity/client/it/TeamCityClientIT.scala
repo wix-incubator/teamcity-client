@@ -146,9 +146,13 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     }
 
     "get build type returns build type" in new Context{
-//      deleteBuildData
-//      val createdBuildType = teamcityClient.createBuildType(baseBuildType)
-//      val createdTemplate = teamcityClient.createTemplate(baseTemplate)
+      initializeGetBuildTypeTest
+      teamcityClient.createProject(baseProject)
+      teamcityClient.createBuildType(baseBuildType)
+      teamcityClient.createTemplate(baseTemplate)
+      teamcityClient.attachTemplateToBuildType(baseTemplate.id,baseBuildType.id)
+
+      //teamcityClient.getBuildType(baseBuildType.id).copy(href=None,webUrl=None) must beEqualTo(createExpectedBuildType)
       //TODO: finish here
       ok
 
@@ -257,14 +261,25 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     }
 
 
+    def initializeGetBuildTypeTest() = {
+      teamcityClient.deleteTemplate(baseTemplate.id)
+    }
 
     def createExpectedBuildType(): BuildType= {
       val templateFlag = false
       val href : Option[String] = None
       val webUrl : Option[String] = None
-//      BuildType(baseBuildType.id,baseBuildType.name,templateFlag,baseBuildType.description,
-//        baseBuildType.projectName,baseBuildType.projectId,href,webUrl,baseProject,template)
-      null
+      val templates : Option[Templates] = Some(Templates(1,Some(List(baseTemplate))))
+      val triggers : Option[Triggers] = None
+      val buildSteps : Option[Steps] = Some(steps)
+      val setting : Option[Properties] = None
+      val params : Option[Properties] = None
+      val features : Option[Features] = None
+
+      BuildType(baseBuildType.id,baseBuildType.name,templateFlag,None,
+        baseBuildType.projectName,baseBuildType.projectId,href,webUrl,Option(baseProject),None,
+        templates,triggers,buildSteps,Option(vcsRootEntries),setting,params,features,false)
+
     }
   }
 
