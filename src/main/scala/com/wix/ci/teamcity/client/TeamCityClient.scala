@@ -64,13 +64,11 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Project])
   }
 
-  //TODO: add this to it test
-  def getBuildType(buildTypeId : String) : BuildType = {
+  def getBuildType(buildTypeId: String) : BuildType = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[BuildType])
   }
-
 
   def getBuildTypes(): BuildTypes = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes"
@@ -138,15 +136,9 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
-  def createBuildTypeVcsRootEntries(buildTypeId: String, vcsRootEntries: VcsRootEntries): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/vcs-root-entries"
-    httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntries.vcsRootEntry.get.head))
-  }
-
-  def setBuildTypeVcsRootEntry(buildTypeId: String, vcsRootEntry: VcsRootEntry): VcsRootEntry = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/vcs-root-entries"
-    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntry))
-    mapper.readValue(json, classOf[VcsRootEntry])
+  def setBuildTypeVcsRootEntries(buildTypeId: String, vcsRootEntries: VcsRootEntries): Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/vcs-root-entries"
+    httpClient.executePut(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntries))
   }
 
   def getTeamCityServerDetails(): TeamCityServerDetails = {
@@ -199,13 +191,13 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
-  def createBuildStep(buildTypeId : String, step : Step) : Step = {
+  def addBuildStepToBuildType(buildTypeId : String, step : Step) : Step = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps"
     val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(step))
     mapper.readValue(json, classOf[Step])
   }
 
-  def setBuildParameter(buildTypeId: String, paramName: String, value: String): Unit = {
+  def addBuildParameterToBuildType(buildTypeId: String, paramName: String, value: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/parameters/$paramName"
     httpClient.executePutPlainText(url, value, acceptTextPlain)
   }

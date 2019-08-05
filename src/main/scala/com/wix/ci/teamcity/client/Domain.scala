@@ -70,7 +70,7 @@ case class VcsRootEntry(id: String,
                         @JsonProperty("checkout-rules") checkoutRules: String,
                         @JsonProperty("vcs-root") baseVcsRoot: BaseVcsRoot)
 
-case class VcsRootEntries(count: Int, vcsRootEntry: Option[List[VcsRootEntry]])
+case class VcsRootEntries(count: Int, @JsonProperty("vcs-root-entry") vcsRootEntry: Option[List[VcsRootEntry]])
 
 case class TeamCityServerDetails(buildNumber: String,
                                  buildDate: String,

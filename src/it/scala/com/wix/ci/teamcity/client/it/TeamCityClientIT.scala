@@ -50,23 +50,31 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getBuildTypes() must beEqualTo(BuildTypes(0,List()))
 
       teamcityClient.deleteProject(baseProject.id)
-
     }
 
     "set build type root entries" in new Context {
       initializeProjAndBuildTypes(1)
       teamcityClient.createVcsRoot(vcsRoot)
+      val s = teamcityClient.getVcsRoots()
 
-      teamcityClient.createBuildTypeVcsRootEntries(baseBuildType.id,vcsRootEntries)
-      teamcityClient.setBuildTypeVcsRootEntry(baseBuildType.id,vcsRootEntries.vcsRootEntry.get.head) must beEqualTo(vcsRootEntries.vcsRootEntry.get.head)
+      teamcityClient.setBuildTypeVcsRootEntries(baseBuildType.id, vcsRootEntries)
+
+      teamcityClient.getBuildType(baseBuildType.id)
+        .vcsRootEntries
+        .get
+        .vcsRootEntry
+        .get
+        .contains(vcsRootEntries.vcsRootEntry.get.head) must beTrue
+
 
       cleanupProjAndBuildTypes(1)
+      teamcityClient.deleteVcsRoot(vcsRoot.id)
     }
 
     "set and delete build parameter" in new Context {
       initializeProjAndBuildTypes(1)
 
-      teamcityClient.setBuildParameter(baseBuildType.id, paramName, paramValue)
+      teamcityClient.addBuildParameterToBuildType(baseBuildType.id, paramName, paramValue)
       teamcityClient.getBuildType(baseBuildType.id).parameters.get.property
         .contains(Property(paramName, paramValue)) must beTrue
 
@@ -104,7 +112,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     "create step" in new Context{
       initializeProjAndBuildTypes(1)
 
-      teamcityClient.createBuildStep(baseBuildType.id,step) must beEqualTo(step.copy(id=stepId))
+      teamcityClient.addBuildStepToBuildType(baseBuildType.id,step) must beEqualTo(step.copy(id=stepId))
       teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(steps)
       teamcityClient.deleteBuildStep(baseBuildType.id,stepId)
       teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(Steps(0,None))
@@ -150,7 +158,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger must beNone
 
       val _trigger = teamcityClient.addTriggerToBuildType(baseBuildType.id, trigger)
-      teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger.get.head.id must beEqualTo(_trigger.id)
+      teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger.get.contains(expectedTrigger) must beTrue
 
       teamcityClient.deleteTriggerFromBuildType(baseBuildType.id, _trigger.id)
       teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger must beNone
@@ -158,15 +166,14 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       cleanupProjAndBuildTypes(1)
     }
 
-    "get build type returns build type" in new Context{
+    "get build type returns build type" in new Context {
       initializeGetBuildTypeTest()
-      //teamcityClient.getBuildType(baseBuildType.id).copy(href=None,webUrl=None) must beEqualTo(createExpectedBuildType)
-      //TODO: finish here
-      ok
-
+      teamcityClient
+        .getBuildType(baseBuildType.id)
+        .copy(href = None, webUrl = None, settings = None, features = None) must
+        beEqualTo(createExpectedBuildType())
     }
   }
-
 
   override def beforeAll(): Unit = {
     Try(killTeamcityDocker())
@@ -203,23 +210,23 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     val httpClient = new HttpClientWrapper(username, password)
     val teamcityClient = new TeamCityClient(httpClient, teamcityBaseUrl)
-    val rootBaseProject = BaseProject(rootProjectId,rootProjectName, Some("/httpAuth/app/rest/projects/id:_Root"), Some("http://localhost:8111/project.html?projectId=_Root"), Some("Contains all other projects"), false, None)
+    val rootBaseProject = BaseProject(rootProjectId,rootProjectName, Some("/httpAuth/app/rest/projects/id:_Root"), Some("http://localhost:8111/project.html?projectId=_Root"), Some("Contains all other projects"), archived = false, None)
 
     val property = Property("ignoreKnownHosts", "true")
-    val baseProject = BaseProject(projectId, projectName, Some("/httpAuth/app/rest/projects/id:projid"), Some("http://localhost:8111/project.html?projectId=projid"), Some("projDesc"), false, Some(rootProjectId))
-    val newParentBaseProject = BaseProject("parentProjectId", "parentProjectName", Some("/httpAuth/app/rest/projects/id:projid"), Some("http://localhost:8111/project.html?projectId=projid"), Some("projDesc"), false, Some(rootProjectId))
+    val baseProject = BaseProject(projectId, projectName, Some("/httpAuth/app/rest/projects/id:projid"), Some("http://localhost:8111/project.html?projectId=projid"), Some("projDesc"), archived = false, Some(rootProjectId))
+    val newParentBaseProject = BaseProject("parentProjectId", "parentProjectName", Some("/httpAuth/app/rest/projects/id:projid"), Some("http://localhost:8111/project.html?projectId=projid"), Some("projDesc"), archived = false, Some(rootProjectId))
     val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href.get, baseProject.webUrl.get, Projects(0, null), rootBaseProject, BuildTypes(0, List()), templates = Some(Templates(0, Option(List()))))
     val vcsRoot = VcsRoot(vcsRootId, vcsRootName, vcsName, "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(List(property)))
     val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, Some("/httpAuth/app/rest/vcs-roots/id:somevcsroot"))
     val vcsRoots = VcsRoots(1, Some("/httpAuth/app/rest/vcs-roots"), Some(List(baseVcsRoot)))
 
-    val baseBuildType = BaseBuildType(buildTypeId1, buildTypeName1, buildTypeDesc, None, projectName, projectId, false)
-    val baseBuildType2 = BaseBuildType(buildTypeId2, buildTypeName2, buildTypeDesc, None, projectName, projectId, false)
+    val baseBuildType = BaseBuildType(buildTypeId1, buildTypeName1, buildTypeDesc, None, projectName, projectId, paused = false)
+    val baseBuildType2 = BaseBuildType(buildTypeId2, buildTypeName2, buildTypeDesc, None, projectName, projectId, paused = false)
     val buildTypes = BuildTypes(2, List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
     val vcsRootEntries = VcsRootEntries(1,Some(List(VcsRootEntry(baseVcsRoot.id,"some checkout rules",baseVcsRoot))))
 
     val baseTemplate = BaseTemplate(templateId, templateName,Some("/httpAuth/app/rest/buildTypes/id:template1"),rootProjectId,rootProjectName)
-    val template = Template(templateId,templateName,Some("/httpAuth/app/rest/buildTypes/id:template1"),rootProjectId,rootProjectName,rootBaseProject,false,true)
+    val template = Template(templateId,templateName,Some("/httpAuth/app/rest/buildTypes/id:template1"),rootProjectId,rootProjectName,rootBaseProject,inherited = false,templateFlag = true)
     val templates = Templates(1,Some(List(baseTemplate)))
     val teamCityServerDetails = TeamCityServerDetails("58744","20181218T000000+0000","2018.1.5 (build 58744)",2018,1,"","")
     val dependency = SnapshotDependency("not-important","snapshot_dependency",Properties(List()),baseBuildType2)
@@ -236,6 +243,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val stepProperties = Properties(List(Property("teamcity.step.mode","default")))
     val step = Step("not-important","maven step",stepType,stepProperties)
     val steps = Steps(1,Option(List(step.copy(id=stepId))))
+    val autoGeneratedStepsId = Steps(1,Option(List(step.copy(id = "RUNNER_2"))))
 
     val defaultGroup = Group("ALL_USERS_GROUP","All Users",Some("/httpAuth/app/rest/userGroups/key:ALL_USERS_GROUP"),Some("Contains all TeamCity users"))
     val groups = Groups(1,Some(List(defaultGroup)))
@@ -244,7 +252,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val users = Users(2,Some(List(baseUserAdmin,baseUser)))
     val user = User(2,"username1",Some("name1"),None,None,Some("/httpAuth/app/rest/users/id:2"),Roles(0,Option(List())),groups)
 
-    val trigger = Trigger("triggerId", "VCS Trigger", Properties(Nil))
+    val trigger = Trigger("triggerIdWillBeReplacedByTC", "VCS Trigger", Properties(Nil))
+    val expectedTrigger = Trigger("TRIGGER_1", "VCS Trigger", null)
 
     def initializeProjAndBuildTypes(numberOfBuildTypes : Int): Unit ={
       teamcityClient.createProject(baseProject)
@@ -274,24 +283,44 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.createProject(baseProject)
       teamcityClient.createBuildType(baseBuildType)
       teamcityClient.createTemplate(baseTemplate)
-      teamcityClient.attachTemplateToBuildType(baseTemplate.id,baseBuildType.id)
+      teamcityClient.attachTemplateToBuildType(baseTemplate.id, baseBuildType.id)
+      teamcityClient.addTriggerToBuildType(baseBuildType.id, trigger)
+      teamcityClient.addBuildStepToBuildType(baseBuildType.id, step)
+      teamcityClient.addBuildParameterToBuildType(baseBuildType.id, paramName, paramValue)
+      teamcityClient.createVcsRoot(vcsRoot)
+      teamcityClient.setBuildTypeVcsRootEntries(baseBuildType.id, vcsRootEntries)
     }
 
     def createExpectedBuildType(): BuildType= {
       val templateFlag = false
-      val href : Option[String] = None
-      val webUrl : Option[String] = None
-      val templates : Option[Templates] = Some(Templates(1,Some(List(baseTemplate))))
-      val triggers : Option[Triggers] = None
-      val buildSteps : Option[Steps] = Some(steps)
-      val setting : Option[Properties] = None
-      val params : Option[Properties] = None
-      val features : Option[Features] = None
+      val href: Option[String] = None
+      val webUrl: Option[String] = None
+      val templates: Option[Templates] = Some(Templates(1, Some(List(baseTemplate))))
+      val triggers: Option[Triggers] = Some(Triggers(1, Some(List(expectedTrigger.copy(id = "TRIGGER_2")))))
+      val buildSteps: Option[Steps] = Some(autoGeneratedStepsId)
+      val setting: Option[Properties] = None
+      val params: Option[Properties] = Some(Properties(List(Property(paramName, paramValue))))
+      val features: Option[Features] = None
 
-      BuildType(baseBuildType.id,baseBuildType.name,templateFlag,None,
-        baseBuildType.projectName,baseBuildType.projectId,href,webUrl,Option(baseProject),None,
-        templates,triggers,buildSteps,Option(vcsRootEntries),setting,params,features,false)
-
+      BuildType(
+        baseBuildType.id,
+        baseBuildType.name,
+        templateFlag,
+        None,
+        baseBuildType.projectName,
+        baseBuildType.projectId,
+        href,
+        webUrl,
+        Option(baseProject),
+        None,
+        templates,
+        triggers,
+        buildSteps,
+        Option(vcsRootEntries),
+        setting,
+        params,
+        features,
+        paused = false)
     }
   }
 

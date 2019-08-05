@@ -99,7 +99,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
   "set build parameter" should {
     "invoke TC API" in new BuildTypesContext {
-      teamcityClient.setBuildParameter(baseBuildTypes.id, paramName, paramValue)
+      teamcityClient.addBuildParameterToBuildType(baseBuildTypes.id, paramName, paramValue)
       there was one(httpClient).executePutPlainText(buildParameterUrl, paramValue, acceptTextPlain)
     }
   }
@@ -151,14 +151,8 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
   "create build type vcs root entries" should {
     "invoke TC API" in new BuildTypesContext {
-      teamcityClient.createBuildTypeVcsRootEntries(baseBuildTypes.id, vcsRootEntries)
-      there was one(httpClient).executePost(createBuildTypeVcsRootEntriesUrl, writeObjectAsJson(vcsRootEntry))
-    }
-  }
-
-  "set build type vcs root entry" should {
-    "return vcs root" in new BuildTypesContext {
-      teamcityClient.setBuildTypeVcsRootEntry(baseBuildTypes.id, vcsRootEntry) must beEqualTo(vcsRootEntry)
+      teamcityClient.setBuildTypeVcsRootEntries(baseBuildTypes.id, vcsRootEntries)
+      there was one(httpClient).executePut(createBuildTypeVcsRootEntriesUrl, writeObjectAsJson(vcsRootEntries))
     }
   }
 
@@ -219,7 +213,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
     "create build step" should {
       "create build step" in new StepContext {
-        teamcityClient.createBuildStep(baseBuildTypes.id, step) must beEqualTo(step)
+        teamcityClient.addBuildStepToBuildType(baseBuildTypes.id, step) must beEqualTo(step)
       }
     }
 
