@@ -142,6 +142,22 @@ SnapshotDependency dependency = new SnapshotDependency("myBuildTypeId2","snapsho
 
 teamcityClient.createSnapshotDependency(baseBuildType.id(),dependency);
 ```        
+### Add trigger to a buildType
+In some cases, like triggers, TeamCity will ignore the trigger id and will auto generate and id
+so when adding a trigger to a buildType the client will return a trigger object with the generated id
+
+Scala:
+```scala
+val triggerToAdd = Trigger("triggerIdWillBeReplacedByTC", "VCS Trigger", Properties(Nil))
+val trigger = teamcityClient.addTriggerToBuildType(baseBuildType.id, triggerToAdd)
+     
+```
+Java:
+```java
+List<Property> props = new ArrayList<>();
+Trigger triggerToAdd = new Trigger("triggerIdWillBeReplacedByTC", "VCS Trigger", new Properties(scala.collection.JavaConverters.asScalaBuffer(props).toList()));
+Trigger trigger = teamcityClient.addTriggerToBuildType(baseBuildType.id, triggerToAdd);
+```
 
 ### Contributing
 IT tests require docker up and running on the machine as the tests load a dockerized teamcity to run the IT tests against.
