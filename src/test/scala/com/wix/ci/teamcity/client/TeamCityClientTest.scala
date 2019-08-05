@@ -237,6 +237,12 @@ class TeamCityClientTest extends SpecificationWithJUnit {
       }
     }
 
+    "add trigger to build type" should{
+      "add the trigger" in new TriggerContext {
+        teamcityClient.addTriggerToBuildType(buildTypeId,_trigger) must beEqualTo(_trigger)
+      }
+    }
+
     "create user" should {
       "create user" in new UserContext {
         teamcityClient.createUser(baseUser) must beEqualTo(baseUser)

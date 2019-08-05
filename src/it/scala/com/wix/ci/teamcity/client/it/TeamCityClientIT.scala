@@ -147,11 +147,6 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     "get build type returns build type" in new Context{
       initializeGetBuildTypeTest
-      teamcityClient.createProject(baseProject)
-      teamcityClient.createBuildType(baseBuildType)
-      teamcityClient.createTemplate(baseTemplate)
-      teamcityClient.attachTemplateToBuildType(baseTemplate.id,baseBuildType.id)
-
       //teamcityClient.getBuildType(baseBuildType.id).copy(href=None,webUrl=None) must beEqualTo(createExpectedBuildType)
       //TODO: finish here
       ok
@@ -263,6 +258,10 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     def initializeGetBuildTypeTest() = {
       teamcityClient.deleteTemplate(baseTemplate.id)
+      teamcityClient.createProject(baseProject)
+      teamcityClient.createBuildType(baseBuildType)
+      teamcityClient.createTemplate(baseTemplate)
+      teamcityClient.attachTemplateToBuildType(baseTemplate.id,baseBuildType.id)
     }
 
     def createExpectedBuildType(): BuildType= {

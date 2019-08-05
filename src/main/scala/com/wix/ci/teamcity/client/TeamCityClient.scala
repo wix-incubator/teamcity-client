@@ -226,6 +226,12 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
+  def addTriggerToBuildType(buildTypeId : String, trigger : Trigger) : Trigger = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/triggers"
+    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(trigger))
+    mapper.readValue(json, classOf[Trigger])
+  }
+
   def createUser(user : BaseUser) : BaseUser = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users"
     val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(user))
