@@ -4,8 +4,8 @@ import java.net.URLEncoder
 
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.wix.ci.teamcity.client.TeamCityClient._
 import com.wix.ci.teamcity.client.scalajhttp.HttpClientWrapper
-import TeamCityClient._
 
 class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   val mapper = MapperFactory.createMapper()
@@ -265,9 +265,9 @@ object TeamCityClient {
   val acceptTextPlain = "text/plain"
   val acceptApplicationJson = "application/json"
 
-  def aTeamCityClient(baseUrl : String, timeout : Int, username: String, password: String) : TeamCityClient = {
-    val httpClient = new HttpClientWrapper(username,password,timeout)
-    new TeamCityClient(httpClient,baseUrl)
+  def aTeamCityClient(baseUrl: String, timeout: Int, username: String, password: String): TeamCityClient = {
+    val httpClient = new HttpClientWrapper(username, password, timeout)
+    new TeamCityClient(httpClient, baseUrl)
   }
 }
 

@@ -266,7 +266,6 @@ class TeamCityClientTest extends SpecificationWithJUnit {
       "get a list of users" in new UserContext {
         teamcityClient.deleteUser(user.id)
         there was one(httpClient).executeDelete(userWithIdUrl)
-
       }
     }
   }

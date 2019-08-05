@@ -172,6 +172,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
         .getBuildType(baseBuildType.id)
         .copy(href = None, webUrl = None, settings = None, features = None) must
         beEqualTo(createExpectedBuildType())
+
+      cleanupProjAndBuildTypes(1)
     }
   }
 
