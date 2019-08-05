@@ -232,7 +232,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Trigger])
   }
 
-  def deleteTriggerToBuildType(buildTypeId: String, triggerId: String): Unit = {
+  def deleteTriggerFromBuildType(buildTypeId: String, triggerId: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/triggers/$triggerId"
     httpClient.executeDelete(url)
   }

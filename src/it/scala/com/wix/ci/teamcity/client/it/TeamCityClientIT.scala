@@ -152,7 +152,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       val _trigger = teamcityClient.addTriggerToBuildType(baseBuildType.id, trigger)
       teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger.get.head.id must beEqualTo(_trigger.id)
 
-      teamcityClient.deleteTriggerToBuildType(baseBuildType.id, _trigger.id)
+      teamcityClient.deleteTriggerFromBuildType(baseBuildType.id, _trigger.id)
       teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger must beNone
 
       cleanupProjAndBuildTypes(1)

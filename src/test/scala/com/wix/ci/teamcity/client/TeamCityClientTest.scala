@@ -246,7 +246,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
     "delete trigger to build type" should{
       "delete the trigger" in new TriggerContext {
-        teamcityClient.deleteTriggerToBuildType(buildTypeId, _trigger.id)
+        teamcityClient.deleteTriggerFromBuildType(buildTypeId, _trigger.id)
         there was one(httpClient).executeDelete(deleteTriggerUrl)
       }
     }
