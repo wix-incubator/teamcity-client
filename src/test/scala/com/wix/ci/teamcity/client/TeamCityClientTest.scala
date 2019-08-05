@@ -239,7 +239,15 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
     "add trigger to build type" should{
       "add the trigger" in new TriggerContext {
-        teamcityClient.addTriggerToBuildType(buildTypeId,_trigger) must beEqualTo(_trigger)
+        teamcityClient.addTriggerToBuildType(buildTypeId, _trigger)
+        there was one(httpClient).executePost(addTriggerUrl, writeObjectAsJson(_trigger))
+      }
+    }
+
+    "delete trigger to build type" should{
+      "delete the trigger" in new TriggerContext {
+        teamcityClient.deleteTriggerToBuildType(buildTypeId, _trigger.id)
+        there was one(httpClient).executeDelete(deleteTriggerUrl)
       }
     }
 

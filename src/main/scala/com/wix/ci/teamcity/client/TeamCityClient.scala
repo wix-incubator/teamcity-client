@@ -221,20 +221,25 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Steps])
   }
 
-  def deleteBuildStep(buildTypeId : String,stepId : String) : Unit ={
+  def deleteBuildStep(buildTypeId : String,stepId : String): Unit ={
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps/$stepId"
     httpClient.executeDelete(url)
   }
 
-  def addTriggerToBuildType(buildTypeId : String, trigger : Trigger) : Trigger = {
+  def addTriggerToBuildType(buildTypeId: String, trigger: Trigger): Trigger = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/triggers"
     val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(trigger))
     mapper.readValue(json, classOf[Trigger])
   }
 
+  def deleteTriggerToBuildType(buildTypeId: String, triggerId: String): Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/triggers/$triggerId"
+    httpClient.executeDelete(url)
+  }
+
   def createUser(user : BaseUser) : BaseUser = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users"
-    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(user))
+    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(user))
     mapper.readValue(json, classOf[BaseUser])
   }
 

@@ -145,8 +145,21 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       cleanupMoveProjectTest()
     }
 
+    "add and remove triggers" in new Context {
+      initializeProjAndBuildTypes(1)
+      teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger must beNone
+
+      val _trigger = teamcityClient.addTriggerToBuildType(baseBuildType.id, trigger)
+      teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger.get.head.id must beEqualTo(_trigger.id)
+
+      teamcityClient.deleteTriggerToBuildType(baseBuildType.id, _trigger.id)
+      teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger must beNone
+
+      cleanupProjAndBuildTypes(1)
+    }
+
     "get build type returns build type" in new Context{
-      initializeGetBuildTypeTest
+      initializeGetBuildTypeTest()
       //teamcityClient.getBuildType(baseBuildType.id).copy(href=None,webUrl=None) must beEqualTo(createExpectedBuildType)
       //TODO: finish here
       ok
@@ -200,7 +213,6 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, Some("/httpAuth/app/rest/vcs-roots/id:somevcsroot"))
     val vcsRoots = VcsRoots(1, Some("/httpAuth/app/rest/vcs-roots"), Some(List(baseVcsRoot)))
 
-
     val baseBuildType = BaseBuildType(buildTypeId1, buildTypeName1, buildTypeDesc, None, projectName, projectId, false)
     val baseBuildType2 = BaseBuildType(buildTypeId2, buildTypeName2, buildTypeDesc, None, projectName, projectId, false)
     val buildTypes = BuildTypes(2, List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
@@ -232,6 +244,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val users = Users(2,Some(List(baseUserAdmin,baseUser)))
     val user = User(2,"username1",Some("name1"),None,None,Some("/httpAuth/app/rest/users/id:2"),Roles(0,Option(List())),groups)
 
+    val trigger = Trigger("triggerId", "VCS Trigger", Properties(Nil))
+
     def initializeProjAndBuildTypes(numberOfBuildTypes : Int): Unit ={
       teamcityClient.createProject(baseProject)
       numberOfBuildTypes match{
@@ -254,7 +268,6 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       }
       teamcityClient.deleteProject(baseProject.id)
     }
-
 
     def initializeGetBuildTypeTest() = {
       teamcityClient.deleteTemplate(baseTemplate.id)
