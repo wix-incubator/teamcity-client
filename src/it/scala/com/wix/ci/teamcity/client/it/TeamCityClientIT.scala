@@ -153,6 +153,17 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       cleanupMoveProjectTest()
     }
 
+    "pause and unpause build type" in new Context {
+      initializeProjAndBuildTypes(1)
+      teamcityClient.pauseBuild(baseBuildType.id, pause = true)
+      teamcityClient.getBuildType(baseBuildType.id).paused must beTrue
+
+      teamcityClient.pauseBuild(baseBuildType.id, pause = false)
+      teamcityClient.getBuildType(baseBuildType.id).paused must beFalse
+
+      cleanupProjAndBuildTypes(1)
+    }
+
     "add and remove triggers" in new Context {
       initializeProjAndBuildTypes(1)
       teamcityClient.getBuildType(baseBuildType.id).triggers.get.trigger must beNone

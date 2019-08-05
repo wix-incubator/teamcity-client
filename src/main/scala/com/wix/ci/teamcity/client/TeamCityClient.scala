@@ -207,6 +207,11 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
+  def pauseBuild(buildTypeId: String, pause: Boolean): Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/paused"
+    httpClient.executePutPlainText(url, pause.toString, acceptTextPlain)
+  }
+
   def getBuildSteps(buildTypeId : String) : Steps = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps"
     val json = httpClient.executeGet(url)

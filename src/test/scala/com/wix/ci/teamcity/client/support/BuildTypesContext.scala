@@ -20,6 +20,7 @@ trait BuildTypesContext extends TemplateContext with VcsRootContext with Context
   val createBuildTypeUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/id:${ baseProject.id }/buildTypes"
   val deleteBuildTypeUrl = s"$buildTypesUrl/id:${ baseBuildTypes.id }"
   val buildParameterUrl = s"$buildTypesUrl/${ baseBuildTypes.id }/parameters/$paramName"
+  val setPauseBuildUrl = s"$buildTypesUrl/${ baseBuildTypes.id }/paused"
   val createBuildTypeVcsRootEntriesUrl = s"$buildTypesUrl/${ baseBuildTypes.id }/vcs-root-entries"
   val getBuildType = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:${ baseBuildTypes.id }"
 

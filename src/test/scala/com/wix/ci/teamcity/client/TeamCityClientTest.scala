@@ -268,6 +268,13 @@ class TeamCityClientTest extends SpecificationWithJUnit {
         there was one(httpClient).executeDelete(userWithIdUrl)
       }
     }
+
+    "pause build" should {
+      "invoke TC API" in new BuildTypesContext {
+        teamcityClient.pauseBuild(buildType.id, pause = true)
+        there was one(httpClient).executePutPlainText(setPauseBuildUrl, "true", acceptTextPlain)
+      }
+    }
   }
 
 }
