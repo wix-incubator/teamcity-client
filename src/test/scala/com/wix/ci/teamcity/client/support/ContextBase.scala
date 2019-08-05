@@ -18,7 +18,6 @@ trait ContextBase extends Scope with Mockito with MustThrownExpectations {
   protected val baseProject = BaseProject(projectId, projName, Some(href), Some("some-web-url"), Some("desc"), archived = false, Some("some-parent-proj"))
   val acceptTextPlain = "text/plain"
 
-
   protected def writeObjectAsJson(obj: AnyRef): String = {
     mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj)
   }

@@ -8,7 +8,6 @@ trait SnapshotDependenciesContext extends BuildTypesContext with ContextBase {
   val snapshotDependencies = SnapshotDependencies(1, Some(List(snapshotDependency)))
   val snapshotDependenciesUrl = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}/snapshot-dependencies"
 
-
   httpClient.executePost(snapshotDependenciesUrl, writeObjectAsJson(snapshotDependency)) returns writeObjectAsJson(snapshotDependency)
   httpClient.executeGet(snapshotDependenciesUrl) returns writeObjectAsJson(snapshotDependencies)
 }

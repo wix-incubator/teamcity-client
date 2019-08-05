@@ -11,5 +11,4 @@ trait StepContext extends BuildTypesContext with ContextBase {
 
   httpClient.executePost(buildStepUrl, writeObjectAsJson(step)) returns writeObjectAsJson(step)
   httpClient.executeGet(buildStepUrl) returns writeObjectAsJson(steps)
-
 }

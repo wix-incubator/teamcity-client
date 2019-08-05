@@ -166,7 +166,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
 
   def attachTemplateToBuildType(templateId: String, buildTypeId: String): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/template"
-    httpClient.executePutPlainText(url, s"id:$templateId", "application/json")
+    httpClient.executePutPlainText(url, s"id:$templateId", acceptApplicationJson)
   }
 
   def detachTemplateToBuildType(buildTypeId: String): Unit = {
@@ -263,6 +263,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
 object TeamCityClient {
   val contextPrefix = "httpAuth/app/rest"
   val acceptTextPlain = "text/plain"
+  val acceptApplicationJson = "application/json"
 
   def aTeamCityClient(baseUrl : String, timeout : Int, username: String, password: String) : TeamCityClient = {
     val httpClient = new HttpClientWrapper(username,password,timeout)
