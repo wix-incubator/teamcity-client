@@ -44,7 +44,8 @@ trait BuildTypesContext extends TemplateContext with VcsRootContext with Context
     None,
     None,
     None,
-    paused = false)
+    paused = false,
+    None)
 
 
   httpClient.executeGet(buildTypesUrl) returns writeObjectAsJson(buildTypes)

@@ -193,7 +193,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
   "create snapshot dependency" should {
     "create snapshot dependency" in new SnapshotDependenciesContext {
-      teamcityClient.createSnapshotDependency(baseBuildTypes.id, snapshotDependency) must beEqualTo(snapshotDependency)
+      teamcityClient.setSnapshotDependency(baseBuildTypes.id, snapshotDependency) must beEqualTo(snapshotDependency)
     }
   }
 

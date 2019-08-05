@@ -174,7 +174,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
-  def createSnapshotDependency(buildTypeId: String, dependency: SnapshotDependency): SnapshotDependency = {
+  def setSnapshotDependency(buildTypeId: String, dependency: SnapshotDependency): SnapshotDependency = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies"
     val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(dependency))
     mapper.readValue(json, classOf[SnapshotDependency])

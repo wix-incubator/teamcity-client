@@ -139,4 +139,5 @@ case class BuildType(@JsonProperty("id") id: String,
                      @JsonProperty("settings") settings: Option[Properties],
                      @JsonProperty("parameters") parameters: Option[Properties],
                      @JsonProperty("features") features: Option[Features],
-                     @JsonProperty("paused") paused: Boolean)
+                     @JsonProperty("paused") paused: Boolean,
+                     @JsonProperty("snapshot-dependencies") snapshotDependencies : Option[SnapshotDependencies])

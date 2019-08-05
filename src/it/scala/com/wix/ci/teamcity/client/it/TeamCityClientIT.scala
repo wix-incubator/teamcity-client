@@ -101,7 +101,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     "create snapshot dependency" in new Context{
       initializeProjAndBuildTypes(2)
 
-      teamcityClient.createSnapshotDependency(baseBuildType.id,dependency) must beEqualTo(dependencyWithDefaultProps)
+      teamcityClient.setSnapshotDependency(baseBuildType.id,dependency) must beEqualTo(dependencyWithDefaultProps)
       teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(snapshotDependencies)
       teamcityClient.deleteSnapshotDependency(baseBuildType.id,dependencyWithDefaultProps.id)
       teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(SnapshotDependencies(0,None))
@@ -184,7 +184,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
         .copy(href = None, webUrl = None, settings = None, features = None) must
         beEqualTo(createExpectedBuildType())
 
-      cleanupProjAndBuildTypes(1)
+      cleanupProjAndBuildTypes(2)
     }
   }
 
@@ -295,6 +295,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.deleteTemplate(baseTemplate.id)
       teamcityClient.createProject(baseProject)
       teamcityClient.createBuildType(baseBuildType)
+      teamcityClient.createBuildType(baseBuildType2) //for the snapshot dependencies
       teamcityClient.createTemplate(baseTemplate)
       teamcityClient.attachTemplateToBuildType(baseTemplate.id, baseBuildType.id)
       teamcityClient.addTriggerToBuildType(baseBuildType.id, trigger)
@@ -302,6 +303,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.addBuildParameterToBuildType(baseBuildType.id, paramName, paramValue)
       teamcityClient.createVcsRoot(vcsRoot)
       teamcityClient.setBuildTypeVcsRootEntries(baseBuildType.id, vcsRootEntries)
+      teamcityClient.setSnapshotDependency(baseBuildType.id,dependency)
     }
 
     def createExpectedBuildType(): BuildType= {
@@ -314,6 +316,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       val setting: Option[Properties] = None
       val params: Option[Properties] = Some(Properties(List(Property(paramName, paramValue))))
       val features: Option[Features] = None
+      val dependencies : Option[SnapshotDependencies] = Some(SnapshotDependencies(1,Some(List(dependencyWithDefaultProps))))
 
       BuildType(
         baseBuildType.id,
@@ -333,7 +336,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
         setting,
         params,
         features,
-        paused = false)
+        paused = false,
+        dependencies)
     }
   }
 
