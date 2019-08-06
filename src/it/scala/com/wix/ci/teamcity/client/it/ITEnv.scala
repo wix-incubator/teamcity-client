@@ -1,10 +1,9 @@
 package com.wix.ci.teamcity.client.it
-import java.io.{File, InputStreamReader}
+import java.io.File
 
 import org.apache.commons.io.{FileUtils, IOUtils}
 
-import sys.process._
-import scala.io.Source
+import scala.sys.process._
 
 trait ITEnv {
   private val teamcityVersion = "2018.1.5-linux"
@@ -32,13 +31,13 @@ trait ITEnv {
   }
 
   def startTeamcityDocker() = {
-    killTeamcityDocker
+    killTeamcityDocker()
     if(logsDir.exists()) FileUtils.deleteQuietly(logsDir)
     if(dataDir.exists()) FileUtils.deleteQuietly(dataDir)
     logsDir.mkdirs()
     dataDir.mkdirs()
-    copyInitialConfigToDataDir
-    unzipConfiguration
+    copyInitialConfigToDataDir()
+    unzipConfiguration()
     val dirsOpt = s"-v ${dataDir.getAbsolutePath}:/data/teamcity_server/datadir -v ${logsDir.getAbsolutePath}:/opt/teamcity/logs "
    s"""docker run  -d --name $containerName  $dirsOpt -p $externalPort:$internalPort  $imageName""".stripMargin.!
     Thread.sleep(60000)//give teamcity time to load

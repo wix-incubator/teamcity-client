@@ -4,9 +4,9 @@ import com.wix.ci.teamcity.client.{SnapshotDependencies, SnapshotDependency, Tea
 
 trait SnapshotDependenciesContext extends BuildTypesContext with ContextBase {
 
-  val snapshotDependency = SnapshotDependency("depId", "type", properties, baseBuildTypes)
+  val snapshotDependency = SnapshotDependency("depId", "type", properties, baseBuildType)
   val snapshotDependencies = SnapshotDependencies(1, Some(List(snapshotDependency)))
-  val snapshotDependenciesUrl = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}/snapshot-dependencies"
+  val snapshotDependenciesUrl = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildType.id}/snapshot-dependencies"
 
   httpClient.executePost(snapshotDependenciesUrl, writeObjectAsJson(snapshotDependency)) returns writeObjectAsJson(snapshotDependency)
   httpClient.executeGet(snapshotDependenciesUrl) returns writeObjectAsJson(snapshotDependencies)

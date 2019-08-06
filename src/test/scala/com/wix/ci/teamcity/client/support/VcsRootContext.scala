@@ -20,11 +20,13 @@ trait VcsRootContext extends PropertiesContext with ContextBase {
   val setVcsRootPropertiesUrl = s"$vcsRootsUrl/id:$vcsRootId/properties/${vcsRoot.properties.property.head.name}"
   val getVcsRootsByIdUrl = s"$vcsRootsUrl/id:$vcsRootId"
   val getVcsRootsByNameUrl = s"$vcsRootsUrl/name:$vcsRootName"
-  val getVcsRootsByUrl = s"$vcsRootsUrl/?locator=property:(name:url,value:$vcsRootUrl)"
+  val getVcsRootsByUrl = s"$vcsRootsUrl?locator=property:(name:url,value:$vcsRootUrl)"
+  val getVcsRootsByProjectIdUrl = s"$vcsRootsUrl?locator=project:(id:${ baseProject.id })"
 
   httpClient.executeGet(vcsRootsUrl) returns writeObjectAsJson(vcsRoots)
   httpClient.executePost(vcsRootsUrl, writeObjectAsJson(vcsRoot)) returns writeObjectAsJson(baseVcsRoot)
   httpClient.executeGet(getVcsRootsByIdUrl) returns writeObjectAsJson(vcsRoot)
   httpClient.executeGet(getVcsRootsByNameUrl) returns writeObjectAsJson(vcsRoot)
   httpClient.executeGet(getVcsRootsByUrl) returns writeObjectAsJson(vcsRoot)
+  httpClient.executeGet(getVcsRootsByProjectIdUrl) returns writeObjectAsJson(vcsRoots)
 }

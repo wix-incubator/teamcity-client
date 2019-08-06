@@ -70,6 +70,18 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BuildType])
   }
 
+  def getBuildTypeByName(buildTypeName: String): BuildType = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/name:${escape(buildTypeName)}"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[BuildType])
+  }
+
+  def getVcsRootsByProjectId(projectId: String): VcsRoots = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots?locator=project:(id:${ projectId })"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[VcsRoots])
+  }
+
   def getBuildTypes(): BuildTypes = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes"
     val json = httpClient.executeGet(url)
@@ -126,7 +138,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def getVcsRootByUrl(vcsUrl: String): VcsRoot = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/?locator=property:(name:url,value:$vcsUrl)"
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots?locator=property:(name:url,value:$vcsUrl)"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[VcsRoot])
   }

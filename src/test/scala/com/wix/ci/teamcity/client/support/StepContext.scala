@@ -4,7 +4,7 @@ import com.wix.ci.teamcity.client.{Step, Steps, TeamCityClient}
 
 
 trait StepContext extends BuildTypesContext with ContextBase {
-  val buildStepUrl = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildTypes.id}/steps"
+  val buildStepUrl = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:${baseBuildType.id}/steps"
 
   val step = Step("stepId", "stepName", "type", properties)
   val steps = Steps(1, Some(List(step)))

@@ -85,27 +85,27 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
   "create build type" should {
     "return base build type" in new BuildTypesContext {
-      teamcityClient.createBuildType(baseBuildTypes) must beEqualTo(baseBuildTypes)
+      teamcityClient.createBuildType(baseBuildType) must beEqualTo(baseBuildType)
     }
   }
 
   "delete build type" should {
     "delete build type" in new BuildTypesContext {
-      teamcityClient.deleteBuildType(baseBuildTypes.id)
+      teamcityClient.deleteBuildType(baseBuildType.id)
       there was one(httpClient).executeDelete(deleteBuildTypeUrl)
     }
   }
 
   "set build parameter" should {
     "invoke TC API" in new BuildTypesContext {
-      teamcityClient.addBuildParameterToBuildType(baseBuildTypes.id, paramName, paramValue)
+      teamcityClient.addBuildParameterToBuildType(baseBuildType.id, paramName, paramValue)
       there was one(httpClient).executePutPlainText(buildParameterUrl, paramValue, acceptTextPlain)
     }
   }
 
   "delete build parameter" should {
     "invoke TC API" in new BuildTypesContext {
-      teamcityClient.deleteBuildParameter(baseBuildTypes.id, paramName)
+      teamcityClient.deleteBuildParameter(baseBuildType.id, paramName)
       there was one(httpClient).executeDelete(buildParameterUrl)
     }
   }
@@ -150,7 +150,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
   "create build type vcs root entries" should {
     "invoke TC API" in new BuildTypesContext {
-      teamcityClient.setBuildTypeVcsRootEntries(baseBuildTypes.id, vcsRootEntries)
+      teamcityClient.setBuildTypeVcsRootEntries(baseBuildType.id, vcsRootEntries)
       there was one(httpClient).executePut(createBuildTypeVcsRootEntriesUrl, writeObjectAsJson(vcsRootEntries))
     }
   }
@@ -193,42 +193,44 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
   "create snapshot dependency" should {
     "create snapshot dependency" in new SnapshotDependenciesContext {
-      teamcityClient.setSnapshotDependency(baseBuildTypes.id, snapshotDependency) must beEqualTo(snapshotDependency)
+      teamcityClient.setSnapshotDependency(baseBuildType.id, snapshotDependency) must beEqualTo(snapshotDependency)
     }
   }
 
   "get snapshot dependency" should {
     "get snapshot dependency" in new SnapshotDependenciesContext {
-      teamcityClient.getSnapShotDependencies(baseBuildTypes.id) must beEqualTo(snapshotDependencies)
+      teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(snapshotDependencies)
     }
   }
 
   "delete snapshot dependency" should {
     "delete snapshot dependency" in new SnapshotDependenciesContext {
-      teamcityClient.deleteSnapshotDependency(baseBuildTypes.id, snapshotDependency.id)
-      val url = s"$snapshotDependenciesUrl/${snapshotDependency.id}"
+      teamcityClient.deleteSnapshotDependency(baseBuildType.id, snapshotDependency.id)
+      val url = s"$snapshotDependenciesUrl/${ snapshotDependency.id }"
       there was one(httpClient).executeDelete(url)
     }
+  }
 
     "create build step" should {
       "create build step" in new StepContext {
-        teamcityClient.addBuildStepToBuildType(baseBuildTypes.id, step) must beEqualTo(step)
+        teamcityClient.addBuildStepToBuildType(baseBuildType.id, step) must beEqualTo(step)
       }
     }
 
     "get build step" should {
       "get build step" in new StepContext {
-        teamcityClient.getBuildSteps(baseBuildTypes.id) must beEqualTo(steps)
+        teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(steps)
       }
     }
 
     "delete build step" should {
       "delete build step" in new StepContext {
-        teamcityClient.deleteBuildStep(baseBuildTypes.id, step.id)
+        teamcityClient.deleteBuildStep(baseBuildType.id, step.id)
         val url = s"$buildStepUrl/${step.id}"
         there was one(httpClient).executeDelete(url)
       }
     }
+
 
     "add trigger to build type" should{
       "add the trigger" in new TriggerContext {
@@ -276,11 +278,22 @@ class TeamCityClientTest extends SpecificationWithJUnit {
       }
     }
 
-    "get agents" should{
+    "get agents" should {
       "return a list of all agents" in new AgentContext{
         teamcityClient.getAgents() must beEqualTo(agents)
       }
     }
-  }
+
+    "get build types by name" should {
+      "return a build type" in new BuildTypesContext {
+        teamcityClient.getBuildTypeByName(buildType.name) must beEqualTo(buildType)
+      }
+    }
+
+    "get vcs roots by project" should {
+      "return a vcs root" in new VcsRootContext {
+        teamcityClient.getVcsRootsByProjectId(baseProject.id) must beEqualTo(vcsRoots)
+      }
+    }
 
 }
