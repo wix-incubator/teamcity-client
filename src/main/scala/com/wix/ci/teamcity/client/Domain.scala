@@ -141,3 +141,9 @@ case class BuildType(@JsonProperty("id") id: String,
                      @JsonProperty("features") features: Option[Features],
                      @JsonProperty("paused") paused: Boolean,
                      @JsonProperty("snapshot-dependencies") snapshotDependencies : Option[SnapshotDependencies])
+
+case class BaseAgent(@JsonProperty("id") id: Int,
+                     @JsonProperty("name") name: String,
+                     @JsonProperty("typeId") typeId: Int)
+
+case class Agents(count : Int, agent : List[BaseAgent])

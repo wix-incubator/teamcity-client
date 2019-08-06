@@ -275,6 +275,12 @@ class TeamCityClientTest extends SpecificationWithJUnit {
         there was one(httpClient).executePutPlainText(setPauseBuildUrl, "true", acceptTextPlain)
       }
     }
+
+    "get agents" should{
+      "return a list of all agents" in new AgentContext{
+        teamcityClient.getAgents() must beEqualTo(agents)
+      }
+    }
   }
 
 }

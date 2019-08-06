@@ -186,6 +186,10 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
       cleanupProjAndBuildTypes(2)
     }
+
+    "get agents returns all agents" in new Context{
+      teamcityClient.getAgents() must beEqualTo(noAgents)
+    }
   }
 
   override def beforeAll(): Unit = {
@@ -267,6 +271,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     val trigger = Trigger("triggerIdWillBeReplacedByTC", "VCS Trigger", Properties(Nil))
     val expectedTrigger = Trigger("TRIGGER_1", "VCS Trigger", null)
+    val noAgents = Agents(0,List())
 
     def initializeProjAndBuildTypes(numberOfBuildTypes : Int): Unit ={
       teamcityClient.createProject(baseProject)
