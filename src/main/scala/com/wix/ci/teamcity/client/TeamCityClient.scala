@@ -275,6 +275,11 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Agents])
   }
 
+  def authorizeAgent(agentId : Int, authorize : Boolean) : Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents/id:$agentId/authorized"
+    httpClient.executePutPlainText(url, authorize.toString, acceptTextPlain)
+  }
+
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
 

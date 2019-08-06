@@ -208,6 +208,13 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     "get agents returns all agents" in new Context{
       teamcityClient.getAgents().agent.size must beEqualTo(1)
     }
+
+    "authorize an agent" in new Context{
+      val unauthorizedAgent = teamcityClient.getAgents().agent.head
+      teamcityClient.authorizeAgent(unauthorizedAgent.id,authorize = true)
+      //TODO: finish here after implementing getAuthorizedAgents
+      ok
+    }
   }
 
   override def beforeAll(): Unit = {

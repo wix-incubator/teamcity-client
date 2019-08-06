@@ -284,6 +284,13 @@ class TeamCityClientTest extends SpecificationWithJUnit {
       }
     }
 
+    "authorise agent" should{
+      "authorize the agent "in new AgentContext{
+        teamcityClient.authorizeAgent(agentId,authorize=true)
+        there was one(httpClient).executePutPlainText(authorizeAgentUrl,"true",acceptTextPlain)
+      }
+    }
+
     "get build types by name" should {
       "return a build type" in new BuildTypesContext {
         teamcityClient.getBuildTypeByName(buildType.name) must beEqualTo(buildType)

@@ -7,9 +7,7 @@ import scala.sys.process._
 
 trait ITEnv {
   private val teamcityVersion = "2018.1.5-linux"
-//  private val teamcityVersion = sys.props.getOrElse("teamcity.image.version",
-//    throw new RuntimeException("Please set the property 'teamcity.image.version'")
-//  )
+
 
   val containerName = "TestTeamCity"
   val agentContainerName = "TestTeamCityAgent"
