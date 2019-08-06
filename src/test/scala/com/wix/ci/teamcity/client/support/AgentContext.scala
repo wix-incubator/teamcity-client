@@ -7,7 +7,7 @@ trait AgentContext extends BuildTypesContext with ContextBase{
   val agentName = "myAgent"
   val agentType = 123
 
-  val getAgentsUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents"
+  val getAgentsUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents?locator=authorized:any"
 
   val baseAgent = BaseAgent(agentId,agentName,agentType)
   val agents = Agents(count=1,List(baseAgent))

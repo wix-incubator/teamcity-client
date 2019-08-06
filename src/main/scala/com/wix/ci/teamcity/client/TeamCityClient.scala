@@ -258,7 +258,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def getAgents() : Agents = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents"
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents?locator=authorized:any"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Agents])
   }

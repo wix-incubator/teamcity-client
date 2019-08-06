@@ -188,7 +188,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     }
 
     "get agents returns all agents" in new Context{
-      teamcityClient.getAgents() must beEqualTo(noAgents)
+      teamcityClient.getAgents().agent.size must beEqualTo(1)
     }
   }
 
