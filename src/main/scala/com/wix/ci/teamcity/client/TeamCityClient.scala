@@ -301,6 +301,13 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executePutPlainText(url, isEnable.toString, acceptTextPlain)
   }
 
+  def addToQueue(buildTypeId : String, properties : Option[Properties], comment : Option[Comment] = None, branch : Option[String] = None) : Build = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildQueue"
+    val build = Build(buildTypeId,properties,comment)
+    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(build))
+    mapper.readValue(json, classOf[Build])
+  }
+
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
 

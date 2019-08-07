@@ -164,25 +164,26 @@ case class BaseBuild(@JsonProperty("id") id: String,
                      @JsonProperty("status") status: String,
                      @JsonProperty("state") state: String)
 
-case class Build(@JsonProperty("id") id: String,
-                 @JsonProperty("buildTypeId") buildTypeId: String,
-                 @JsonProperty("history") history: Boolean,
-                 @JsonProperty("number") number: String,
-                 @JsonProperty("status") status: String,
-                 @JsonProperty("state") state: String,
-                 @JsonProperty("buildType") buildType: BaseBuildType,
-                 @JsonProperty("statusText") statusText: String,
-                 @JsonProperty("comment") comment: Comment,
-                 @JsonProperty("running") running: Boolean,
-                 @JsonProperty("queuedDate") queuedDate: String,
-                 @JsonProperty("startDate") startDate: String,
-                 @JsonProperty("finishDate") finishDate: String,
-                 @JsonProperty("lastChanges") lastChanges: Changes,
-                 @JsonProperty("agent") agent: BaseAgent,
-                 @JsonProperty("running-info") runningInfo: RunningInfo,
-                 @JsonProperty("revisions") revisions: Revisions,
-                 @JsonProperty("properties") properties: Properties,
-                 @JsonProperty("branchName") branchName: String)
+
+case class Build(@JsonProperty("buildTypeId") buildTypeId: String,
+                 @JsonProperty("properties") properties: Option[Properties] = None,
+                 @JsonProperty("comment") comment: Option[Comment] = None,
+                 @JsonProperty("branchName") branchName: Option[String] = None,
+                 @JsonProperty("id") id: Option[Int] = None,
+                 @JsonProperty("history") history: Option[Boolean] = None,
+                 @JsonProperty("number") number: Option[String] = None,
+                 @JsonProperty("status") status: Option[String] = None,
+                 @JsonProperty("state") state: Option[String] = None,
+                 @JsonProperty("buildType") buildType: Option[BaseBuildType] = None,
+                 @JsonProperty("statusText") statusText:Option[ String] = None,
+                 @JsonProperty("running") running: Option[Boolean] = None,
+                 @JsonProperty("queuedDate") queuedDate: Option[String] = None,
+                 @JsonProperty("startDate") startDate: Option[String] = None,
+                 @JsonProperty("finishDate") finishDate: Option[String] = None,
+                 @JsonProperty("lastChanges") lastChanges: Option[Changes] = None,
+                 @JsonProperty("agent") agent: Option[BaseAgent] = None,
+                 @JsonProperty("running-info") runningInfo: Option[RunningInfo] = None,
+                 @JsonProperty("revisions") revisions: Option[Revisions] = None)
 
 case class Comment(@JsonProperty("user") user: User,
                    @JsonProperty("timestamp") timestamp: String,
@@ -203,6 +204,6 @@ case class RunningInfo(@JsonProperty("percentageComplete") percentageComplete: S
                        @JsonProperty("outdated") outdated: Boolean,
                        @JsonProperty("probablyHanging") probablyHanging: Boolean)
 
-case class Revisions(@JsonProperty("revision") revisions: List[Revision])
+case class Revisions(@JsonProperty("revision") revisions: Option[List[Revision]])
 
 case class Revision(@JsonProperty("version") version: String)

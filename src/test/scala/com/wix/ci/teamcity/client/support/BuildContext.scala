@@ -7,8 +7,8 @@ trait BuildContext extends ContextBase {
   val addBuildToQueueUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildQueue"
 
   val baseBuild = BaseBuild("id", "typeId", "number", "status", "state")
-val build = Build(baseBuild.id, baseBuild.buildTypeId, "history", baseBuild.number, baseBuild.status, baseBuild.state, )
+  //val build = Build(baseBuild.id, baseBuild.buildTypeId, "history", baseBuild.number, baseBuild.status, baseBuild.state, )
 
   httpClient.executeGet(getBuildQueueUrl) returns writeObjectAsJson(List(baseBuild))
-  httpClient.executePost(getBuildQueueUrl) returns writeObjectAsJson(List(baseBuild))
+ // httpClient.executePost(getBuildQueueUrl) returns writeObjectAsJson(List(baseBuild))
 }

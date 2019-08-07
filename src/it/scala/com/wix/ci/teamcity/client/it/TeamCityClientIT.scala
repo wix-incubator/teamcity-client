@@ -233,6 +233,12 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.setAgentEnabled(anAgent.id, true)
       teamcityClient.getAgentById(anAgent.id).enabled must beTrue
     }
+
+    "add buildtype to queue for building" in new Context{
+      initializeProjAndBuildTypes(1)
+      val build = teamcityClient.addToQueue(baseBuildType.id, None)
+      build.copy(queuedDate = None) must beEqualTo(expectedQueuedBuild)
+    }
   }
 
   override def beforeAll(): Unit = {
@@ -285,6 +291,8 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val baseBuildType2 = BaseBuildType(buildTypeId2, buildTypeName2, buildTypeDesc, None, projectName, projectId, paused = false)
     val buildTypes = BuildTypes(2, List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
     val vcsRootEntries = VcsRootEntries(1,Some(List(VcsRootEntry(baseVcsRoot.id,"some checkout rules",baseVcsRoot))))
+    val expectedQueuedBuild = Build(baseBuildType.id,None,None,None,Some(1),
+      None,None,None,Some("queued"),Some(baseBuildType.copy(description = None)),None,None,None,None,None,None,None,None,Some(Revisions(None)))
 
     val agent = Agent(
       1,
