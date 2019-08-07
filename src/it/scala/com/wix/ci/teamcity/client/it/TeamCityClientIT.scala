@@ -47,7 +47,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getBuildTypes() must beEqualTo(buildTypes)
       teamcityClient.deleteBuildType(baseBuildType.id)
       teamcityClient.deleteBuildType(baseBuildType2.id)
-      teamcityClient.getBuildTypes() must beEqualTo(BuildTypes(0,List()))
+      teamcityClient.getBuildTypes() must beEqualTo(BuildTypes(0, List()))
 
       teamcityClient.deleteProject(baseProject.id)
     }
@@ -84,55 +84,57 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     }
 
 
-    "creates template retrieve it" in new Context{
+    "creates template retrieve it" in new Context {
       val res = teamcityClient.createTemplate(baseTemplate)
       res must beEqualTo(template)
       teamcityClient.getTemplates must beEqualTo(templates)
       teamcityClient.deleteTemplate(baseTemplate.id)
-      teamcityClient.getTemplates must beEqualTo(Templates(0,Some(List())))
+      teamcityClient.getTemplates must beEqualTo(Templates(0, Some(List())))
     }
 
-    "get team city server details" in new Context{
-      teamcityClient.getTeamCityServerDetails().copy(currentTime = "",startTime = "") must beEqualTo(teamCityServerDetails)
+    "get team city server details" in new Context {
+      teamcityClient.getTeamCityServerDetails().copy(currentTime = "", startTime = "") must
+        beEqualTo(teamCityServerDetails)
     }
 
-    "create snapshot dependency" in new Context{
+    "create snapshot dependency" in new Context {
       initializeProjAndBuildTypes(2)
 
-      teamcityClient.setSnapshotDependency(baseBuildType.id,dependency) must beEqualTo(dependencyWithDefaultProps)
+      teamcityClient.setSnapshotDependency(baseBuildType.id, dependency) must beEqualTo(dependencyWithDefaultProps)
       teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(snapshotDependencies)
-      teamcityClient.deleteSnapshotDependency(baseBuildType.id,dependencyWithDefaultProps.id)
-      teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(SnapshotDependencies(0,None))
+      teamcityClient.deleteSnapshotDependency(baseBuildType.id, dependencyWithDefaultProps.id)
+      teamcityClient.getSnapShotDependencies(baseBuildType.id) must beEqualTo(SnapshotDependencies(0, None))
 
       cleanupProjAndBuildTypes(2)
     }
 
-    "create step" in new Context{
+    "create step" in new Context {
       initializeProjAndBuildTypes(1)
 
-      teamcityClient.addBuildStepToBuildType(baseBuildType.id,step) must beEqualTo(step.copy(id=stepId))
+      teamcityClient.addBuildStepToBuildType(baseBuildType.id, step) must beEqualTo(step.copy(id = stepId))
       teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(steps)
-      teamcityClient.deleteBuildStep(baseBuildType.id,stepId)
-      teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(Steps(0,None))
+      teamcityClient.deleteBuildStep(baseBuildType.id, stepId)
+      teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(Steps(0, None))
 
       cleanupProjAndBuildTypes(1)
     }
 
-    "create user retrieve him and then delete him" in new Context{
+    "create user retrieve him and then delete him" in new Context {
       teamcityClient.createUser(baseUser) must beEqualTo(baseUser)
       teamcityClient.getUsers() must beEqualTo(users)
       teamcityClient.getUserById(baseUser.id) must beEqualTo(user)
       teamcityClient.deleteUser(baseUser.id)
-      teamcityClient.getUsers() must beEqualTo(Users(1,Option(List(baseUserAdmin))))
+      teamcityClient.getUsers() must beEqualTo(Users(1, Option(List(baseUserAdmin))))
     }
 
-    "attach and detach template to build type" in new Context{
+    "attach and detach template to build type" in new Context {
       teamcityClient.createProject(baseProject)
       teamcityClient.createBuildType(baseBuildType)
       teamcityClient.createTemplate(baseTemplate)
 
-      teamcityClient.attachTemplateToBuildType(baseTemplate.id,baseBuildType.id)
-      teamcityClient.getBuildType(baseBuildType.id).templates.head.buildType.head.head.id must beEqualTo(baseTemplate.id)
+      teamcityClient.attachTemplateToBuildType(baseTemplate.id, baseBuildType.id)
+      teamcityClient.getBuildType(baseBuildType.id).templates.head.buildType.head.head.id must
+        beEqualTo(baseTemplate.id)
 
       teamcityClient.detachTemplateToBuildType(baseBuildType.id)
       teamcityClient.getBuildType(baseBuildType.id).templates.head.buildType.head must beEmpty
@@ -205,17 +207,22 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       cleanupProjAndBuildTypes(1)
     }
 
-    "get agents returns all agents" in new Context{
+    "get agents returns all agents" in new Context {
       teamcityClient.getAgents().agent.size must beEqualTo(1)
     }
 
-    "authorize an agent" in new Context{
-      val agent = teamcityClient.getAgents().agent.head
-      teamcityClient.authorizeAgent(agent.id, authorize = true)
-      teamcityClient.getAuthorizedAgents().agent.head must beEqualTo(agent)
+    "authorize an agent" in new Context {
+      val anAgent = teamcityClient.getAgents().agent.head
+      teamcityClient.authorizeAgent(anAgent.id, authorize = true)
+      teamcityClient.getAuthorizedAgents().agent.head must beEqualTo(anAgent)
 
-      teamcityClient.authorizeAgent(agent.id, authorize = false)
+      teamcityClient.authorizeAgent(anAgent.id, authorize = false)
       teamcityClient.getAuthorizedAgents().agent must beEmpty
+    }
+
+    "get agent by id" in new Context {
+      val anAgent = teamcityClient.getAgents().agent.head
+      teamcityClient.getAgentById(anAgent.id).copy(name = irrelevantField, ip = irrelevantField) must beEqualTo(agent)
     }
   }
 
@@ -251,6 +258,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val vcsName = "jetbrains.git"
     val paramName = "param"
     val paramValue = "value"
+    val irrelevantField = "irrelevant"
 
     val httpClient = new HttpClientWrapper(username, password)
     val teamcityClient = new TeamCityClient(httpClient, teamcityBaseUrl)
@@ -268,6 +276,17 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val baseBuildType2 = BaseBuildType(buildTypeId2, buildTypeName2, buildTypeDesc, None, projectName, projectId, paused = false)
     val buildTypes = BuildTypes(2, List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
     val vcsRootEntries = VcsRootEntries(1,Some(List(VcsRootEntry(baseVcsRoot.id,"some checkout rules",baseVcsRoot))))
+
+    val agent = Agent(
+      1,
+      irrelevantField,
+      1,
+      irrelevantField,
+      uptodate = true,
+      enabled = true,
+      connected = false,
+      authorized = false,
+      null)
 
     val baseTemplate = BaseTemplate(templateId, templateName,Some("/httpAuth/app/rest/buildTypes/id:template1"),rootProjectId,rootProjectName)
     val template = Template(
