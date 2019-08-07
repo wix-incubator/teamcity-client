@@ -169,9 +169,9 @@ teamcityClient.getAgents().agent.foreach(a => teamcityClient.authorizeAgent(a.id
 Java:
 ```java
 Agents allAgents = teamcityClient.getAgents();
-        scala.collection.JavaConverters.seqAsJavaList(allAgents.agent()).forEach(a -> {
-            teamcityClient.authorizeAgent(a.id(),true);
-        });
+scala.collection.JavaConverters.seqAsJavaList(allAgents.agent()).forEach(a -> {
+    teamcityClient.authorizeAgent(a.id(),true);
+});
 ```
 
 
