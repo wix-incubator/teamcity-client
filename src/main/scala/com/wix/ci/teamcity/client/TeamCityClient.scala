@@ -269,8 +269,14 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
-  def getAgents() : Agents = {
+  def getAgents(): Agents = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents?locator=authorized:any"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[Agents])
+  }
+
+  def getAuthorizedAgents(): Agents = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents?locator=authorized:true"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Agents])
   }

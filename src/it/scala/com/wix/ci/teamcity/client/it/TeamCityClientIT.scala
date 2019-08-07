@@ -210,10 +210,12 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     }
 
     "authorize an agent" in new Context{
-      val unauthorizedAgent = teamcityClient.getAgents().agent.head
-      teamcityClient.authorizeAgent(unauthorizedAgent.id,authorize = true)
-      //TODO: finish here after implementing getAuthorizedAgents
-      ok
+      val agent = teamcityClient.getAgents().agent.head
+      teamcityClient.authorizeAgent(agent.id, authorize = true)
+      teamcityClient.getAuthorizedAgents().agent.head must beEqualTo(agent)
+
+      teamcityClient.authorizeAgent(agent.id, authorize = false)
+      teamcityClient.getAuthorizedAgents().agent must beEmpty
     }
   }
 

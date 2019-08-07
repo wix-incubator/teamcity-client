@@ -303,4 +303,10 @@ class TeamCityClientTest extends SpecificationWithJUnit {
       }
     }
 
+  "get authorized agents" should {
+    "return agents" in new AgentContext {
+      teamcityClient.getAuthorizedAgents() must beEqualTo(agents)
+    }
+  }
+
 }
