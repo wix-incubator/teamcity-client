@@ -315,4 +315,11 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
+  "set agent enabled" should {
+    "invoke TC API" in new AgentContext {
+      teamcityClient.setAgentEnabled(baseAgent.id, isEnable = true)
+      there was one(httpClient).executePutPlainText(setAgentEnabledUrl, "true", acceptTextPlain)
+    }
+  }
+
 }

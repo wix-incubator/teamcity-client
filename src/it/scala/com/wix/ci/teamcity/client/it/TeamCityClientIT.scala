@@ -224,6 +224,15 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       val anAgent = teamcityClient.getAgents().agent.head
       teamcityClient.getAgentById(anAgent.id).copy(name = irrelevantField, ip = irrelevantField) must beEqualTo(agent)
     }
+
+    "set agent enabled" in new Context {
+      val anAgent = teamcityClient.getAgents().agent.head
+      teamcityClient.setAgentEnabled(anAgent.id, false)
+      teamcityClient.getAgentById(anAgent.id).enabled must beFalse
+
+      teamcityClient.setAgentEnabled(anAgent.id, true)
+      teamcityClient.getAgentById(anAgent.id).enabled must beTrue
+    }
   }
 
   override def beforeAll(): Unit = {

@@ -11,6 +11,7 @@ trait AgentContext extends BuildTypesContext with ContextBase {
   val authorizeAgentUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents/id:$agentId/authorized"
   val getAuthorizeAgentUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents?locator=authorized:true"
   val getAgentByIdUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents/id:$agentId"
+  val setAgentEnabledUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents/id:$agentId/enabled"
 
   val baseAgent = BaseAgent(agentId, agentName, agentType)
   val agents = Agents(count = 1, List(baseAgent))

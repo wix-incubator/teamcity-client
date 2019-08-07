@@ -287,9 +287,14 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Agent])
   }
 
-  def authorizeAgent(agentId : Int, authorize : Boolean) : Unit = {
+  def authorizeAgent(agentId : Int, authorize : Boolean): Unit = {
     val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents/id:$agentId/authorized"
     httpClient.executePutPlainText(url, authorize.toString, acceptTextPlain)
+  }
+
+  def setAgentEnabled(agentId: Int, isEnable: Boolean): Unit = {
+    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents/id:$agentId/enabled"
+    httpClient.executePutPlainText(url, isEnable.toString, acceptTextPlain)
   }
 
   private def escape(param: String): String =
