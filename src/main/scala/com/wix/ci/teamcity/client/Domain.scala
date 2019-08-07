@@ -160,16 +160,17 @@ case class Agent(@JsonProperty("id") id: Int,
 
 case class BaseBuild(@JsonProperty("id") id: String,
                      @JsonProperty("buildTypeId") buildTypeId: String,
-                     @JsonProperty("number") number: String,
-                     @JsonProperty("status") status: String,
-                     @JsonProperty("state") state: String)
+                     @JsonProperty("number") number: Option[String],
+                     @JsonProperty("status") status: Option[String],
+                     @JsonProperty("state") state: Option[String])
 
+case class Builds(count: Int, build: List[BaseBuild])
 
 case class Build(@JsonProperty("buildTypeId") buildTypeId: String,
                  @JsonProperty("properties") properties: Option[Properties] = None,
                  @JsonProperty("comment") comment: Option[Comment] = None,
                  @JsonProperty("branchName") branchName: Option[String] = None,
-                 @JsonProperty("id") id: Option[Int] = None,
+                 @JsonProperty("id") id: Option[String] = None,
                  @JsonProperty("history") history: Option[Boolean] = None,
                  @JsonProperty("number") number: Option[String] = None,
                  @JsonProperty("status") status: Option[String] = None,

@@ -76,10 +76,6 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BuildType])
   }
 
-  def getBuildQueue(): List[BaseBuild] = {
-    ???
-  }
-
   def getVcsRootsByProjectId(projectId: String): VcsRoots = {
     val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots?locator=project:(id:${ projectId })"
     val json = httpClient.executeGet(url)
@@ -301,11 +297,20 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executePutPlainText(url, isEnable.toString, acceptTextPlain)
   }
 
-  def addToQueue(buildTypeId : String, properties : Option[Properties], comment : Option[Comment] = None, branch : Option[String] = None) : Build = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildQueue"
-    val build = Build(buildTypeId,properties,comment)
-    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(build))
+  def addToQueue(buildTypeId: String,
+                 properties: Option[Properties],
+                 comment: Option[Comment] = None,
+                 branch: Option[String] = None): Build = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildQueue"
+    val build = Build(buildTypeId, properties, comment)
+    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(build))
     mapper.readValue(json, classOf[Build])
+  }
+
+  def getBuildsInQueue(): Builds = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildQueue"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[Builds])
   }
 
   private def escape(param: String): String =

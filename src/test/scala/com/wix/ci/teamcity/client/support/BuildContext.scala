@@ -1,14 +1,13 @@
 package com.wix.ci.teamcity.client.support
 
-import com.wix.ci.teamcity.client.{BaseBuild, Build, TeamCityClient}
+import com.wix.ci.teamcity.client.{BaseBuild, Build, Builds, TeamCityClient}
 
 trait BuildContext extends ContextBase {
-  val getBuildQueueUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildQueue"
-  val addBuildToQueueUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildQueue"
+  val baseBuild = BaseBuild("id", "typeId", None, None, None)
+  val build = Build(baseBuild.buildTypeId, None, None)
 
-  val baseBuild = BaseBuild("id", "typeId", "number", "status", "state")
-  //val build = Build(baseBuild.id, baseBuild.buildTypeId, "history", baseBuild.number, baseBuild.status, baseBuild.state, )
+  val buildQueueUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildQueue"
 
-  httpClient.executeGet(getBuildQueueUrl) returns writeObjectAsJson(List(baseBuild))
- // httpClient.executePost(getBuildQueueUrl) returns writeObjectAsJson(List(baseBuild))
+  httpClient.executeGet(buildQueueUrl) returns writeObjectAsJson(Builds(1, List(baseBuild)))
+  httpClient.executePost(buildQueueUrl, writeObjectAsJson(build)) returns writeObjectAsJson(build)
 }

@@ -9,8 +9,10 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     "call execute post and pass base project in body" in new ProjectContext {
       teamcityClient.createProject(baseProject)
       there was one(httpClient).executePost(projectUrl, writeObjectAsJson(baseProject))
-      there was one(httpClient).executePutPlainText(setProjectArchivedUrl, baseProject.archived.toString, acceptTextPlain)
-      there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get, acceptTextPlain)
+      there was
+        one(httpClient).executePutPlainText(setProjectArchivedUrl, baseProject.archived.toString, acceptTextPlain)
+      there was
+        one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get, acceptTextPlain)
     }
   }
 
@@ -22,7 +24,8 @@ class TeamCityClientTest extends SpecificationWithJUnit {
   "set project description" should {
     "call set project description endpoint" in new ProjectContext {
       teamcityClient.setProjectDescription(baseProject.id, baseProject.description.get)
-      there was one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get, acceptTextPlain)
+      there was
+        one(httpClient).executePutPlainText(setProjectDescriptionUrl, baseProject.description.get, acceptTextPlain)
     }
   }
 
@@ -113,7 +116,8 @@ class TeamCityClientTest extends SpecificationWithJUnit {
   "create vcs roots" should {
     "return a list of vcs roots" in new VcsRootContext {
       teamcityClient.createVcsRoot(vcsRoot) must beEqualTo(baseVcsRoot)
-      there was one(httpClient).executePutPlainText(setVcsRootPropertiesUrl, vcsRoot.properties.property.head.value, acceptTextPlain)
+      there was one(httpClient)
+        .executePutPlainText(setVcsRootPropertiesUrl, vcsRoot.properties.property.head.value, acceptTextPlain)
     }
   }
 
@@ -181,7 +185,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
     "attach template" in new TemplateContext {
       teamcityClient.attachTemplateToBuildType(baseTemplate.id, buildTypeId)
-      there was one(httpClient).executePutPlainText(attachTemplateUrl, s"id:${baseTemplate.id}", "application/json")
+      there was one(httpClient).executePutPlainText(attachTemplateUrl, s"id:${ baseTemplate.id }", "application/json")
     }
 
     "detach template" in new TemplateContext {
@@ -211,97 +215,97 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
-    "create build step" should {
-      "create build step" in new StepContext {
-        teamcityClient.addBuildStepToBuildType(baseBuildType.id, step) must beEqualTo(step)
-      }
+  "create build step" should {
+    "create build step" in new StepContext {
+      teamcityClient.addBuildStepToBuildType(baseBuildType.id, step) must beEqualTo(step)
     }
+  }
 
-    "get build step" should {
-      "get build step" in new StepContext {
-        teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(steps)
-      }
+  "get build step" should {
+    "get build step" in new StepContext {
+      teamcityClient.getBuildSteps(baseBuildType.id) must beEqualTo(steps)
     }
+  }
 
-    "delete build step" should {
-      "delete build step" in new StepContext {
-        teamcityClient.deleteBuildStep(baseBuildType.id, step.id)
-        val url = s"$buildStepUrl/${step.id}"
-        there was one(httpClient).executeDelete(url)
-      }
+  "delete build step" should {
+    "delete build step" in new StepContext {
+      teamcityClient.deleteBuildStep(baseBuildType.id, step.id)
+      val url = s"$buildStepUrl/${ step.id }"
+      there was one(httpClient).executeDelete(url)
     }
+  }
 
 
-    "add trigger to build type" should{
-      "add the trigger" in new TriggerContext {
-        teamcityClient.addTriggerToBuildType(buildTypeId, _trigger)
-        there was one(httpClient).executePost(addTriggerUrl, writeObjectAsJson(_trigger))
-      }
+  "add trigger to build type" should {
+    "add the trigger" in new TriggerContext {
+      teamcityClient.addTriggerToBuildType(buildTypeId, _trigger)
+      there was one(httpClient).executePost(addTriggerUrl, writeObjectAsJson(_trigger))
     }
+  }
 
-    "delete trigger to build type" should{
-      "delete the trigger" in new TriggerContext {
-        teamcityClient.deleteTriggerFromBuildType(buildTypeId, _trigger.id)
-        there was one(httpClient).executeDelete(deleteTriggerUrl)
-      }
+  "delete trigger to build type" should {
+    "delete the trigger" in new TriggerContext {
+      teamcityClient.deleteTriggerFromBuildType(buildTypeId, _trigger.id)
+      there was one(httpClient).executeDelete(deleteTriggerUrl)
     }
+  }
 
-    "create user" should {
-      "create user" in new UserContext {
-        teamcityClient.createUser(baseUser) must beEqualTo(baseUser)
-      }
+  "create user" should {
+    "create user" in new UserContext {
+      teamcityClient.createUser(baseUser) must beEqualTo(baseUser)
     }
+  }
 
-    "get users" should {
-      "get a list of users" in new UserContext {
-        teamcityClient.getUsers() must beEqualTo(users)
-      }
+  "get users" should {
+    "get a list of users" in new UserContext {
+      teamcityClient.getUsers() must beEqualTo(users)
     }
+  }
 
-    "get user by id" should {
-      "get the user" in new UserContext {
-        teamcityClient.getUserById(user.id) must beEqualTo(user)
-      }
+  "get user by id" should {
+    "get the user" in new UserContext {
+      teamcityClient.getUserById(user.id) must beEqualTo(user)
     }
+  }
 
-    "get user" should {
-      "get a list of users" in new UserContext {
-        teamcityClient.deleteUser(user.id)
-        there was one(httpClient).executeDelete(userWithIdUrl)
-      }
+  "get user" should {
+    "get a list of users" in new UserContext {
+      teamcityClient.deleteUser(user.id)
+      there was one(httpClient).executeDelete(userWithIdUrl)
     }
+  }
 
-    "pause build" should {
-      "invoke TC API" in new BuildTypesContext {
-        teamcityClient.pauseBuild(buildType.id, pause = true)
-        there was one(httpClient).executePutPlainText(setPauseBuildUrl, "true", acceptTextPlain)
-      }
+  "pause build" should {
+    "invoke TC API" in new BuildTypesContext {
+      teamcityClient.pauseBuild(buildType.id, pause = true)
+      there was one(httpClient).executePutPlainText(setPauseBuildUrl, "true", acceptTextPlain)
     }
+  }
 
-    "get agents" should {
-      "return a list of all agents" in new AgentContext{
-        teamcityClient.getAgents() must beEqualTo(agents)
-      }
+  "get agents" should {
+    "return a list of all agents" in new AgentContext {
+      teamcityClient.getAgents() must beEqualTo(agents)
     }
+  }
 
-    "authorise agent" should{
-      "authorize the agent "in new AgentContext{
-        teamcityClient.authorizeAgent(agentId,authorize=true)
-        there was one(httpClient).executePutPlainText(authorizeAgentUrl,"true",acceptTextPlain)
-      }
+  "authorise agent" should {
+    "authorize the agent " in new AgentContext {
+      teamcityClient.authorizeAgent(agentId, authorize = true)
+      there was one(httpClient).executePutPlainText(authorizeAgentUrl, "true", acceptTextPlain)
     }
+  }
 
-    "get build types by name" should {
-      "return a build type" in new BuildTypesContext {
-        teamcityClient.getBuildTypeByName(buildType.name) must beEqualTo(buildType)
-      }
+  "get build types by name" should {
+    "return a build type" in new BuildTypesContext {
+      teamcityClient.getBuildTypeByName(buildType.name) must beEqualTo(buildType)
     }
+  }
 
-    "get vcs roots by project" should {
-      "return a vcs root" in new VcsRootContext {
-        teamcityClient.getVcsRootsByProjectId(baseProject.id) must beEqualTo(vcsRoots)
-      }
+  "get vcs roots by project" should {
+    "return a vcs root" in new VcsRootContext {
+      teamcityClient.getVcsRootsByProjectId(baseProject.id) must beEqualTo(vcsRoots)
     }
+  }
 
   "get authorized agents" should {
     "return agents" in new AgentContext {
@@ -324,15 +328,13 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
   "get build queue" should {
     "return build queue" in new BuildContext {
-      teamcityClient.getBuildQueue() must containTheSameElementsAs(List(baseBuild))
+      teamcityClient.getBuildsInQueue() must beEqualTo(Builds(1, List(baseBuild)))
     }
   }
 
   "add build to queue" should {
     "invoke TC API" in new BuildContext {
-      //teamcityClient.addBuildToQueue()
-      //there was one(httpClient).executePost()
-      ok
+      teamcityClient.addToQueue(baseBuild.buildTypeId, None) must beEqualTo(build)
     }
   }
 
