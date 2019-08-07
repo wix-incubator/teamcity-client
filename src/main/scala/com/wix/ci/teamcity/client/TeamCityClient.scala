@@ -76,6 +76,10 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BuildType])
   }
 
+  def getBuildQueue(): List[BaseBuild] = {
+    ???
+  }
+
   def getVcsRootsByProjectId(projectId: String): VcsRoots = {
     val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots?locator=project:(id:${ projectId })"
     val json = httpClient.executeGet(url)

@@ -157,3 +157,52 @@ case class Agent(@JsonProperty("id") id: Int,
                  @JsonProperty("connected") connected: Boolean,
                  @JsonProperty("authorized") authorized: Boolean,
                  @JsonProperty("properties") properties: Properties)
+
+case class BaseBuild(@JsonProperty("id") id: String,
+                     @JsonProperty("buildTypeId") buildTypeId: String,
+                     @JsonProperty("number") number: String,
+                     @JsonProperty("status") status: String,
+                     @JsonProperty("state") state: String)
+
+case class Build(@JsonProperty("id") id: String,
+                 @JsonProperty("buildTypeId") buildTypeId: String,
+                 @JsonProperty("history") history: Boolean,
+                 @JsonProperty("number") number: String,
+                 @JsonProperty("status") status: String,
+                 @JsonProperty("state") state: String,
+                 @JsonProperty("buildType") buildType: BaseBuildType,
+                 @JsonProperty("statusText") statusText: String,
+                 @JsonProperty("comment") comment: Comment,
+                 @JsonProperty("running") running: Boolean,
+                 @JsonProperty("queuedDate") queuedDate: String,
+                 @JsonProperty("startDate") startDate: String,
+                 @JsonProperty("finishDate") finishDate: String,
+                 @JsonProperty("lastChanges") lastChanges: Changes,
+                 @JsonProperty("agent") agent: BaseAgent,
+                 @JsonProperty("running-info") runningInfo: RunningInfo,
+                 @JsonProperty("revisions") revisions: Revisions,
+                 @JsonProperty("properties") properties: Properties,
+                 @JsonProperty("branchName") branchName: String)
+
+case class Comment(@JsonProperty("user") user: User,
+                   @JsonProperty("timestamp") timestamp: String,
+                   @JsonProperty("text") text: String)
+
+case class Changes(@JsonProperty("count") count: Int,
+                   @JsonProperty("change") change: List[BaseChange])
+
+case class BaseChange(@JsonProperty("id") id: String,
+                      @JsonProperty("version") version: String,
+                      @JsonProperty("username") username: String,
+                      @JsonProperty("date") date: String)
+
+case class RunningInfo(@JsonProperty("percentageComplete") percentageComplete: String,
+                       @JsonProperty("elapsedSeconds") elapsedSeconds: String,
+                       @JsonProperty("estimatedTotalSeconds") estimatedTotalSeconds: String,
+                       @JsonProperty("currentStageText") currentStageText: String,
+                       @JsonProperty("outdated") outdated: Boolean,
+                       @JsonProperty("probablyHanging") probablyHanging: Boolean)
+
+case class Revisions(@JsonProperty("revision") revisions: List[Revision])
+
+case class Revision(@JsonProperty("version") version: String)

@@ -322,4 +322,17 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
+  "get build queue" should {
+    "return build queue" in new BuildContext {
+      teamcityClient.getBuildQueue() must containTheSameElementsAs(List(baseBuild))
+    }
+  }
+
+  "add build to queue" should {
+    "invoke TC API" in new BuildContext {
+      teamcityClient.addBuildToQueue()
+      there was one(httpClient).executePost()
+    }
+  }
+
 }
