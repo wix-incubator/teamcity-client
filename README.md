@@ -161,5 +161,19 @@ Trigger triggerToAdd = new Trigger("triggerIdWillBeReplacedByTC", "VCS Trigger",
 Trigger trigger = teamcityClient.addTriggerToBuildType(baseBuildType.id, triggerToAdd);
 ```
 
+### Authorize all agents
+Scala:
+```scala
+teamcityClient.getAgents().agent.foreach(a => teamcityClient.authorizeAgent(a.id,true))
+```
+Java:
+```java
+Agents allAgents = teamcityClient.getAgents();
+        scala.collection.JavaConverters.seqAsJavaList(allAgents.agent()).forEach(a -> {
+            teamcityClient.authorizeAgent(a.id(),true);
+        });
+```
+
+
 ### Contributing
 IT tests require docker up and running on the machine as the tests load a dockerized teamcity to run the IT tests against.
