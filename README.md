@@ -5,6 +5,8 @@ Teamcity client is a simple scala library which wraps REST calls to the Teamcity
 
 Teamcity API returns only a small set of properties of the entity when getting a collection of entities, we mapped these to Base{Entity}. You can use the id returned in Base{Entity} to retrive the full properties of the entity (by calling get{Entity}ById methods).
 
+TeamCity API collection entities conain a count property and a list property, The list property name is in single not plural, In order to stay as close to the API as possible, Teamcity client follows this convention. 
+
 Please note that not all the API calls and objects are covered in this TeamCityClient.
 
 ## Getting Started
