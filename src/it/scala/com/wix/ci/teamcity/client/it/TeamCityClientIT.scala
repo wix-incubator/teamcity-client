@@ -83,7 +83,6 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       cleanupProjAndBuildTypes(1)
     }
 
-
     "creates template retrieve it" in new Context {
       val res = teamcityClient.createTemplate(baseTemplate)
       res must beEqualTo(template)
@@ -186,6 +185,14 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
       cleanupProjAndBuildTypes(2)
       teamcityClient.deleteVcsRoot(vcsRoot.id)
+    }
+
+    "set vcs url" in new Context {
+      initializeProjAndBuildTypes(1)
+      teamcityClient.setVcsRootUrl(vcsRoot.id, vcsUrl)
+
+
+      cleanupProjAndBuildTypes(1)
     }
 
     "get build type by name returns build type" in new Context {
@@ -291,6 +298,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val vcsRoot = VcsRoot(vcsRootId, vcsRootName, vcsName, "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(List(property)))
     val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, Some("/httpAuth/app/rest/vcs-roots/id:somevcsroot"))
     val vcsRoots = VcsRoots(1, Some("/httpAuth/app/rest/vcs-roots"), Some(List(baseVcsRoot)))
+    val vcsUrl = "vcsUrl"
 
     val baseBuildType = BaseBuildType(buildTypeId1, buildTypeName1, buildTypeDesc, None, projectName, projectId, paused = false)
     val baseBuildType2 = BaseBuildType(buildTypeId2, buildTypeName2, buildTypeDesc, None, projectName, projectId, paused = false)

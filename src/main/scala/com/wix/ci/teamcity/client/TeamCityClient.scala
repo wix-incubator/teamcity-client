@@ -112,6 +112,11 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BaseVcsRoot])
   }
 
+  def setVcsRootUrl(vcsRootId: String, vcsUrl: String): Unit = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots/$vcsRootId/properties/url"
+    httpClient.executePost(url, vcsUrl)
+  }
+
   def setVcsRootProperties(vcsRootId: String, properties: List[Property]) = {
     properties foreach (p => {
       val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots/id:$vcsRootId/properties/${ p.name }"
@@ -325,8 +330,8 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Build])
   }
 
-  def getLastBuild(buildTypeId: String, status: String): Option[BaseBuild] = {
-    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/builds?buildStatus=$status&count=1"
+  def getLastBuildByStatus(buildTypeId: String, status: String): Option[BaseBuild] = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/builds/status:$status?count=1"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Builds]).build.headOption
   }
