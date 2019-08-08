@@ -186,13 +186,21 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.deleteVcsRoot(vcsRoot.id)
     }
 
-    //    "set vcs url" in new Context {
-    //      initializeProjAndBuildTypes(1)
-    //    teamcityClient.createVcsRoot(vcsRoot)
-    //      teamcityClient.setVcsRootUrl(vcsRoot.id, vcsUrl)
-    //      teamcityClient.getVcsRoots().vcsRoot.get.head must beEqualTo(vcsRoot)
-    //      cleanupProjAndBuildTypes(1)
-    //    }
+    "set vcs url" in new Context {
+      initializeProjAndBuildTypes(1)
+      teamcityClient.createVcsRoot(vcsRoot)
+
+      teamcityClient.setVcsRootUrl(vcsRoot.id, vcsUrl)
+      teamcityClient.getVcsRootById(vcsRoot.id) must
+        beEqualTo(createVcsRootWithUrlProperty(vcsUrl))
+
+      teamcityClient.setVcsRootUrl(vcsRoot.id, anotherVcsUrl)
+      teamcityClient.getVcsRootById(vcsRoot.id) must
+        beEqualTo(createVcsRootWithUrlProperty(anotherVcsUrl))
+
+      teamcityClient.deleteVcsRoot(vcsRoot.id)
+      cleanupProjAndBuildTypes(1)
+    }
 
     "get build type by name returns build type" in new Context {
       initializeGetBuildTypeTest()
@@ -288,23 +296,96 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     val httpClient = new HttpClientWrapper(username, password)
     val teamcityClient = new TeamCityClient(httpClient, teamcityBaseUrl)
-    val rootBaseProject = BaseProject(rootProjectId,rootProjectName, Some("/httpAuth/app/rest/projects/id:_Root"), Some("http://localhost:8111/project.html?projectId=_Root"), Some("Contains all other projects"), archived = false, None)
+    val rootBaseProject = BaseProject(
+      rootProjectId,
+      rootProjectName,
+      Some("/httpAuth/app/rest/projects/id:_Root"),
+      Some("http://localhost:8111/project.html?projectId=_Root"),
+      Some("Contains all other projects"),
+      archived = false,
+      None)
 
     val property = Property("ignoreKnownHosts", "true")
-    val baseProject = BaseProject(projectId, projectName, Some("/httpAuth/app/rest/projects/id:projid"), Some("http://localhost:8111/project.html?projectId=projid"), Some("projDesc"), archived = false, Some(rootProjectId))
-    val newParentBaseProject = BaseProject("parentProjectId", "parentProjectName", Some("/httpAuth/app/rest/projects/id:projid"), Some("http://localhost:8111/project.html?projectId=projid"), Some("projDesc"), archived = false, Some(rootProjectId))
-    val project = Project(baseProject.id, baseProject.name, baseProject.parentProjectId.get, baseProject.href.get, baseProject.webUrl.get, Projects(0, null), rootBaseProject, BuildTypes(0, List()), templates = Some(Templates(0, Option(List()))))
-    val vcsRoot = VcsRoot(vcsRootId, vcsRootName, vcsName, "/httpAuth/app/rest/vcs-roots/id:somevcsroot", None, None, rootBaseProject, Properties(List(property)))
+    val baseProject = BaseProject(
+      projectId,
+      projectName,
+      Some("/httpAuth/app/rest/projects/id:projid"),
+      Some("http://localhost:8111/project.html?projectId=projid"),
+      Some("projDesc"),
+      archived = false,
+      Some(rootProjectId))
+    val newParentBaseProject = BaseProject(
+      "parentProjectId",
+      "parentProjectName",
+      Some("/httpAuth/app/rest/projects/id:projid"),
+      Some("http://localhost:8111/project.html?projectId=projid"),
+      Some("projDesc"),
+      archived = false,
+      Some(rootProjectId))
+    val project = Project(
+      baseProject.id,
+      baseProject.name,
+      baseProject.parentProjectId.get,
+      baseProject.href.get,
+      baseProject.webUrl.get,
+      Projects(0, null),
+      rootBaseProject,
+      BuildTypes(0, List()),
+      templates = Some(Templates(0, Option(List()))))
+    val vcsRoot = VcsRoot(
+      vcsRootId,
+      vcsRootName,
+      vcsName,
+      "/httpAuth/app/rest/vcs-roots/id:somevcsroot",
+      None,
+      None,
+      rootBaseProject,
+      Properties(List(property)))
     val baseVcsRoot = BaseVcsRoot(vcsRootId, vcsRootName, Some("/httpAuth/app/rest/vcs-roots/id:somevcsroot"))
     val vcsRoots = VcsRoots(1, Some("/httpAuth/app/rest/vcs-roots"), Some(List(baseVcsRoot)))
     val vcsUrl = "vcsUrl"
+    val anotherVcsUrl = "anotherVcsUrl"
 
-    val baseBuildType = BaseBuildType(buildTypeId1, buildTypeName1, buildTypeDesc, None, projectName, projectId, paused = false)
-    val baseBuildType2 = BaseBuildType(buildTypeId2, buildTypeName2, buildTypeDesc, None, projectName, projectId, paused = false)
-    val buildTypes = BuildTypes(2, List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
-    val vcsRootEntries = VcsRootEntries(1,Some(List(VcsRootEntry(baseVcsRoot.id,"some checkout rules",baseVcsRoot))))
-    val expectedQueuedBuild = Build(baseBuildType.id,None,None,None,Some("1"),
-      None,None,None,Some("queued"),Some(baseBuildType.copy(description = None)),None,None,None,None,None,None,None,None,Some(Revisions(None)))
+    val baseBuildType = BaseBuildType(
+      buildTypeId1,
+      buildTypeName1,
+      buildTypeDesc,
+      None,
+      projectName,
+      projectId,
+      paused = false)
+    val baseBuildType2 = BaseBuildType(
+      buildTypeId2,
+      buildTypeName2,
+      buildTypeDesc,
+      None,
+      projectName,
+      projectId,
+      paused = false)
+    val buildTypes = BuildTypes(
+      2,
+      List(baseBuildType.copy(description = None), baseBuildType2.copy(description = None)))
+    val vcsRootEntries = VcsRootEntries(1, Some(List(VcsRootEntry(baseVcsRoot.id, "some checkout rules", baseVcsRoot))))
+    val expectedQueuedBuild = Build(
+      baseBuildType.id,
+      None,
+      None,
+      None,
+      Some("1"),
+      None,
+      None,
+      None,
+      Some("queued"),
+      Some(baseBuildType.copy(description = None)),
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      Some(Revisions(None)))
 
     val agent = Agent(
       1,
@@ -317,7 +398,12 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       authorized = false,
       null)
 
-    val baseTemplate = BaseTemplate(templateId, templateName,Some("/httpAuth/app/rest/buildTypes/id:template1"),rootProjectId,rootProjectName)
+    val baseTemplate = BaseTemplate(
+      templateId,
+      templateName,
+      Some("/httpAuth/app/rest/buildTypes/id:template1"),
+      rootProjectId,
+      rootProjectName)
     val template = Template(
       templateId,
       templateName,
@@ -326,41 +412,66 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       rootProjectName,
       rootBaseProject,
       inherited = false)
-    val templates = Templates(1,Some(List(baseTemplate)))
-    val teamCityServerDetails = TeamCityServerDetails("58744","20181218T000000+0000","2018.1.5 (build 58744)",2018,1,"","")
-    val dependency = SnapshotDependency("not-important","snapshot_dependency",Properties(List()),baseBuildType2)
+    val templates = Templates(1, Some(List(baseTemplate)))
+    val teamCityServerDetails = TeamCityServerDetails(
+      "58744",
+      "20181218T000000+0000",
+      "2018.1.5 (build 58744)",
+      2018,
+      1,
+      "",
+      "")
+    val dependency = SnapshotDependency("not-important", "snapshot_dependency", Properties(List()), baseBuildType2)
 
-    val defaultCreatedDependencyProps = Properties(List(Property("run-build-if-dependency-failed","MAKE_FAILED_TO_START"),
-      Property("run-build-if-dependency-failed-to-start","MAKE_FAILED_TO_START"),
-      Property("run-build-on-the-same-agent","false"),
-      Property("take-started-build-with-same-revisions","false"),
-      Property("take-successful-builds-only","false")))
-    val dependencyWithDefaultProps = dependency.copy(properties = defaultCreatedDependencyProps,id=baseBuildType2.id,sourceBuildType = baseBuildType2.copy(description = None))
+    val defaultCreatedDependencyProps = Properties(
+      List(
+        Property("run-build-if-dependency-failed", "MAKE_FAILED_TO_START"),
+        Property("run-build-if-dependency-failed-to-start", "MAKE_FAILED_TO_START"),
+        Property("run-build-on-the-same-agent", "false"),
+        Property("take-started-build-with-same-revisions", "false"),
+        Property("take-successful-builds-only", "false")))
+    val dependencyWithDefaultProps = dependency
+      .copy(
+        properties = defaultCreatedDependencyProps,
+        id = baseBuildType2.id,
+        sourceBuildType = baseBuildType2.copy(description = None))
 
     val snapshotDependencies = SnapshotDependencies(1, Some(List(dependencyWithDefaultProps)))
 
-    val stepProperties = Properties(List(Property("teamcity.step.mode","default")))
-    val step = Step("not-important","maven step",stepType,stepProperties)
-    val steps = Steps(1,Option(List(step.copy(id=stepId))))
-    val autoGeneratedStepsIdWith = (id: String) => Steps(1,Option(List(step.copy(id = id))))
+    val stepProperties = Properties(List(Property("teamcity.step.mode", "default")))
+    val step = Step("not-important", "maven step", stepType, stepProperties)
+    val steps = Steps(1, Option(List(step.copy(id = stepId))))
+    val autoGeneratedStepsIdWith = (id: String) => Steps(1, Option(List(step.copy(id = id))))
 
-    val defaultGroup = Group("ALL_USERS_GROUP","All Users",Some("/httpAuth/app/rest/userGroups/key:ALL_USERS_GROUP"),Some("Contains all TeamCity users"))
-    val groups = Groups(1,Some(List(defaultGroup)))
-    val baseUser = BaseUser(2,"username1",Some("name1"),Some("/httpAuth/app/rest/users/id:2"))
-    val baseUserAdmin = BaseUser(1,"admin",None,Some("/httpAuth/app/rest/users/id:1"))
-    val users = Users(2,Some(List(baseUserAdmin,baseUser)))
-    val user = User(2,"username1",Some("name1"),None,None,Some("/httpAuth/app/rest/users/id:2"),Roles(0,Option(List())),groups)
+    val defaultGroup = Group(
+      "ALL_USERS_GROUP",
+      "All Users",
+      Some("/httpAuth/app/rest/userGroups/key:ALL_USERS_GROUP"),
+      Some("Contains all TeamCity users"))
+    val groups = Groups(1, Some(List(defaultGroup)))
+    val baseUser = BaseUser(2, "username1", Some("name1"), Some("/httpAuth/app/rest/users/id:2"))
+    val baseUserAdmin = BaseUser(1, "admin", None, Some("/httpAuth/app/rest/users/id:1"))
+    val users = Users(2, Some(List(baseUserAdmin, baseUser)))
+    val user = User(
+      2,
+      "username1",
+      Some("name1"),
+      None,
+      None,
+      Some("/httpAuth/app/rest/users/id:2"),
+      Roles(0, Option(List())),
+      groups)
 
     val trigger = Trigger("triggerIdWillBeReplacedByTC", "VCS Trigger", Properties(Nil))
     val expectedTrigger = Trigger("TRIGGER_1", "VCS Trigger", null)
-    val noAgents = Agents(0,List())
+    val noAgents = Agents(0, List())
 
-    def initializeProjAndBuildTypes(numberOfBuildTypes : Int): Unit ={
+    def initializeProjAndBuildTypes(numberOfBuildTypes: Int): Unit = {
       teamcityClient.createProject(baseProject)
-      numberOfBuildTypes match{
+      numberOfBuildTypes match {
         case 1 => teamcityClient.createBuildType(baseBuildType)
         case 2 => teamcityClient.createBuildType(baseBuildType)
-                  teamcityClient.createBuildType(baseBuildType2)
+          teamcityClient.createBuildType(baseBuildType2)
       }
     }
 
@@ -369,11 +480,11 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.deleteProject(newParentBaseProject.id)
     }
 
-    def cleanupProjAndBuildTypes(numberOfBuildTypes : Int): Unit ={
-      numberOfBuildTypes match{
+    def cleanupProjAndBuildTypes(numberOfBuildTypes: Int): Unit = {
+      numberOfBuildTypes match {
         case 1 => teamcityClient.deleteBuildType(baseBuildType.id)
         case 2 => teamcityClient.deleteBuildType(baseBuildType.id)
-                  teamcityClient.deleteBuildType(baseBuildType2.id)
+          teamcityClient.deleteBuildType(baseBuildType2.id)
       }
       teamcityClient.deleteProject(baseProject.id)
     }
@@ -390,10 +501,10 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.addBuildParameterToBuildType(baseBuildType.id, paramName, paramValue)
       teamcityClient.createVcsRoot(vcsRoot)
       teamcityClient.setBuildTypeVcsRootEntries(baseBuildType.id, vcsRootEntries)
-      teamcityClient.setSnapshotDependency(baseBuildType.id,dependency)
+      teamcityClient.setSnapshotDependency(baseBuildType.id, dependency)
     }
 
-    def createExpectedBuildType(triggerId: String, stepId: String): BuildType= {
+    def createExpectedBuildType(triggerId: String, stepId: String): BuildType = {
       val templateFlag = false
       val href: Option[String] = None
       val webUrl: Option[String] = None
@@ -403,7 +514,10 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       val setting: Option[Properties] = None
       val params: Option[Properties] = Some(Properties(List(Property(paramName, paramValue))))
       val features: Option[Features] = None
-      val dependencies : Option[SnapshotDependencies] = Some(SnapshotDependencies(1,Some(List(dependencyWithDefaultProps))))
+      val dependencies: Option[SnapshotDependencies] = Some(
+        SnapshotDependencies(
+          1,
+          Some(List(dependencyWithDefaultProps))))
 
       BuildType(
         baseBuildType.id,
@@ -425,6 +539,10 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
         features,
         paused = false,
         dependencies)
+    }
+
+    def createVcsRootWithUrlProperty(url: String): VcsRoot = {
+      vcsRoot.copy(properties = Properties(vcsRoot.properties.property :+ Property("url", url)))
     }
   }
 

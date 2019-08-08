@@ -152,6 +152,13 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
+  "set vcs root url" should {
+    "invoke TC API" in new VcsRootContext {
+      teamcityClient.setVcsRootUrl(vcsRootId, vcsUrl)
+      there was one(httpClient).executePutPlainText(setVcsUrlPropertyUrl, vcsUrl, acceptTextPlain)
+    }
+  }
+
   "create build type vcs root entries" should {
     "invoke TC API" in new BuildTypesContext {
       teamcityClient.setBuildTypeVcsRootEntries(baseBuildType.id, vcsRootEntries)

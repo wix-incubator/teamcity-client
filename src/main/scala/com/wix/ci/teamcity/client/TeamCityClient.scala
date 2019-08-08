@@ -114,7 +114,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
 
   def setVcsRootUrl(vcsRootId: String, vcsUrl: String): Unit = {
     val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots/$vcsRootId/properties/url"
-    httpClient.executePost(url, vcsUrl)
+    httpClient.executePutPlainText(url, vcsUrl, acceptTextPlain)
   }
 
   def setVcsRootProperties(vcsRootId: String, properties: List[Property]) = {
@@ -336,7 +336,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BaseBuild])
   }
 
-//  def getBaseUrl: String = baseUrl
+  def getBaseUrl: String = baseUrl
 
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
