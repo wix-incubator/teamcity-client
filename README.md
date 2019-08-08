@@ -176,6 +176,18 @@ scala.collection.JavaConverters.seqAsJavaList(allAgents.agent()).forEach(a -> {
 });
 ```
 
+### get last build by status
+Scala:
+```scala
+val lastSuccessfulBuild = teamcityClient.getLastBuildByStatus(baseBuildType.id,"success")
+val lastSFailedBuild = teamcityClient.getLastBuildByStatus(baseBuildType.id,"failure")
+```
+Java:
+```java
+BaseBuild lastSuccessfulBuild = teamcityClient.getLastBuildByStatus(baseBuildType.id,"success");
+BaseBuild lastSFailedBuild = teamcityClient.getLastBuildByStatus(baseBuildType.id,"failure");
+```
+If the build does not have the queried status the server returns 404 and the client will throw an exception.
 
 ### Contributing
 IT tests require docker up and running on the machine as the tests load a dockerized teamcity to run the IT tests against.
