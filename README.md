@@ -47,12 +47,11 @@ You can then handle different http status codes for eample:
 Scala:
 ```scala
  Try(teamcityClient.createBuildType(baseBuildType)).recover({
-    case e : TeamcityServerException => {
+    case e : TeamcityServerException =>
        e.code match{
           case 404 => //do something here
           case 500 => //do something here
        }
-    }
  })
 ```
 java:
