@@ -325,6 +325,12 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Build])
   }
 
+  def getLastBuild(buildTypeId: String, status: String): Build = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/builds/?status=$status&count=1"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[Build])
+  }
+
   def getBaseUrl: String = baseUrl
 
   private def escape(param: String): String =
