@@ -344,4 +344,10 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
+  "get running builds" should {
+    "return relevant build" in new BuildContext {
+      teamcityClient.getRunningBuilds() must beEqualTo(Builds(1, List(baseBuild)))
+    }
+  }
+
 }

@@ -242,6 +242,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       val baseBuild = BaseBuild(build.id.get, build.buildTypeId, build.number, build.status, build.state)
       teamcityClient.getBuildsInQueue() must beEqualTo(Builds(1, List(baseBuild)))
       teamcityClient.getBuild(build.id.get) must beEqualTo(build)
+      cleanupProjAndBuildTypes(1)
     }
   }
 
