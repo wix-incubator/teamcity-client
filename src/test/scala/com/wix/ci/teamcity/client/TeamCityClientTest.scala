@@ -338,4 +338,10 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
+  "get build" should {
+    "return relevant build" in new BuildContext {
+      teamcityClient.getBuild(baseBuild.id) must beEqualTo(build)
+    }
+  }
+
 }
