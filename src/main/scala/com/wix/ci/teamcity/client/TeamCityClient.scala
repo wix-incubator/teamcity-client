@@ -313,6 +313,12 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Builds])
   }
 
+  def getBuild(buildId : String) : Build = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/builds/id:$buildId"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[Build])
+  }
+
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
 
