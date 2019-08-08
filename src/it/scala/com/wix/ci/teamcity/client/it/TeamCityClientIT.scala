@@ -178,8 +178,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     "get build type returns build type" in new Context {
       initializeGetBuildTypeTest()
-      teamcityClient
-        .getBuildType(baseBuildType.id)
+      teamcityClient.getBuildType(baseBuildType.id)
         .copy(href = None, webUrl = None, settings = None, features = None) must
         beEqualTo(createExpectedBuildType("TRIGGER_2", "RUNNER_2"))
 
@@ -187,13 +186,13 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.deleteVcsRoot(vcsRoot.id)
     }
 
-    "set vcs url" in new Context {
-      initializeProjAndBuildTypes(1)
-      teamcityClient.setVcsRootUrl(vcsRoot.id, vcsUrl)
-
-
-      cleanupProjAndBuildTypes(1)
-    }
+    //    "set vcs url" in new Context {
+    //      initializeProjAndBuildTypes(1)
+    //    teamcityClient.createVcsRoot(vcsRoot)
+    //      teamcityClient.setVcsRootUrl(vcsRoot.id, vcsUrl)
+    //      teamcityClient.getVcsRoots().vcsRoot.get.head must beEqualTo(vcsRoot)
+    //      cleanupProjAndBuildTypes(1)
+    //    }
 
     "get build type by name returns build type" in new Context {
       initializeGetBuildTypeTest()
