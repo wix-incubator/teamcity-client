@@ -101,9 +101,9 @@ case class Group(key: String, name: String, href: Option[String], description: O
 
 case class Groups(count: Int, group: Option[List[Group]])
 
-case class BaseUser(id: Int, username: String, name: Option[String], href: Option[String])
+case class BaseUser(id: Long, username: String, name: Option[String], href: Option[String])
 
-case class User(id: Int,
+case class User(id: Long,
                 username: String,
                 name: Option[String],
                 email: Option[String],
@@ -142,13 +142,13 @@ case class BuildType(@JsonProperty("id") id: String,
                      @JsonProperty("paused") paused: Boolean,
                      @JsonProperty("snapshot-dependencies") snapshotDependencies: Option[SnapshotDependencies])
 
-case class BaseAgent(@JsonProperty("id") id: Int,
+case class BaseAgent(@JsonProperty("id") id: Long,
                      @JsonProperty("name") name: String,
                      @JsonProperty("typeId") typeId: Int)
 
 case class Agents(count: Int, agent: List[BaseAgent])
 
-case class Agent(@JsonProperty("id") id: Int,
+case class Agent(@JsonProperty("id") id: Long,
                  @JsonProperty("name") name: String,
                  @JsonProperty("typeId") typeId: Int,
                  @JsonProperty("ip") ip: String,
