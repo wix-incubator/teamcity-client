@@ -325,10 +325,10 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Build])
   }
 
-  def getLastBuild(buildTypeId: String, status: String): Build = {
+  def getLastBuild(buildTypeId: String, status: String): Option[BaseBuild] = {
     val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/builds?buildStatus=$status&count=1"
     val json = httpClient.executeGet(url)
-    mapper.readValue(json, classOf[Build])
+    mapper.readValue(json, classOf[Builds]).build.headOption
   }
 
 //  def getBaseUrl: String = baseUrl

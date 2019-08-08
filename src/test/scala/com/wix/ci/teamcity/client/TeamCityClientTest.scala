@@ -352,7 +352,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
   "get last build" should {
     "return last build" in new BuildContext {
-      teamcityClient.getLastBuild(baseBuild.buildTypeId, baseBuild.status.get) must beEqualTo(build)
+      teamcityClient.getLastBuild(baseBuild.buildTypeId, baseBuild.status.get) must beSome(baseBuild)
     }
   }
 

@@ -15,5 +15,5 @@ trait BuildContext extends ContextBase {
   httpClient.executePost(buildQueueUrl, writeObjectAsJson(build)) returns writeObjectAsJson(build)
   httpClient.executeGet(getBuildUrl) returns writeObjectAsJson(build)
   httpClient.executeGet(getRunningBuildUrl) returns writeObjectAsJson(Builds(1, List(baseBuild)))
-  httpClient.executeGet(getLastBuildUrl) returns writeObjectAsJson(build)
+  httpClient.executeGet(getLastBuildUrl) returns writeObjectAsJson(Builds(1, List(baseBuild)))
 }
