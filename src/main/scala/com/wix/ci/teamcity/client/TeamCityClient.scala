@@ -13,7 +13,7 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   val rootProjectName = "<Root project>"
 
   def createProject(project: BaseProject): BaseProject = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects"
     val projectJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(project)
     val json = httpClient.executePost(url, projectJson)
     if (project.description.isDefined) setProjectDescription(project.id, project.description.get)
@@ -22,56 +22,56 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def moveProject(projectId: String, newParentProject: BaseProject): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/$projectId/parentProject"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/$projectId/parentProject"
     httpClient.executePut(url, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(newParentProject))
   }
 
   def setProjectDescription(projectId: String, desc: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/description"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/id:$projectId/description"
     httpClient.executePutPlainText(url, desc, acceptTextPlain)
   }
 
   def setProjectArchived(projectId: String, archived: Boolean): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/archived"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/id:$projectId/archived"
     httpClient.executePutPlainText(url, archived.toString, acceptTextPlain)
   }
 
   def setProjectName(projectId: String, newProjectName: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId/name"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/id:$projectId/name"
     httpClient.executePutPlainText(url, newProjectName, acceptTextPlain)
   }
 
   def getProjects: Projects = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Projects])
   }
 
   def deleteProject(projectId: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/id:$projectId"
     httpClient.executeDelete(url)
   }
 
   def getProjectByName(projectName: String): Project = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/name:$projectName"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/name:$projectName"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Project])
   }
 
   def getProjectById(projectId: String): Project = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:$projectId"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/id:$projectId"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Project])
   }
 
-  def getBuildType(buildTypeId: String) : BuildType = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId"
+  def getBuildType(buildTypeId: String): BuildType = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[BuildType])
   }
 
   def getBuildTypeByName(buildTypeName: String): BuildType = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/name:${escape(buildTypeName)}"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/name:${ escape(buildTypeName) }"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[BuildType])
   }
@@ -83,30 +83,30 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def getBuildTypes(): BuildTypes = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[BuildTypes])
   }
 
   def getBuildTypesByVcsRootId(vcsRootId: String): BuildTypes = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes?locator=vcsRoot:(id:$vcsRootId)"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes?locator=vcsRoot:(id:$vcsRootId)"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[BuildTypes])
   }
 
   def createBuildType(baseBuildType: BaseBuildType): BaseBuildType = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${baseBuildType.projectId}/buildTypes"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/id:${ baseBuildType.projectId }/buildTypes"
     val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(baseBuildType))
     mapper.readValue(json, classOf[BaseBuildType])
   }
 
   def deleteBuildType(buildTypeId: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId"
     httpClient.executeDelete(url)
   }
 
   def createVcsRoot(vcsRoot: VcsRoot): BaseVcsRoot = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots"
     val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRoot))
     setVcsRootProperties(vcsRoot.id, vcsRoot.properties.property)
     mapper.readValue(json, classOf[BaseVcsRoot])
@@ -114,53 +114,53 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
 
   def setVcsRootProperties(vcsRootId: String, properties: List[Property]) = {
     properties foreach (p => {
-      val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId/properties/${p.name}"
+      val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots/id:$vcsRootId/properties/${ p.name }"
       httpClient.executePutPlainText(url, p.value, acceptTextPlain)
     })
   }
 
   def getVcsRoots(): VcsRoots = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[VcsRoots])
   }
 
   def getVcsRootById(vcsRootId: String): VcsRoot = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots/id:$vcsRootId"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[VcsRoot])
   }
 
   def getVcsRootByName(vcsRootName: String): VcsRoot = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/name:${escape(vcsRootName)}"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots/name:${ escape(vcsRootName) }"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[VcsRoot])
   }
 
   def getVcsRootByUrl(vcsUrl: String): VcsRoot = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots?locator=property:(name:url,value:$vcsUrl)"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots?locator=property:(name:url,value:$vcsUrl)"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[VcsRoot])
   }
 
   def deleteVcsRoot(vcsRootId: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/vcs-roots/id:$vcsRootId"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/vcs-roots/id:$vcsRootId"
     httpClient.executeDelete(url)
   }
 
   def setBuildTypeVcsRootEntries(buildTypeId: String, vcsRootEntries: VcsRootEntries): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/vcs-root-entries"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/$buildTypeId/vcs-root-entries"
     httpClient.executePut(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(vcsRootEntries))
   }
 
   def getTeamCityServerDetails(): TeamCityServerDetails = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/server"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/server"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[TeamCityServerDetails])
   }
 
   def createTemplate(template: BaseTemplate): Template = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/projects/id:${template.projectId}/templates"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/projects/id:${ template.projectId }/templates"
     val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(template))
     mapper.readValue(json, classOf[Template])
   }
@@ -172,128 +172,128 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
   }
 
   def deleteTemplate(templateId: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$templateId"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$templateId"
     httpClient.executeDelete(url)
   }
 
   def attachTemplateToBuildType(templateId: String, buildTypeId: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/template"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/$buildTypeId/template"
     httpClient.executePutPlainText(url, s"id:$templateId", acceptApplicationJson)
   }
 
   def detachTemplateToBuildType(buildTypeId: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/template"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/$buildTypeId/template"
     httpClient.executeDelete(url)
   }
 
   def setSnapshotDependency(buildTypeId: String, dependency: SnapshotDependency): SnapshotDependency = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies"
-    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(dependency))
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/snapshot-dependencies"
+    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(dependency))
     mapper.readValue(json, classOf[SnapshotDependency])
   }
 
   def getSnapShotDependencies(buildTypeId: String): SnapshotDependencies = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/snapshot-dependencies"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[SnapshotDependencies])
   }
 
   def deleteSnapshotDependency(buildTypeId: String, snapshotDependencyId: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/snapshot-dependencies/$snapshotDependencyId"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/snapshot-dependencies/$snapshotDependencyId"
     httpClient.executeDelete(url)
   }
 
-  def addBuildStepToBuildType(buildTypeId : String, step : Step) : Step = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps"
-    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(step))
+  def addBuildStepToBuildType(buildTypeId: String, step: Step): Step = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/steps"
+    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(step))
     mapper.readValue(json, classOf[Step])
   }
 
   def addBuildParameterToBuildType(buildTypeId: String, paramName: String, value: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/parameters/$paramName"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/$buildTypeId/parameters/$paramName"
     httpClient.executePutPlainText(url, value, acceptTextPlain)
   }
 
   def deleteBuildParameter(buildTypeId: String, paramName: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/parameters/$paramName"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/$buildTypeId/parameters/$paramName"
     httpClient.executeDelete(url)
   }
 
   def pauseBuild(buildTypeId: String, pause: Boolean): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/$buildTypeId/paused"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/$buildTypeId/paused"
     httpClient.executePutPlainText(url, pause.toString, acceptTextPlain)
   }
 
-  def getBuildSteps(buildTypeId : String) : Steps = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps"
+  def getBuildSteps(buildTypeId: String): Steps = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/steps"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Steps])
   }
 
-  def deleteBuildStep(buildTypeId : String,stepId : String): Unit ={
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/steps/$stepId"
+  def deleteBuildStep(buildTypeId: String, stepId: String): Unit = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/steps/$stepId"
     httpClient.executeDelete(url)
   }
 
   def addTriggerToBuildType(buildTypeId: String, trigger: Trigger): Trigger = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/triggers"
-    val json = httpClient.executePost(url,mapper.writerWithDefaultPrettyPrinter.writeValueAsString(trigger))
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/triggers"
+    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(trigger))
     mapper.readValue(json, classOf[Trigger])
   }
 
   def deleteTriggerFromBuildType(buildTypeId: String, triggerId: String): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/buildTypes/id:$buildTypeId/triggers/$triggerId"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/buildTypes/id:$buildTypeId/triggers/$triggerId"
     httpClient.executeDelete(url)
   }
 
-  def createUser(user : BaseUser) : BaseUser = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users"
+  def createUser(user: BaseUser): BaseUser = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/users"
     val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(user))
     mapper.readValue(json, classOf[BaseUser])
   }
 
-  def getUsers() : Users = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users"
+  def getUsers(): Users = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/users"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Users])
   }
 
-  def getUserById(userId : Int) : User = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users/id:$userId"
+  def getUserById(userId: Long): User = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/users/id:$userId"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[User])
   }
 
-  def deleteUser(userId : Int) : Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/users/id:$userId"
+  def deleteUser(userId: Long): Unit = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/users/id:$userId"
     httpClient.executeDelete(url)
   }
 
   def getAgents(): Agents = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents?locator=authorized:any"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents?locator=authorized:any"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Agents])
   }
 
   def getAuthorizedAgents(): Agents = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents?locator=authorized:true"
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents?locator=authorized:true"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Agents])
   }
 
-  def getAgentById(agentId: Int): Agent = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents/id:$agentId"
+  def getAgentById(agentId: Long): Agent = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents/id:$agentId"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Agent])
   }
 
-  def authorizeAgent(agentId : Int, authorize : Boolean): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents/id:$agentId/authorized"
+  def authorizeAgent(agentId: Long, authorize: Boolean): Unit = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents/id:$agentId/authorized"
     httpClient.executePutPlainText(url, authorize.toString, acceptTextPlain)
   }
 
-  def setAgentEnabled(agentId: Int, isEnable: Boolean): Unit = {
-    val url = s"$baseUrl/${TeamCityClient.contextPrefix}/agents/id:$agentId/enabled"
+  def setAgentEnabled(agentId: Long, isEnable: Boolean): Unit = {
+    val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/agents/id:$agentId/enabled"
     httpClient.executePutPlainText(url, isEnable.toString, acceptTextPlain)
   }
 
@@ -313,17 +313,16 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[Builds])
   }
 
-  def getBuild(buildId : String) : Build = {
+  def getBuild(buildId: String): Build = {
     val url = s"$baseUrl/${ TeamCityClient.contextPrefix }/builds/id:$buildId"
     val json = httpClient.executeGet(url)
     mapper.readValue(json, classOf[Build])
   }
 
+  def getBaseUrl: String = baseUrl
+
   private def escape(param: String): String =
     URLEncoder.encode(param, "UTF-8").replaceAll("\\+", "%20")
-
-
-  def getBaseUrl: String = baseUrl
 }
 
 
