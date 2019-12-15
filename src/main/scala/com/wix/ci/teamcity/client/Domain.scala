@@ -208,3 +208,14 @@ case class RunningInfo(@JsonProperty("percentageComplete") percentageComplete: S
 case class Revisions(@JsonProperty("revision") revisions: Option[List[Revision]])
 
 case class Revision(@JsonProperty("version") version: String)
+
+case class BaseAgentPool(@JsonProperty("id") id: String,
+                         @JsonProperty("name") name: String,
+                         @JsonProperty("href") href: String)
+
+case class AgentPools(@JsonProperty("agentPool") agentPool : List[BaseAgentPool], @JsonProperty("count") count: Int, @JsonProperty("href") href: String)
+
+case class AgentPool(@JsonProperty("id") id: String,
+                         @JsonProperty("name") name: String,
+                         @JsonProperty("href") href: String,
+                         @JsonProperty("projects") projects: List[BaseProject])
