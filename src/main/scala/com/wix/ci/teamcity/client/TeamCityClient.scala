@@ -336,6 +336,29 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     mapper.readValue(json, classOf[BaseBuild])
   }
 
+  def getAgentsPools(): AgentPools = {
+    val url = s"$baseUrl/$contextPrefix/agentPools"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[AgentPools])
+  }
+
+  def addAgentPool(agentPool: BaseAgentPool) = {
+    val url = s"$baseUrl/$contextPrefix/agentPools"
+    val json = httpClient.executePost(url, mapper.writerWithDefaultPrettyPrinter.writeValueAsString(agentPool))
+    mapper.readValue(json, classOf[AgentPool])
+  }
+
+  def getAgentsPoolWithId(id: Int): AgentPool = {
+    val url = s"$baseUrl/$contextPrefix/agentPools/id:$id"
+    val json = httpClient.executeGet(url)
+    mapper.readValue(json, classOf[AgentPool])
+  }
+
+  def deleteAgentPool(id: Int) = {
+    val url = s"$baseUrl/$contextPrefix/agentPools/id:$id"
+    httpClient.executeDelete(url)
+  }
+
   def getBaseUrl: String = baseUrl
 
   private def escape(param: String): String =

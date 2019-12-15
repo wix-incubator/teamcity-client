@@ -258,6 +258,23 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 //      teamcityClient.getBuild(build.id.get) must beEqualTo(build)
 //      cleanupProjAndBuildTypes(1)
 //    }.pendingUntilFixed("flaky need to fix")
+    "add and get buildtype to queue for building" in new Context {
+      initializeProjAndBuildTypes(1)
+      val build = teamcityClient.addToQueue(baseBuildType.id, None)
+      build.copy(queuedDate = None) must beEqualTo(expectedQueuedBuild)
+
+      val baseBuild = BaseBuild(build.id.get, build.buildTypeId, build.number, build.status, build.state)
+      teamcityClient.getBuildsInQueue() must beEqualTo(Builds(1, List(baseBuild)))
+      teamcityClient.getBuild(build.id.get) must beEqualTo(build)
+      cleanupProjAndBuildTypes(1)
+    "add agents pool" in new Context {
+      val addAgentResponse = teamcityClient.addAgentPool(baseAgentPool)
+      val expectedAgentPool = buildAgentPoolsOnDefault(baseAgentPoolFromGivenId(addAgentResponse.id))
+      addAgentResponse must beEqualTo(agentPoolFromGivenId(addAgentResponse.id))
+      teamcityClient.getAgentsPools().agentPool must containTheSameElementsAs(expectedAgentPool)
+      teamcityClient.deleteAgentPool(addAgentResponse.id)
+      teamcityClient.getAgentsPools().agentPool.size must equalTo(1)
+    }
   }
 
   override def beforeAll(): Unit = {
@@ -465,6 +482,20 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     val trigger = Trigger("triggerIdWillBeReplacedByTC", "VCS Trigger", Properties(Nil))
     val expectedTrigger = Trigger("TRIGGER_1", "VCS Trigger", null)
     val noAgents = Agents(0, List())
+    val baseAgentPool = BaseAgentPool(1, "poolName", "href")
+
+    def buildAgentPoolsOnDefault(agentPool: BaseAgentPool) = {
+      List(BaseAgentPool(0, "Default", "/httpAuth/app/rest/agentPools/id:0"), agentPool)
+    }
+
+    def agentPoolFromGivenId(id: Int) = AgentPool(
+      id,
+      baseAgentPool.name,
+      s"/httpAuth/app/rest/agentPools/id:$id",
+      Projects(0, null),
+      Agents(0, List.empty))
+
+    def baseAgentPoolFromGivenId(id: Int) = BaseAgentPool(id, baseAgentPool.name, s"/httpAuth/app/rest/agentPools/id:$id")
 
     def initializeProjAndBuildTypes(numberOfBuildTypes: Int): Unit = {
       teamcityClient.createProject(baseProject)

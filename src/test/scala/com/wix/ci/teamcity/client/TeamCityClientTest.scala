@@ -363,4 +363,28 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
+
+  "get agent pool" should {
+    "return all agents" in new AgentsPoolContext {
+      teamcityClient.getAgentsPools() must beEqualTo(agentPools)
+    }
+  }
+
+  "add Agent pool" should {
+    "add agent pool" in new AgentsPoolContext {
+      teamcityClient.addAgentPool(agentPoolList.head) must beEqualTo(agentPool)
+    }
+  }
+
+  "get agentPool by id" should {
+    "return agentPool" in new AgentsPoolContext {
+      teamcityClient.getAgentsPoolWithId(1) must beEqualTo(agentPool)
+    }
+  }
+
+  "delete agent pool" should {
+    "delete agent" in new AgentsPoolContext {
+      teamcityClient.deleteAgentPool(1) must beEqualTo("ok")
+    }
+  }
 }
