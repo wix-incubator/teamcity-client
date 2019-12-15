@@ -9,6 +9,17 @@ TeamCity API collection entities conain a count property and a list property, Th
 
 Please note that not all the API calls and objects are covered in this TeamCityClient.
 
+## Setup
+In you project pom.xml add the following dependency:
+
+```xml
+<dependency>
+    <groupId>com.wix.ci</groupId>
+    <artifactId>teamcity-client</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 ## Getting Started
 Create an instance of Teamcity client (using the default scalaj http client)
 
