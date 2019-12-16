@@ -54,7 +54,7 @@
         <groupId>com.wix</groupId>
         <artifactId>wix-oss-scala-parent</artifactId>
         <version>0.47.0</version>
-        <relativePath>com/wix/wix-oss-parent/0.47.0/wix-oss-parent-0.47.0.pom</relativePath>
+        <relativePath/>
     </parent>
 
     <properties>
