@@ -7,6 +7,48 @@
     <artifactId>teamcity-client</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
+    <url>https://github.com/wix-incubator/teamcity-client</url>
+
+    <scm>
+        <url>https://github.com/wix-incubator/teamcity-client</url>
+        <connection>git@github.com:wix-incubator/teamcity-client.git</connection>
+    </scm>
+    <organization>
+        <name>com.wix</name>
+        <url>https://github.com/wix-incubator</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <name>Uri Bechar</name>
+            <roles><role>owner</role></roles>
+            <email>urib@wix.com</email>
+        </developer>
+        <developer>
+            <name>Dor Kats</name>
+            <roles><role>owner</role></roles>
+            <email>dork@wix.com</email>
+        </developer>
+        <developer>
+            <name>Barak Marziano</name>
+            <roles><role>owner</role></roles>
+            <email>barakm@wix.com</email>
+        </developer>
+        <developer>
+            <name>Elior Hamamy</name>
+            <roles><role>owner</role></roles>
+            <email>eliorhm@wix.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>http://www.opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
 
     <parent>
         <groupId>com.wix</groupId>
