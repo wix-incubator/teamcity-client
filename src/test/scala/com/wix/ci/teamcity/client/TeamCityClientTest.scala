@@ -320,7 +320,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
-  "get agent by id" should {
+  "get agent by id " should {
     "return agent" in new AgentContext {
       teamcityClient.getAgentById(baseAgent.id) must beEqualTo(agent)
     }
