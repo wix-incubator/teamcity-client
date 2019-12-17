@@ -234,10 +234,10 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getAuthorizedAgents().agent must beEmpty
     }
 
-//    "get agent by id" in new Context {
-//      val anAgent = teamcityClient.getAgents().agent.head
-//      teamcityClient.getAgentById(anAgent.id).copy(name = irrelevantField, ip = irrelevantField) must beEqualTo(agent)
-//    }.pendingUntilFixed("flaky need to fix")
+    "get agent by id" in new Context {
+      val anAgent = teamcityClient.getAgents().agent.head
+      teamcityClient.getAgentById(anAgent.id).copy(name = irrelevantField, ip = irrelevantField, properties = null) must beEqualTo(agent)
+    }
 
     "set agent enabled" in new Context {
       val anAgent = teamcityClient.getAgents().agent.head
