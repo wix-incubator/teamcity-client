@@ -1,16 +1,18 @@
 # teamcity-client
 
 ## Introduction
-Teamcity client is a simple scala library which wraps REST calls to the Teamcity REST API. Use this library to perform different operations and get data from the Teamcity server. This version is tested with Teamcity version **2018.1.5 (build 58744)**. This library can be used also with Java but will require to use the **scala.collection.JavaConverters** when using the collections (see in the examples below).
+Teamcity client is a wrapper for Teamcity REST API calls for scala. It is a simple library that makes it easy to perform different operations and get data from the Teamcity server.
 
-Teamcity API returns only a small set of properties of the entity when getting a collection of entities, we mapped these to Base{Entity}. You can use the id returned in Base{Entity} to retrive the full properties of the entity (by calling get{Entity}ById methods).
+Current version is tested with Teamcity version **2018.1.5 (build 58744)**. Teamcity client can also be used with Java but will require **scala.collection.JavaConverters** when using collections (see examples below).
 
-TeamCity API collection entities conain a count property and a list property, The list property name is in single not plural, In order to stay as close to the API as possible, Teamcity client follows this convention. 
+Since Teamcity API only returns a small set of properties for each entity when getting a collection of entities, so we mapped these to `Base{Entity}`. You can use the `id` returned in `Base{Entity}` to retrieve the full properties of any select entity (by calling `get{Entity}ById` methods).
 
-Please note that not all the API calls and objects are covered in this TeamCityClient.
+The collection entities of TeamCity API contain a count property and a list property, and the list property name is in singular, not plural form - in order to stay as close to the API as possible, Teamcity client also follows this convention.
+
+Please note that not all API calls and objects are covered in this README.
 
 ## Setup
-In you project pom.xml add the following dependency:
+Add the following dependency to you project's pom.xml:
 
 ```xml
 <dependency>
@@ -21,7 +23,7 @@ In you project pom.xml add the following dependency:
 ```
 
 ## Getting Started
-Create an instance of Teamcity client (using the default scalaj http client)
+Create an instance of Teamcity client (using the default scalaj http client).
 
 Scala:
 ```scala
@@ -35,8 +37,8 @@ String baseUrl = "http://localhost:8111";
 int timeout = 10000;
 TeamCityClient teamcityClient = TeamCityClient.aTeamCityClient(teamcityBaseUrl, timeout, "MyUserName", "MyPassword")
 ```
-or create an instance of **HttpClient** (teamcity-client uses a HttpClientWrapper to wrap scalaj Http as an http client, you can use any http client by implementing the HttpClient trait/interface). Pass username, password and optinally timemout (default is 5 sec).
-Pass an instance of **HttpClient** to the TeamCityClient,  the base url of the Teamcity server and you are ready to go.
+
+Alternatively, you can create an instance of **HttpClient**. Teamcity client uses HttpClientWrapper to wrap scalaj Http as an http client, so you can use any http client by implementing the HttpClient trait/interface. Pass username, password and optionally timeout (defaults to 5 seconds). Now pass an instance of **HttpClient** to the TeamCityClient, specify the base url of the Teamcity server and you're good to go.
 
 Scala:
 ```scala
@@ -53,8 +55,8 @@ HttpClientWrapper httpClient = new HttpClientWrapper("MyUserName", "MyPassword",
 TeamCityClient teamcityClient = new TeamCityClient(httpClient,baseUrl);
 ```
 
-TeamCityClient will throw a RuntimeException containing the HTTP status code and the error message from the teamcity server if the status code is not 2XX.
-You can then handle different http status codes for eample:
+Teamcity client will throw a RuntimeException containing the HTTP status code and the error message from the Teamcity server if the status code is not 2XX.
+You can then handle different http status codes, for example:
 Scala:
 ```scala
  Try(teamcityClient.createBuildType(baseBuildType)).recover({
@@ -86,7 +88,7 @@ java:
 ### Getting Teamcity server details
 Scala:
 ```scala
-val serverDetails = teamcityClient.getTeamCityServerDetails  //returns version, start time and additional info
+val serverDetails = teamcityClient.getTeamCityServerDetails  //returns version, start time, and additional info
 ```
 Java:
 ```java
@@ -115,14 +117,14 @@ Scala:
 ```scala
 teamcityClient.getProjects.project.foreach({
    println(_)
-   //do some more suff here
+   //do some more stuff here
 })
 ```
 Java:
 ```java
 scala.collection.JavaConverters.seqAsJavaList(teamcityClient.getProjects().project()).stream().forEach(p -> {
    System.out.println(p.toString() ) ;
-   //do some more suff here
+   //do some more stuff here
 });
 ```
 ### Get all projects with all project properties
@@ -144,7 +146,7 @@ Scala:
 val dependencyProps = Properties(List(Property("run-build-if-dependency-failed","MAKE_FAILED_TO_START")))
 val dependency = SnapshotDependency(baseBuildType.id,"snapshot_dependency",dependencyProps ,baseBuildType2)
 teamcityClient.createSnapshotDependency(baseBuildType.id, dependency)
-     
+
 ```
 Java:
 ```java
@@ -158,14 +160,13 @@ SnapshotDependency dependency = new SnapshotDependency("myBuildTypeId2","snapsho
 teamcityClient.createSnapshotDependency(baseBuildType.id(),dependency);
 ```        
 ### Add trigger to a buildType
-In some cases, like triggers, TeamCity will ignore the trigger id and will auto generate and id
-so when adding a trigger to a buildType the client will return a trigger object with the generated id
+In some cases, like with triggers, Teamcity will ignore the trigger id and will autogenerate an id for you. So when adding a trigger to a buildType, the client will return a trigger object with the generated id.
 
 Scala:
 ```scala
 val triggerToAdd = Trigger("triggerIdWillBeReplacedByTC", "VCS Trigger", Properties(Nil))
 val trigger = teamcityClient.addTriggerToBuildType(baseBuildType.id, triggerToAdd)
-     
+
 ```
 Java:
 ```java
@@ -187,7 +188,7 @@ scala.collection.JavaConverters.seqAsJavaList(allAgents.agent()).forEach(a -> {
 });
 ```
 
-### get last build by status
+### Get last build by status
 Scala:
 ```scala
 val lastSuccessfulBuild = teamcityClient.getLastBuildByStatus(baseBuildType.id,"success")
@@ -198,7 +199,7 @@ Java:
 BaseBuild lastSuccessfulBuild = teamcityClient.getLastBuildByStatus(baseBuildType.id,"success");
 BaseBuild lastSFailedBuild = teamcityClient.getLastBuildByStatus(baseBuildType.id,"failure");
 ```
-If the build does not have the queried status the server returns 404 and the client will throw an exception.
+If there's no build with requested status the server returns 404 and the client will throw an exception.
 
 ### Contributing
 IT tests require docker up and running on the machine as the tests load a dockerized teamcity to run the IT tests against.
