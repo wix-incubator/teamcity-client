@@ -370,10 +370,10 @@ class TeamCityClient(httpClient: HttpClient, baseUrl: String) {
     httpClient.executeDelete(url)
   }
 
-  def moveAgentFromPool(agentId: Int, poolId: Int): AgentPool = {
+  def moveAgentFromPool(agentId: Int, poolId: Int): Agent = {
     val url = s"$baseUrl/$contextPrefix/agentPools/id:$poolId/agents"
     val json = httpClient.executePost(url, s"""{"id":"$agentId"}""")
-    mapper.readValue(json, classOf[AgentPool])
+    mapper.readValue(json, classOf[Agent])
   }
 
 
