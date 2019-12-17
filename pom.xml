@@ -8,6 +8,8 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <url>https://github.com/wix-incubator/teamcity-client</url>
+    <name>teamcity-client</name>
+    <description>A REST client lib for teamcity</description>
 
     <scm>
         <url>https://github.com/wix-incubator/teamcity-client</url>
@@ -23,21 +25,29 @@
             <name>Uri Bechar</name>
             <roles><role>owner</role></roles>
             <email>urib@wix.com</email>
+            <organization>wix</organization>
+            <organizationUrl>http://www.wix.com</organizationUrl>
         </developer>
         <developer>
             <name>Dor Kats</name>
             <roles><role>owner</role></roles>
             <email>dork@wix.com</email>
+            <organization>wix</organization>
+            <organizationUrl>http://www.wix.com</organizationUrl>
         </developer>
         <developer>
             <name>Barak Marziano</name>
             <roles><role>owner</role></roles>
             <email>barakm@wix.com</email>
+            <organization>wix</organization>
+            <organizationUrl>http://www.wix.com</organizationUrl>
         </developer>
         <developer>
             <name>Elior Hamamy</name>
             <roles><role>owner</role></roles>
             <email>eliorhm@wix.com</email>
+            <organization>wix</organization>
+            <organizationUrl>http://www.wix.com</organizationUrl>
         </developer>
     </developers>
 
