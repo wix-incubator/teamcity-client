@@ -248,16 +248,16 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getAgentById(anAgent.id).enabled must beTrue
     }
 
-//    "add and get buildtype to queue for building" in new Context {
-//      initializeProjAndBuildTypes(1)
-//      val build = teamcityClient.addToQueue(baseBuildType.id, None)
-//      build.copy(queuedDate = None) must beEqualTo(expectedQueuedBuild)
-//
-//      val baseBuild = BaseBuild(build.id.get, build.buildTypeId, build.number, build.status, build.state)
-//      teamcityClient.getBuildsInQueue() must beEqualTo(Builds(1, List(baseBuild)))
-//      teamcityClient.getBuild(build.id.get) must beEqualTo(build)
-//      cleanupProjAndBuildTypes(1)
-//    }.pendingUntilFixed("flaky need to fix")
+    "add and get buildtype to queue for building" in new Context {
+      initializeProjAndBuildTypes(1)
+      val build = teamcityClient.addToQueue(baseBuildType.id, None)
+      build.copy(queuedDate = None) must beEqualTo(expectedQueuedBuild)
+
+      val baseBuild = BaseBuild(build.id.get, build.buildTypeId, build.number, build.status, build.state)
+      teamcityClient.getBuildsInQueue() must beEqualTo(Builds(1, List(baseBuild)))
+      teamcityClient.getBuild(build.id.get) must beEqualTo(build)
+      cleanupProjAndBuildTypes(1)
+    }
 
     "add agents pool" in new Context {
       val addAgentResponse = teamcityClient.addAgentPool(baseAgentPool)
