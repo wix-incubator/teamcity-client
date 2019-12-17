@@ -275,6 +275,29 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.deleteAgentPool(addAgentResponse.id)
       teamcityClient.getAgentsPools().agentPool.size must equalTo(1)
     }
+
+    "add project to agent pool" in new Context {
+      teamcityClient.createProject(baseProject)
+      val addAgentResponse = teamcityClient.addAgentPool(baseAgentPool)
+
+      val addProjectToPoolResponse = teamcityClient.addProjectToPool(baseProject, addAgentResponse.id)
+      addProjectToPoolResponse must beEqualTo(project)
+
+      teamcityClient.deleteAgentPool(addAgentResponse.id)
+    }
+
+    "delete project from pool" in new Context {
+      val addAgentResponse = teamcityClient.addAgentPool(baseAgentPool)
+      teamcityClient.getAgentsPoolWithId(addAgentResponse.id).projects.count must beEqualTo(0)
+
+      val addProjectToPoolResponse = teamcityClient.addProjectToPool(baseProject, addAgentResponse.id)
+      teamcityClient.getAgentsPoolWithId(addAgentResponse.id).projects.count must beEqualTo(1)
+
+      teamcityClient.deleteProjectFromPool(addAgentResponse.id, project.id)
+      teamcityClient.getAgentsPoolWithId(addAgentResponse.id).projects.count must beEqualTo(0)
+
+      teamcityClient.deleteAgentPool(addAgentResponse.id)
+    }
   }
 
   override def beforeAll(): Unit = {

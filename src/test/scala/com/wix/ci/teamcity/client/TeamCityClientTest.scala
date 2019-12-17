@@ -382,9 +382,15 @@ class TeamCityClientTest extends SpecificationWithJUnit {
     }
   }
 
-  "delete agent pool" should {
-    "delete agent" in new AgentsPoolContext {
-      teamcityClient.deleteAgentPool(1) must beEqualTo("ok")
+  "add project to pool" should {
+    "succeed add project to pool" in new AgentsPoolContext {
+      teamcityClient.addProjectToPool(baseProject, 1) must beEqualTo(project)
+    }
+  }
+
+  "move agent" should {
+    "move agent from one pool to another" in new AgentsPoolContext {
+      teamcityClient.moveAgentFromPool(agentPool.id, 1) must beEqualTo(agentPool)
     }
   }
 }

@@ -14,6 +14,15 @@ trait AgentsPoolContext extends ContextBase {
       Some("description"),
       archived = false,
       Some("parent")))
+  val project = Project(baseProject.id,
+    baseProject.name,
+    "parentProjId1",
+    "some-href",
+    "some-weburl",
+    Projects(0, List()),
+    baseProject,
+    BuildTypes(0, List()),
+    None)
   val agentPool = AgentPool(1, "name", "href", Projects(1, projectsList), agents)
   val agentPools = AgentPools(agentPoolList, 1, "href")
 
@@ -21,5 +30,7 @@ trait AgentsPoolContext extends ContextBase {
   httpClient.executeGet(agentPoolsUrl) returns writeObjectAsJson(agentPools)
   httpClient.executePost(agentPoolsUrl, writeObjectAsJson(agentPoolList.head)) returns writeObjectAsJson(agentPool)
   httpClient.executeGet(s"$agentPoolsUrl/id:1") returns writeObjectAsJson(agentPool)
-  httpClient.executeDelete(s"$agentPoolsUrl/id:1") returns "ok"
+  httpClient.executePost(s"$agentPoolsUrl/id:1/projects", writeObjectAsJson(baseProject)) returns writeObjectAsJson(project)
+  httpClient.executePost(s"$agentPoolsUrl/id:1/agents", """{"id":"1"}""") returns writeObjectAsJson(agentPool)
+
 }
