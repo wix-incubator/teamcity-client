@@ -27,10 +27,14 @@ trait AgentsPoolContext extends ContextBase {
   val agentPools = AgentPools(agentPoolList, 1, "href")
 
   val agentPoolsUrl = s"$baseUrl/${ TeamCityClient.contextPrefix }/agentPools"
+  val agentId = 11
+  val agentName = "myAgent"
+  val agentType = 123
+  val agent = Agent(11, "myAgent", 123, "", uptodate = false, enabled = false, connected = false, authorized = false, null)
   httpClient.executeGet(agentPoolsUrl) returns writeObjectAsJson(agentPools)
   httpClient.executePost(agentPoolsUrl, writeObjectAsJson(agentPoolList.head)) returns writeObjectAsJson(agentPool)
   httpClient.executeGet(s"$agentPoolsUrl/id:1") returns writeObjectAsJson(agentPool)
   httpClient.executePost(s"$agentPoolsUrl/id:1/projects", writeObjectAsJson(baseProject)) returns writeObjectAsJson(project)
-  httpClient.executePost(s"$agentPoolsUrl/id:1/agents", """{"id":"1"}""") returns writeObjectAsJson(agentPool)
+  httpClient.executePost(s"$agentPoolsUrl/id:1/agents", """{"id":"1"}""") returns writeObjectAsJson(agent)
 
 }
