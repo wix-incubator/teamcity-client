@@ -236,7 +236,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     "get agent by id" in new Context {
       val anAgent = teamcityClient.getAgents().agent.head
-      teamcityClient.getAgentById(anAgent.id).copy(name = irrelevantField, ip = irrelevantField, properties = null) must beEqualTo(agent)
+      teamcityClient.getAgentById(anAgent.id).copy(name = irrelevantField, ip = irrelevantField, properties = null, connected = false) must beEqualTo(agent)
     }
 
     "set agent enabled" in new Context {
@@ -248,16 +248,16 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getAgentById(anAgent.id).enabled must beTrue
     }
 
-//    "add and get buildtype to queue for building" in new Context {
-//      initializeProjAndBuildTypes(1)
-//      val build = teamcityClient.addToQueue(baseBuildType.id, None)
-//      build.copy(queuedDate = None) must beEqualTo(expectedQueuedBuild)
-//
-//      val baseBuild = BaseBuild(build.id.get, build.buildTypeId, build.number, build.status, build.state)
-//      teamcityClient.getBuildsInQueue() must beEqualTo(Builds(1, List(baseBuild)))
-//      teamcityClient.getBuild(build.id.get) must beEqualTo(build)
-//      cleanupProjAndBuildTypes(1)
-//    }.pendingUntilFixed("flaky need to fix")
+    "add and get buildtype to queue for building" in new Context {
+      initializeProjAndBuildTypes(1)
+      val build = teamcityClient.addToQueue(baseBuildType.id, None)
+      build.copy(queuedDate = None) must beEqualTo(expectedQueuedBuild)
+
+      val baseBuild = BaseBuild(build.id.get, build.buildTypeId, build.number, build.status, build.state)
+      teamcityClient.getBuildsInQueue() must beEqualTo(Builds(1, List(baseBuild)))
+      teamcityClient.getBuild(build.id.get) must beEqualTo(build)
+      cleanupProjAndBuildTypes(1)
+    }
 
     "add agents pool" in new Context {
       val addAgentResponse = teamcityClient.addAgentPool(baseAgentPool)
@@ -289,6 +289,12 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
       teamcityClient.getAgentsPoolWithId(addAgentResponse.id).projects.count must beEqualTo(0)
 
       teamcityClient.deleteAgentPool(addAgentResponse.id)
+    }
+
+    "move agent from one pool to another" in new Context {
+      val addAgentResponse = teamcityClient.addAgentPool(baseAgentPool)
+      teamcityClient.moveAgentFromPool(1, addAgentResponse.id)
+        .copy(name = irrelevantField, ip = irrelevantField, properties = null, connected = false) must beEqualTo(agent)
     }
   }
 

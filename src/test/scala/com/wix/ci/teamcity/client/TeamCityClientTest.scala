@@ -390,7 +390,7 @@ class TeamCityClientTest extends SpecificationWithJUnit {
 
   "move agent" should {
     "move agent from one pool to another" in new AgentsPoolContext {
-      teamcityClient.moveAgentFromPool(agentPool.id, 1) must beEqualTo(agentPool)
+      teamcityClient.moveAgentFromPool(agentPool.id, 1) must beEqualTo(agent)
     }
   }
 }
