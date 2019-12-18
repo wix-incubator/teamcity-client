@@ -9,7 +9,7 @@ Since Teamcity API only returns a small set of properties for each entity when g
 
 The collection entities of TeamCity API contain a count property and a list property, and the list property name is in singular, not plural form - in order to stay as close to the API as possible, Teamcity client also follows this convention.
 
-Please note that not all API calls and objects are covered in this README.
+Please note that not all TeamCity API calls and objects are covered by this library.
 
 ## Setup
 Add the following dependency to you project's pom.xml:
