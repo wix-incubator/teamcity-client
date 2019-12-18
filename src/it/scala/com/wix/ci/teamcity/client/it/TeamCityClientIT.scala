@@ -294,7 +294,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
     "move agent from one pool to another" in new Context {
       val addAgentResponse = teamcityClient.addAgentPool(baseAgentPool)
       teamcityClient.moveAgentFromPool(1, addAgentResponse.id)
-        .copy(name = irrelevantField, ip = irrelevantField, properties = null) must beEqualTo(agent)
+        .copy(name = irrelevantField, ip = irrelevantField, properties = null, connected = false) must beEqualTo(agent)
     }
   }
 
