@@ -1,5 +1,7 @@
+build:
+	mvn install
 
 travis-deploy:
 	gpg --import private-key.gpg
 	mvn versions:set -DnewVersion=${TRAVIS_TAG}
-	mvn clean deploy -P release --settings settings.xml
+	mvn clean deploy -P release --settings settings.xml -DskipTests=true -DskipITs=true
