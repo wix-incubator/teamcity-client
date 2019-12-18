@@ -236,7 +236,7 @@ class TeamCityClientIT extends SpecificationWithJUnit with BeforeAfterAll with I
 
     "get agent by id" in new Context {
       val anAgent = teamcityClient.getAgents().agent.head
-      teamcityClient.getAgentById(anAgent.id).copy(name = irrelevantField, ip = irrelevantField, properties = null) must beEqualTo(agent)
+      teamcityClient.getAgentById(anAgent.id).copy(name = irrelevantField, ip = irrelevantField, properties = null, connected = false) must beEqualTo(agent)
     }
 
     "set agent enabled" in new Context {
