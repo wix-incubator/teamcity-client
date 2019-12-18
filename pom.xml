@@ -136,7 +136,6 @@
         </plugins>
     </build>
 
-
     <profiles>
         <profile>
             <id>release</id>
