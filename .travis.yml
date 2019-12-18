@@ -9,7 +9,7 @@ env:
 #script: make build
 deploy:
   provider: script
-  script: mvn deploy
+  script: mvn deploy --settings settings.xml
   on:
     tags: true
 cache:
