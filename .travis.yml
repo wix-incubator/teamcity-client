@@ -9,7 +9,7 @@ jdk: openjdk8
 #script: make build
 deploy:
   provider: script
-  script: mvn install sign-artifacts
+  script: mvn deploy
   on:
     tags: true
 cache:
