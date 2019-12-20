@@ -9,7 +9,7 @@ env:
 script: mvn install
 deploy:
   provider: script
-  script: mvn deploy --settings settings.xml -DskipITs
+  script: mvn deploy --settings settings.xml -DskipITs -DskipTests=true
   on:
     tags: true
 cache:
