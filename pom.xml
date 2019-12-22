@@ -232,10 +232,6 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
-                                <configuration>
-                                    <keyname>${gpg.key}</keyname>
-                                    <passphraseServerId>${gpg.key}</passphraseServerId>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
