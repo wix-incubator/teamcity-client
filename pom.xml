@@ -177,8 +177,8 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
-                            <keyname>324C864A</keyname>
-                            <passphraseServerId>324C864A</passphraseServerId>
+                            <keyname>8E787F86</keyname>
+                            <passphraseServerId>8E787F86</passphraseServerId>
                         </configuration>
                     </execution>
                 </executions>
