@@ -177,8 +177,8 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
-                            <keyname>${gpg.key}</keyname>
-                            <passphraseServerId>${gpg.key}</passphraseServerId>
+                            <keyname>324C864A</keyname>
+                            <passphraseServerId>324C864A</passphraseServerId>
                         </configuration>
                     </execution>
                 </executions>
