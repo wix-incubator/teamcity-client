@@ -227,10 +227,6 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
-                                <configuration>
-                                    <keyname>324C864A</keyname>
-                                    <passphraseServerId>324C864A</passphraseServerId>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
