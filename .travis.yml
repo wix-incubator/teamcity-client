@@ -10,7 +10,7 @@ script: mvn clean install -q -B
 deploy:
   skip_cleanup: true
   provider: script
-  script: make travis-deploy
+  script: mvn deploy --settings settings.xml -DskipTests=true -DskipITs=true
   on:
     tags: true
 cache:
