@@ -10,7 +10,6 @@
     <url>https://github.com/wix-incubator/teamcity-client</url>
     <name>teamcity-client</name>
     <description>A REST client lib for teamcity</description>
-
     <scm>
         <url>https://github.com/wix-incubator/teamcity-client</url>
         <connection>git@github.com:wix-incubator/teamcity-client.git</connection>
@@ -19,38 +18,44 @@
         <name>com.wix</name>
         <url>https://github.com/wix-incubator</url>
     </organization>
-
     <developers>
         <developer>
             <name>Uri Bechar</name>
-            <roles><role>owner</role></roles>
+            <roles>
+                <role>owner</role>
+            </roles>
             <email>urib@wix.com</email>
             <organization>wix</organization>
             <organizationUrl>http://www.wix.com</organizationUrl>
         </developer>
         <developer>
             <name>Dor Katz</name>
-            <roles><role>owner</role></roles>
+            <roles>
+                <role>owner</role>
+            </roles>
             <email>dork@wix.com</email>
             <organization>wix</organization>
             <organizationUrl>http://www.wix.com</organizationUrl>
         </developer>
         <developer>
             <name>Barak Marziano</name>
-            <roles><role>owner</role></roles>
+            <roles>
+                <role>owner</role>
+            </roles>
             <email>barakm@wix.com</email>
             <organization>wix</organization>
             <organizationUrl>http://www.wix.com</organizationUrl>
         </developer>
         <developer>
             <name>Elior Hamamy</name>
-            <roles><role>owner</role></roles>
+            <roles>
+                <role>owner</role>
+            </roles>
             <email>eliorhm@wix.com</email>
             <organization>wix</organization>
             <organizationUrl>http://www.wix.com</organizationUrl>
         </developer>
     </developers>
-
     <licenses>
         <license>
             <name>MIT</name>
@@ -58,21 +63,17 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
-
     <parent>
         <groupId>com.wix</groupId>
         <artifactId>wix-oss-scala-parent</artifactId>
         <version>0.48.0</version>
         <relativePath/>
     </parent>
-
     <properties>
         <scala.version>2.12.6</scala.version>
         <scala.dependencies.version>2.12</scala.dependencies.version>
         <teamcity.image.version>2018.1.5-linux</teamcity.image.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.scalaj</groupId>
@@ -84,14 +85,12 @@
             <artifactId>httpclient</artifactId>
             <version>4.3.6</version>
         </dependency>
-
         <dependency>
             <groupId>org.specs2</groupId>
             <artifactId>specs2-mock_${scala.dependencies.version}</artifactId>
             <scope>test</scope>
             <version>4.5.1</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -132,6 +131,108 @@
                     </systemProperties>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr3-maven-plugin</artifactId>
+                <version>3.5.2</version>
+                <executions>
+                    <execution>
+                        <id>run antlr</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>antlr</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${basedir}/target/generated-sources/antlr3</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>publish</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

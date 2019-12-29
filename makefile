@@ -3,4 +3,5 @@ build:
 
 travis-deploy:
 	mvn versions:set -DnewVersion=${TRAVIS_TAG}
-	mvn clean deploy -P sign-artifacts -DskipTests=true -DskipITs=true
+	mvn deploy -P publish --settings settings.xml -DskipTests=true -DskipITs=true
+
