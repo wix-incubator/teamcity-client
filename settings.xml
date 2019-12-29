@@ -2,8 +2,8 @@
     <servers>
         <server>
             <id>ossrh</id>
-            <username>${env.MAVEN_REPO_USERNAME}</username>
-            <password>${env.MAVEN_REPO_PASSWORD}</password>
+            <username>${env.OSSRH_USERNAME}</username>
+            <password>${env.OSSRH_PASSPHRASE}</password>
         </server>
     </servers>
 </settings>
